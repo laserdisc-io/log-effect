@@ -68,13 +68,21 @@ lazy val versionOf = new {
   val kindProjector = "0.9.7"
   val log4s         = "1.6.1"
   val silencer      = "1.0"
+  val fs2           = "1.0.0-M1"
 }
 
-lazy val externalDependencies = Seq(
+lazy val sharedDependencies = Seq(
+  "com.github.ghik" %% "silencer-lib" % versionOf.silencer % Provided
+) map (_.withSources)
+
+lazy val coreDependencies = Seq(
   "org.typelevel"   %% "cats-core"    % versionOf.cats,
   "org.typelevel"   %% "cats-effect"  % versionOf.catsEffect,
   "org.log4s"       %% "log4s"        % versionOf.log4s,
-  "com.github.ghik" %% "silencer-lib" % versionOf.silencer % Provided
+) map (_.withSources)
+
+lazy val fs2Dependencies = Seq(
+  "co.fs2" %% "fs2-core" % versionOf.fs2
 ) map (_.withSources)
 
 lazy val testDependencies = Seq(
@@ -104,7 +112,7 @@ lazy val crossBuildSettings = Seq(
       case `typelevel scala 212`  => scala212Options ++ typeLevelScalaOptions
       case _                      => Seq()
     }),
-  libraryDependencies     ++= externalDependencies ++ testDependencies ++ compilerPluginsDependencies,
+  libraryDependencies     ++= sharedDependencies ++ testDependencies ++ compilerPluginsDependencies,
   scalacOptions in Test   ++= testOnlyOptions,
   scalaVersion            :=  `typelevel scala 212`,
   organization            :=  "io.laserdisc"
@@ -148,7 +156,8 @@ lazy val core = project
   .settings(crossBuildSettings)
   .settings(releaseSettings)
   .settings(
-    name :=  "log-effect-core"
+    name := "log-effect-core",
+    libraryDependencies ++= coreDependencies
   )
 
 lazy val fs2 = project
@@ -157,5 +166,6 @@ lazy val fs2 = project
   .settings(crossBuildSettings)
   .settings(releaseSettings)
   .settings(
-    name :=  "log-effect-fs2"
+    name :=  "log-effect-fs2",
+    libraryDependencies ++= fs2Dependencies
   )
