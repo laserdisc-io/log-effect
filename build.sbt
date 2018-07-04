@@ -31,17 +31,17 @@ lazy val crossBuildOptions = Seq (
   "-Ywarn-nullary-unit",
   "-Ywarn-numeric-widen",
   "-Ywarn-value-discard",
-  "-Xfatal-warnings",
-  "-opt-warnings",
-  "-Ywarn-unused:_,imports",
-  "-Ywarn-unused:imports",
-  "-opt:l:inline",
-  "-opt-inline-from:<source>"
+  "-Xfatal-warnings"
 )
 
 lazy val scala212Options = Seq (
+  "-opt:l:inline",
+  "-Ywarn-unused:imports",
+  "-Ywarn-unused:_,imports",
+  "-opt-warnings",
   "-Xlint:constant",
-  "-Ywarn-extra-implicit"
+  "-Ywarn-extra-implicit",
+  "-opt-inline-from:<source>"
 )
 
 lazy val typeLevelScalaOptions = Seq(
@@ -63,12 +63,16 @@ lazy val testOnlyOptions = Seq(
   */
 lazy val versionOf = new {
   val cats          = "1.1.0"
+  val catsEffect    = "1.0.0-RC2"
   val scalaCheck    = "1.14.0"
   val kindProjector = "0.9.7"
+  val log4s         = "1.6.1"
 }
 
 lazy val externalDependencies = Seq(
-  "org.typelevel" %% "cats-core"  % versionOf.cats
+  "org.typelevel" %% "cats-core"    % versionOf.cats,
+  "org.typelevel" %% "cats-effect"  % versionOf.catsEffect,
+  "org.log4s"     %% "log4s"        % versionOf.log4s
 ) map (_.withSources)
 
 lazy val testDependencies = Seq(
