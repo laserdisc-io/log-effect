@@ -1,12 +1,12 @@
 package log.effect
 
-
 import java.util.{Calendar, logging => jul}
 
 import cats.Show
 import cats.effect.Sync
 import cats.syntax.functor._
 import cats.syntax.show._
+import com.github.ghik.silencer.silent
 import log.effect.LogWriter.{Console, FailureMessage, Jul, Log4s}
 import org.{log4s => l4s}
 
@@ -21,8 +21,8 @@ object LogWriterConstructor extends LogWriterConstructorInstances {
 
   private[effect] type AUX[T, F[_], LWT] = LogWriterConstructor[T, F] { type LogWriterType = LWT }
 
-  private[effect] final class LogWriterConstructorPartially[F[_]](val d: Boolean = true) extends AnyVal {
-    @inline def apply[T](t: T)(implicit LWC: LogWriterConstructor[T, F]): F[LWC.LogWriterType] => F[LogWriter[F]] = LWC.evaluation
+  private[effect] final class LogWriterConstructorPartially[F[_]](private val d: Boolean = true) extends AnyVal {
+    @inline @silent def apply[T](t: T)(implicit LWC: LogWriterConstructor[T, F]): F[LWC.LogWriterType] => F[LogWriter[F]] = LWC.evaluation
   }
 }
 

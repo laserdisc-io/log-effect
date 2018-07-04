@@ -67,12 +67,14 @@ lazy val versionOf = new {
   val scalaCheck    = "1.14.0"
   val kindProjector = "0.9.7"
   val log4s         = "1.6.1"
+  val silencer      = "1.0"
 }
 
 lazy val externalDependencies = Seq(
-  "org.typelevel" %% "cats-core"    % versionOf.cats,
-  "org.typelevel" %% "cats-effect"  % versionOf.catsEffect,
-  "org.log4s"     %% "log4s"        % versionOf.log4s
+  "org.typelevel"   %% "cats-core"    % versionOf.cats,
+  "org.typelevel"   %% "cats-effect"  % versionOf.catsEffect,
+  "org.log4s"       %% "log4s"        % versionOf.log4s,
+  "com.github.ghik" %% "silencer-lib" % versionOf.silencer % Provided
 ) map (_.withSources)
 
 lazy val testDependencies = Seq(
@@ -80,7 +82,8 @@ lazy val testDependencies = Seq(
 )
 
 lazy val compilerPluginsDependencies = Seq(
-  compilerPlugin("org.spire-math" %% "kind-projector" % versionOf.kindProjector cross CrossVersion.binary)
+  compilerPlugin("org.spire-math"   %% "kind-projector"   % versionOf.kindProjector cross CrossVersion.binary),
+  compilerPlugin("com.github.ghik"  %% "silencer-plugin"  % versionOf.silencer),
 )
 
 
