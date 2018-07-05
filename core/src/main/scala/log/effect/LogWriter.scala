@@ -34,8 +34,8 @@ object LogWriter extends LogWriterSyntax {
   final case object Jul
   final case object Console
 
-  type Log4s = Log4s.type
-  type Jul = Jul.type
+  type Log4s   = Log4s.type
+  type Jul     = Jul.type
   type Console = Console.type
 
   sealed trait LogLevel extends Product with Serializable

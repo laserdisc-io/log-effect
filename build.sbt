@@ -145,11 +145,13 @@ lazy val releaseSettings: Seq[Def.Setting[_]] = Seq(
 
 lazy val root = project
   .in(file("."))
+  .aggregate(core, fs2)
+  .settings(releaseSettings)
   .settings(
     name := "log-effect",
-    skip in publish := true
+    publishArtifact := false
   )
-  .aggregate(core, fs2)
+
 
 lazy val core = project
   .in(file("core"))
