@@ -10,7 +10,13 @@ jdk:
   - oraclejdk8
 
 script:
-   - sbt ++$TRAVIS_SCALA_VERSION clean coverage test coverageReport && sbt ++$TRAVIS_SCALA_VERSION coverageAggregate
+   - sbt ++$TRAVIS_SCALA_VERSION clean test
 
-after_success:
-   - bash <(curl -s https://codecov.io/bash)
+cache:
+  directories:
+  - "$HOME/.ivy2/cache"
+  - "$HOME/.sbt/boot/"
+
+before_cache:
+  - find $HOME/.ivy2/cache -name "ivydata-*.properties" | xargs rm
+  - find $HOME/.ivy2/cache -name "*SNAPSHOT*" | xargs rm -rf
