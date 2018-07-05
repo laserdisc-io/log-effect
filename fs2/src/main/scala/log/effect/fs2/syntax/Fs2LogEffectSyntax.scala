@@ -5,7 +5,7 @@ import log.effect.LogWriter
 
 import scala.language.implicitConversions
 
-private[syntax] trait Fs2LogEffectSyntax {
+private[fs2] trait Fs2LogEffectSyntax {
 
   implicit def fs2LogEffectSyntax[F[_]](aLogWriter: LogWriter[F]): Fs2LogEffectOps[F] = new Fs2LogEffectOps(aLogWriter)
 }
