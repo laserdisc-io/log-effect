@@ -146,6 +146,7 @@ lazy val releaseSettings: Seq[Def.Setting[_]] = Seq(
 lazy val root = project
   .in(file("."))
   .aggregate(core, fs2)
+  .settings(crossBuildSettings)
   .settings(releaseSettings)
   .settings(
     name := "log-effect",
@@ -161,6 +162,7 @@ lazy val core = project
     name := "log-effect-core",
     libraryDependencies ++= coreDependencies
   )
+
 
 lazy val fs2 = project
   .in(file("fs2"))
