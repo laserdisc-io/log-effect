@@ -63,12 +63,12 @@ lazy val testOnlyOptions = Seq(
   */
 lazy val versionOf = new {
   val cats          = "1.1.0"
-  val catsEffect    = "1.0.0-RC2"
+  val catsEffect    = "0.10.1"
   val scalaCheck    = "1.14.0"
   val kindProjector = "0.9.7"
   val log4s         = "1.6.1"
   val silencer      = "1.0"
-  val fs2           = "1.0.0-M1"
+  val fs2           = "0.10.5"
 }
 
 lazy val sharedDependencies = Seq(
