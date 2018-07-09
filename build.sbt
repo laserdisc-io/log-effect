@@ -1,10 +1,5 @@
-lazy val typelevelOrganization = "org.typelevel"
-lazy val globalOrganization = scalaOrganization in Global
-
-lazy val `typelevel scala 212` = "2.12.4-bin-typelevel-4"
 lazy val `scala 211` = "2.11.12"
 lazy val `scala 212` = "2.12.6"
-
 
 /**
   * Scalac options
@@ -44,14 +39,6 @@ lazy val scala212Options = Seq (
   "-opt-inline-from:<source>"
 )
 
-lazy val typeLevelScalaOptions = Seq(
-  "-Yinduction-heuristics",       // speeds up the compilation of inductive implicit resolution
-  "-Ykind-polymorphism",          // type and method definitions with type parameters of arbitrary kinds
-  "-Yliteral-types",              // literals can appear in type position
-  "-Xstrict-patmat-analysis",     // more accurate reporting of failures of match exhaustivity
-  "-Xlint:strict-unsealed-patmat" // warn on inexhaustive matches against unsealed traits
-)
-
 lazy val testOnlyOptions = Seq(
   "-P:splain:implicits:true",
   "-P:splain:tree:true"
@@ -64,11 +51,11 @@ lazy val testOnlyOptions = Seq(
 lazy val versionOf = new {
   val cats          = "1.1.0"
   val catsEffect    = "0.10.1"
+  val fs2           = "0.10.5"
+  val log4s         = "1.6.1"
   val scalaCheck    = "1.14.0"
   val kindProjector = "0.9.7"
-  val log4s         = "1.6.1"
   val silencer      = "1.0"
-  val fs2           = "0.10.5"
 }
 
 lazy val sharedDependencies = Seq(
@@ -99,22 +86,16 @@ lazy val compilerPluginsDependencies = Seq(
   * Settings
   */
 lazy val crossBuildSettings = Seq(
-  scalacOptions           ++= crossBuildOptions,
+  scalaVersion            :=  `scala 212`,
   crossScalaVersions 	    :=  Seq(`scala 211`, `scala 212`),
-  scalaOrganization :=
-    (scalaVersion.value match {
-      case `typelevel scala 212`  => typelevelOrganization
-      case _                      => globalOrganization.value
-    }),
+  scalacOptions           ++= crossBuildOptions,
   scalacOptions ++=
     (scalaVersion.value match {
-      case `scala 212`            => scala212Options
-      case `typelevel scala 212`  => scala212Options ++ typeLevelScalaOptions
-      case _                      => Seq()
+      case `scala 212`  => scala212Options
+      case _            => Seq()
     }),
   libraryDependencies     ++= sharedDependencies ++ testDependencies ++ compilerPluginsDependencies,
   scalacOptions in Test   ++= testOnlyOptions,
-  scalaVersion            :=  `typelevel scala 212`,
   organization            :=  "io.laserdisc"
 )
 
