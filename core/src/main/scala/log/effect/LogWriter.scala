@@ -4,6 +4,7 @@ import java.util.{logging => jul}
 
 import cats.Show
 import cats.effect.Sync
+import com.github.ghik.silencer.silent
 import log.effect.LogWriter.{FailureMessage, LogLevel}
 import org.{log4s => l4s}
 
@@ -13,7 +14,7 @@ trait LogWriter[F[_]] {
   def write[A: Show](level: LogWriter.LogLevel, a: =>A): F[Unit]
 }
 
-object LogWriter extends LogWriterSyntax {
+object LogWriter extends LogWriterSyntax with LogWriterAliasingSyntax {
 
   def log4sLog[F[_] : Sync](fa: F[l4s.Logger]): F[LogWriter[F]] = {
     val constructor = LogWriterConstructor[F](Log4s)
@@ -85,6 +86,10 @@ private[effect] sealed trait LogLevelSyntax {
 
 private[effect] final class LogLevelOps(private val l: LogLevel) extends AnyVal {
   def show(implicit ev: Show[LogLevel]): String = ev.show(l)
+}
+
+private[effect] sealed trait LogWriterAliasingSyntax {
+  @silent implicit def logWriterSingleton[F[_]](co: LogWriter.type)(implicit LW: LogWriter[F]): LogWriter[F] = LW
 }
 
 private[effect] sealed trait LogWriterSyntax {

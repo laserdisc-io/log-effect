@@ -39,11 +39,6 @@ lazy val scala212Options = Seq (
   "-opt-inline-from:<source>"
 )
 
-lazy val testOnlyOptions = Seq(
-  "-P:splain:implicits:true",
-  "-P:splain:tree:true"
-)
-
 
 /**
   * Dependencies
@@ -51,8 +46,8 @@ lazy val testOnlyOptions = Seq(
 lazy val versionOf = new {
   val cats          = "1.1.0"
   val catsEffect    = "0.10.1"
-  val fs2           = "0.10.5"
   val log4s         = "1.6.1"
+  val fs2           = "0.10.5"
   val scalaCheck    = "1.14.0"
   val kindProjector = "0.9.7"
   val silencer      = "1.0"
@@ -89,14 +84,13 @@ lazy val crossBuildSettings = Seq(
   scalaVersion            :=  `scala 212`,
   crossScalaVersions 	    :=  Seq(`scala 211`, `scala 212`),
   scalacOptions           ++= crossBuildOptions,
+  libraryDependencies     ++= sharedDependencies ++ testDependencies ++ compilerPluginsDependencies,
+  organization            :=  "io.laserdisc",
   scalacOptions ++=
     (scalaVersion.value match {
       case `scala 212`  => scala212Options
       case _            => Seq()
-    }),
-  libraryDependencies     ++= sharedDependencies ++ testDependencies ++ compilerPluginsDependencies,
-  scalacOptions in Test   ++= testOnlyOptions,
-  organization            :=  "io.laserdisc"
+    })
 )
 
 lazy val releaseSettings: Seq[Def.Setting[_]] = Seq(
@@ -125,9 +119,7 @@ lazy val releaseSettings: Seq[Def.Setting[_]] = Seq(
 
 
 lazy val root = project
-  .in(file("."))
   .aggregate(core, fs2)
-  .settings(crossBuildSettings)
   .settings(releaseSettings)
   .settings(
     name := "log-effect",
