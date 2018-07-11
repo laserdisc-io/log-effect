@@ -83,11 +83,12 @@ lazy val compilerPluginsDependencies = Seq(
   * Settings
   */
 lazy val crossBuildSettings = Seq(
-  scalaVersion            :=  `scala 212`,
-  crossScalaVersions 	    :=  Seq(`scala 211`, `scala 212`),
-  scalacOptions           ++= crossBuildOptions,
-  libraryDependencies     ++= sharedDependencies ++ testDependencies ++ compilerPluginsDependencies,
-  organization            :=  "io.laserdisc",
+  scalaVersion              :=  `scala 212`,
+  crossScalaVersions 	      :=  Seq(`scala 211`, `scala 212`),
+  scalacOptions             ++= crossBuildOptions,
+  libraryDependencies       ++= sharedDependencies ++ testDependencies ++ compilerPluginsDependencies,
+  organization              :=  "io.laserdisc",
+  parallelExecution in Test := false,
   scalacOptions ++=
     (scalaVersion.value match {
       case `scala 212`  => scala212Options

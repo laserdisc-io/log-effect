@@ -17,27 +17,29 @@ trait LogWriter[F[_]] {
 object LogWriter extends LogWriterSyntax with LogWriterAliasingSyntax {
 
   def log4sLog[F[_] : Sync](fa: F[l4s.Logger]): F[LogWriter[F]] = {
-    val constructor = LogWriterConstructor[F](Log4s)
+    val constructor = LogWriterConstructor1[F](Log4s)
     constructor(fa)
   }
 
   def julLog[F[_] : Sync](fa: F[jul.Logger]): F[LogWriter[F]] = {
-    val constructor = LogWriterConstructor[F](Jul)
+    val constructor = LogWriterConstructor1[F](Jul)
     constructor(fa)
   }
 
   def consoleLog[F[_]](implicit F: Sync[F]): F[LogWriter[F]] = {
-    val constructor = LogWriterConstructor[F](Console)
-    constructor(F.unit)
+    val constructor = LogWriterConstructor0[F](Console)
+    constructor()
   }
 
   final case object Log4s
   final case object Jul
   final case object Console
+  final case object NoOp
 
   type Log4s   = Log4s.type
   type Jul     = Jul.type
   type Console = Console.type
+  type NoOp    = NoOp.type
 
   sealed trait LogLevel extends Product with Serializable
   final case object Trace extends LogLevel
@@ -48,7 +50,7 @@ object LogWriter extends LogWriterSyntax with LogWriterAliasingSyntax {
 
   object LogLevel extends LogLevelSyntax {
 
-    implicit val logLevelShow: Show[LogLevel] =
+    private[effect] implicit val logLevelShow: Show[LogLevel] =
       new Show[LogLevel] {
         def show(t: LogLevel): String =
           t match {
@@ -70,12 +72,10 @@ object LogWriter extends LogWriterSyntax with LogWriterAliasingSyntax {
     implicit def errorMessageShow: Show[FailureMessage] =
       new Show[FailureMessage] {
         def show(t: FailureMessage): String =
-          s"""${t.msg}.
-             |
-             |Failed with exception ${t.th} - ${t.th.getMessage}
-             |
-             |${t.th.printStackTrace()}
-           """.stripMargin
+          s"""${t.msg}
+             |  Failed with exception ${t.th}
+             |  Stack trace:
+             |    ${t.th.getStackTrace.toList.mkString("\n|    ")}""".stripMargin
       }
   }
 }
@@ -115,30 +115,3 @@ private[effect] final class LogWriterOps[F[_]](private val aLogger: LogWriter[F]
   @inline def warn(msg: =>String): F[Unit]                  = aLogger.write(LogWriter.Warn, msg)
   @inline def warn(msg: =>String, th: =>Throwable): F[Unit] = aLogger.write(LogWriter.Warn, FailureMessage(msg, th))
 }
-
-//object LogWriterResolutionTest {
-//
-//  trait TestLog[F[_]] {
-//
-//    implicit val F: Sync[F]
-//
-//    val log4sConst    = LogWriterConstructor[F](Log4s)
-//    val julConst      = LogWriterConstructor[F](Jul)
-//    val consoleConst  = LogWriterConstructor[F](Console)
-//
-//    val logger1: F[LogWriter[F]] = log4sConst(F.delay(getLogger("test")))
-//    val logger2: F[LogWriter[F]] = julConst(F.delay(jul.Logger.getGlobal))
-//    val logger3: F[LogWriter[F]] = consoleConst(F.unit)
-//  }
-//
-//  val resolvedLogs = new TestLog[IO] { val F: Sync[IO] = Sync[IO] }
-//
-//  val log4sConst1 = LogWriterConstructor[IO](Log4s)
-//  val logger4: IO[LogWriter[IO]] = log4sConst1(IO(getLogger("test")))
-//
-//  val julConst1 = LogWriterConstructor[IO](Jul)
-//  val logger5: IO[LogWriter[IO]] = julConst1(IO(jul.Logger.getGlobal))
-//
-//  val consoleConst1 = LogWriterConstructor[IO](Console)
-//  val logger6: IO[LogWriter[IO]] = consoleConst1(IO.unit)
-//}
