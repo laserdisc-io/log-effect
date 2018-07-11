@@ -115,3 +115,30 @@ private[effect] final class LogWriterOps[F[_]](private val aLogger: LogWriter[F]
   @inline def warn(msg: =>String): F[Unit]                  = aLogger.write(LogWriter.Warn, msg)
   @inline def warn(msg: =>String, th: =>Throwable): F[Unit] = aLogger.write(LogWriter.Warn, FailureMessage(msg, th))
 }
+
+//object LogWriterResolutionTest {
+//
+//  trait TestLog[F[_]] {
+//
+//    implicit val F: Sync[F]
+//
+//    val log4sConst    = LogWriterConstructor[F](Log4s)
+//    val julConst      = LogWriterConstructor[F](Jul)
+//    val consoleConst  = LogWriterConstructor[F](Console)
+//
+//    val logger1: F[LogWriter[F]] = log4sConst(F.delay(getLogger("test")))
+//    val logger2: F[LogWriter[F]] = julConst(F.delay(jul.Logger.getGlobal))
+//    val logger3: F[LogWriter[F]] = consoleConst(F.unit)
+//  }
+//
+//  val resolvedLogs = new TestLog[IO] { val F: Sync[IO] = Sync[IO] }
+//
+//  val log4sConst1 = LogWriterConstructor[IO](Log4s)
+//  val logger4: IO[LogWriter[IO]] = log4sConst1(IO(getLogger("test")))
+//
+//  val julConst1 = LogWriterConstructor[IO](Jul)
+//  val logger5: IO[LogWriter[IO]] = julConst1(IO(jul.Logger.getGlobal))
+//
+//  val consoleConst1 = LogWriterConstructor[IO](Console)
+//  val logger6: IO[LogWriter[IO]] = consoleConst1(IO.unit)
+//}

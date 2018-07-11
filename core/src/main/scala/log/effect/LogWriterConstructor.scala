@@ -1,11 +1,9 @@
 package log.effect
 
-import java.text.SimpleDateFormat
-import java.util.{Calendar, logging => jul}
+import java.util.{logging => jul}
 
 import cats.Show
 import cats.effect.Sync
-import cats.syntax.flatMap._
 import cats.syntax.functor._
 import cats.syntax.show._
 import com.github.ghik.silencer.silent
@@ -104,16 +102,9 @@ private[effect] sealed trait LogWriterConstructorInstances {
         F.pure(
           new LogWriter[F] {
             def write[A: Show](level: LogWriter.LogLevel, a: =>A): F[Unit] =
-              formattedTs flatMap {
-                ts => F.delay { println(
-                  s"$ts - [${level.show}] - [Thread ${Thread.currentThread().getId}] - ${a.show}"
-                )}
-              }
-
-            private def formattedTs: F[String] =
-              F.delay(
-                new SimpleDateFormat("yyyy-MM-dd HH:mm:ss.fff").format(Calendar.getInstance().getTime)
-              )
+              F.delay { println(
+                s"[${level.show.toLowerCase}] - [Thread ${Thread.currentThread().getName}] ${a.show}"
+              )}
           }
         )
     }
