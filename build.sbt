@@ -49,6 +49,7 @@ lazy val versionOf = new {
   val log4s         = "1.6.1"
   val fs2           = "0.10.5"
   val scalaCheck    = "1.14.0"
+  val scalaTest     = "3.0.5"
   val kindProjector = "0.9.7"
   val silencer      = "1.0"
 }
@@ -68,7 +69,8 @@ lazy val fs2Dependencies = Seq(
 ) map (_.withSources)
 
 lazy val testDependencies = Seq(
-  "org.scalacheck" %% "scalacheck" % versionOf.scalaCheck % Test
+  "org.scalacheck"  %% "scalacheck" % versionOf.scalaCheck  % Test,
+  "org.scalatest"   %% "scalatest"  % versionOf.scalaTest   % Test
 )
 
 lazy val compilerPluginsDependencies = Seq(
