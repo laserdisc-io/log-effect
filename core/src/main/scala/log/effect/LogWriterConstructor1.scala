@@ -7,29 +7,29 @@ import cats.effect.Sync
 import cats.syntax.functor._
 import cats.syntax.show._
 import com.github.ghik.silencer.silent
-import log.effect.LogWriter.{Console, FailureMessage, Jul, Log4s}
+import log.effect.LogWriter.{FailureMessage, Jul, Log4s}
 import org.{log4s => l4s}
 
-sealed trait LogWriterConstructor[T, F[_]] {
+sealed trait LogWriterConstructor1[T, F[_]] {
   type LogWriterType
   def evaluation(g: F[LogWriterType]): F[LogWriter[F]]
 }
 
-object LogWriterConstructor extends LogWriterConstructorInstances {
+object LogWriterConstructor1 extends LogWriterConstructor1Instances {
 
-  @inline final def apply[F[_]]: LogWriterConstructorPartially[F] = new LogWriterConstructorPartially()
+  @inline final def apply[F[_]]: LogWriterConstructor1Partially[F] = new LogWriterConstructor1Partially()
 
-  private[effect] type AUX[T, F[_], LWT] = LogWriterConstructor[T, F] { type LogWriterType = LWT }
+  private[effect] type AUX[T, F[_], LWT] = LogWriterConstructor1[T, F] { type LogWriterType = LWT }
 
-  private[effect] final class LogWriterConstructorPartially[F[_]](private val d: Boolean = true) extends AnyVal {
-    @inline @silent def apply[T](t: T)(implicit LWC: LogWriterConstructor[T, F]): F[LWC.LogWriterType] => F[LogWriter[F]] = LWC.evaluation
+  private[effect] final class LogWriterConstructor1Partially[F[_]](private val d: Boolean = true) extends AnyVal {
+    @inline @silent def apply[T](t: T)(implicit F: Sync[F], LWC: LogWriterConstructor1[T, F]): F[LWC.LogWriterType] => F[LogWriter[F]] = LWC.evaluation
   }
 }
 
-private[effect] sealed trait LogWriterConstructorInstances {
+private[effect] sealed trait LogWriterConstructor1Instances {
 
-  implicit def log4sConstructor[F[_]](implicit F: Sync[F]): LogWriterConstructor.AUX[Log4s, F, l4s.Logger] =
-    new LogWriterConstructor[Log4s, F] {
+  implicit def log4sConstructor[F[_]](implicit F: Sync[F]): LogWriterConstructor1.AUX[Log4s, F, l4s.Logger] =
+    new LogWriterConstructor1[Log4s, F] {
 
       type LogWriterType = l4s.Logger
 
@@ -57,8 +57,8 @@ private[effect] sealed trait LogWriterConstructorInstances {
         }
     }
 
-  implicit def julConstructor[F[_]](implicit F: Sync[F]): LogWriterConstructor.AUX[Jul, F, jul.Logger] =
-    new LogWriterConstructor[Jul, F] {
+  implicit def julConstructor[F[_]](implicit F: Sync[F]): LogWriterConstructor1.AUX[Jul, F, jul.Logger] =
+    new LogWriterConstructor1[Jul, F] {
 
       type LogWriterType = jul.Logger
 
@@ -91,21 +91,5 @@ private[effect] sealed trait LogWriterConstructorInstances {
             }
           }
         }
-    }
-
-  implicit def consoleConstructor[F[_]](implicit F: Sync[F]): LogWriterConstructor.AUX[Console, F, Unit] =
-    new LogWriterConstructor[Console, F] {
-
-      type LogWriterType = Unit
-
-      def evaluation(g: F[Unit]): F[LogWriter[F]] =
-        F.pure(
-          new LogWriter[F] {
-            def write[A: Show](level: LogWriter.LogLevel, a: =>A): F[Unit] =
-              F.delay { println(
-                s"[${level.show.toLowerCase}] - [Thread ${Thread.currentThread().getName}] ${a.show}"
-              )}
-          }
-        )
     }
 }
