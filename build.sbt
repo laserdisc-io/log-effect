@@ -1,4 +1,4 @@
-import ReleaseTransformations._
+import sbtrelease.ReleasePlugin.autoImport.ReleaseTransformations._
 
 lazy val `scala 211` = "2.11.12"
 lazy val `scala 212` = "2.12.6"
@@ -102,17 +102,16 @@ lazy val releaseSettings: Seq[Def.Setting[_]] = Seq(
   releaseProcess := Seq[ReleaseStep](
     checkSnapshotDependencies,
     inquireVersions,
-    releaseStepCommand("ciFullBuild"),
     runClean,
     runTest,
     setReleaseVersion,
     commitReleaseVersion,
     tagRelease,
-//    publishArtifacts,
-//    setNextVersion,
-//    commitNextVersion,
-//    pushChanges,
-//    releaseStepCommand("sonatypeRelease")
+    publishArtifacts,
+    setNextVersion,
+    commitNextVersion,
+    pushChanges,
+    releaseStepCommand("sonatypeRelease")
   ),
   releaseCrossBuild             := true,
   publishMavenStyle             := true,
