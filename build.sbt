@@ -1,3 +1,5 @@
+import ReleaseTransformations._
+
 lazy val `scala 211` = "2.11.12"
 lazy val `scala 212` = "2.12.6"
 
@@ -97,6 +99,19 @@ lazy val crossBuildSettings = Seq(
 )
 
 lazy val releaseSettings: Seq[Def.Setting[_]] = Seq(
+  releaseProcess := Seq[ReleaseStep](
+    checkSnapshotDependencies,
+    inquireVersions,
+    releaseStepCommand("ciFullBuild"),
+    setReleaseVersion,
+    commitReleaseVersion,
+    tagRelease,
+    publishArtifacts,
+    setNextVersion,
+    commitNextVersion,
+    pushChanges,
+    releaseStepCommand("sonatypeRelease")
+  ),
   releaseCrossBuild             := true,
   publishMavenStyle             := true,
   credentials                   := Credentials(Path.userHome / ".ivy2" / ".credentials") :: Nil,
