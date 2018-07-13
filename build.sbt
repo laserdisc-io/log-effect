@@ -56,7 +56,7 @@ lazy val versionOf = new {
 }
 
 lazy val sharedDependencies = Seq(
-  "com.github.ghik" %% "silencer-lib" % versionOf.silencer % Provided
+  "com.github.ghik" %% "silencer-lib" % versionOf.silencer
 ) map (_.withSources)
 
 lazy val coreDependencies = Seq(
