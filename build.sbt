@@ -43,14 +43,14 @@ lazy val scala212Options = Seq(
   * Dependencies
   */
 lazy val versionOf = new {
-  val cats = "1.1.0"
-  val catsEffect = "0.10.1"
-  val log4s = "1.6.1"
-  val fs2 = "0.10.5"
-  val scalaCheck = "1.14.0"
-  val scalaTest = "3.0.5"
+  val cats          = "1.1.0"
+  val catsEffect    = "0.10.1"
+  val log4s         = "1.6.1"
+  val fs2           = "0.10.5"
+  val scalaCheck    = "1.14.0"
+  val scalaTest     = "3.0.5"
   val kindProjector = "0.9.7"
-  val silencer = "1.0"
+  val silencer      = "1.0"
 }
 
 lazy val sharedDependencies = Seq(
@@ -58,9 +58,9 @@ lazy val sharedDependencies = Seq(
 ) map (_.withSources)
 
 lazy val coreDependencies = Seq(
-  "org.typelevel" %% "cats-core" % versionOf.cats,
+  "org.typelevel" %% "cats-core"   % versionOf.cats,
   "org.typelevel" %% "cats-effect" % versionOf.catsEffect,
-  "org.log4s" %% "log4s" % versionOf.log4s,
+  "org.log4s"     %% "log4s"       % versionOf.log4s,
 ) map (_.withSources)
 
 lazy val fs2Dependencies = Seq(
@@ -69,12 +69,13 @@ lazy val fs2Dependencies = Seq(
 
 lazy val testDependencies = Seq(
   "org.scalacheck" %% "scalacheck" % versionOf.scalaCheck % Test,
-  "org.scalatest" %% "scalatest" % versionOf.scalaTest % Test
+  "org.scalatest"  %% "scalatest"  % versionOf.scalaTest  % Test
 )
 
 lazy val compilerPluginsDependencies = Seq(
   compilerPlugin(
-    "org.spire-math" %% "kind-projector" % versionOf.kindProjector cross CrossVersion.binary),
+    "org.spire-math" %% "kind-projector" % versionOf.kindProjector cross CrossVersion.binary
+  ),
   compilerPlugin("com.github.ghik" %% "silencer-plugin" % versionOf.silencer),
 )
 
@@ -82,11 +83,11 @@ lazy val compilerPluginsDependencies = Seq(
   * Settings
   */
 lazy val crossBuildSettings = Seq(
-  scalaVersion := `scala 212`,
-  crossScalaVersions := Seq(`scala 211`, `scala 212`),
-  scalacOptions ++= crossBuildOptions,
-  libraryDependencies ++= sharedDependencies ++ testDependencies ++ compilerPluginsDependencies,
-  organization := "io.laserdisc",
+  scalaVersion              := `scala 212`,
+  crossScalaVersions        := Seq(`scala 211`, `scala 212`),
+  scalacOptions             ++= crossBuildOptions,
+  libraryDependencies       ++= sharedDependencies ++ testDependencies ++ compilerPluginsDependencies,
+  organization              := "io.laserdisc",
   parallelExecution in Test := false,
   scalacOptions ++=
     (scalaVersion.value match {
@@ -96,11 +97,11 @@ lazy val crossBuildSettings = Seq(
 )
 
 lazy val releaseSettings: Seq[Def.Setting[_]] = Seq(
-  releaseCrossBuild := true,
-  publishMavenStyle := true,
-  credentials := Credentials(Path.userHome / ".ivy2" / ".credentials") :: Nil,
+  releaseCrossBuild             := true,
+  publishMavenStyle             := true,
+  credentials                   := Credentials(Path.userHome / ".ivy2" / ".credentials") :: Nil,
   releasePublishArtifactsAction := PgpKeys.publishSigned.value,
-  publishArtifact in Test := false,
+  publishArtifact in Test       := false,
   pomIncludeRepository := { _ =>
     false
   },
@@ -108,7 +109,7 @@ lazy val releaseSettings: Seq[Def.Setting[_]] = Seq(
     "MIT License" ->
       url("https://raw.githubusercontent.com/laserdisc-io/log-effect/master/LICENSE")
   ),
-  homepage := Some(url("http://laserdisc.io")),
+  homepage  := Some(url("http://laserdisc.io")),
   publishTo := sonatypePublishTo.value,
   pomExtra :=
     <scm>
@@ -130,7 +131,7 @@ lazy val root = project
   .settings(crossBuildSettings)
   .settings(releaseSettings)
   .settings(
-    name := "log-effect",
+    name            := "log-effect",
     publishArtifact := false,
     addCommandAlias("format", ";scalafmt;test:scalafmt;scalafmtSbt"),
     addCommandAlias(
@@ -145,7 +146,7 @@ lazy val core = project
   .settings(crossBuildSettings)
   .settings(releaseSettings)
   .settings(
-    name := "log-effect-core",
+    name                := "log-effect-core",
     libraryDependencies ++= coreDependencies
   )
 
@@ -155,6 +156,6 @@ lazy val fs2 = project
   .settings(crossBuildSettings)
   .settings(releaseSettings)
   .settings(
-    name := "log-effect-fs2",
+    name                := "log-effect-fs2",
     libraryDependencies ++= fs2Dependencies
   )

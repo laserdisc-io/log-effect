@@ -1,8 +1,8 @@
-import java.io.{ByteArrayOutputStream, PrintStream}
+import java.io.{ ByteArrayOutputStream, PrintStream }
 
 import cats.effect.IO
 import log.effect.LogWriter.consoleLog
-import org.scalatest.{Matchers, WordSpecLike}
+import org.scalatest.{ Matchers, WordSpecLike }
 
 final class ConsoleLogWriterTest extends WordSpecLike with Matchers {
 
@@ -21,66 +21,76 @@ final class ConsoleLogWriterTest extends WordSpecLike with Matchers {
     "print the expected trace to the console" in {
 
       val out = capturedConsoleOutOf(
-        consoleLog[IO].flatMap(
-          _.trace("test message")
-        ).unsafeRunSync()
+        consoleLog[IO]
+          .flatMap(
+            _.trace("test message")
+          )
+          .unsafeRunSync()
       ).unsafeRunSync()
 
       info(out.trim)
-      out should startWith ("[trace] - [")
-      out should endWith ("ScalaTest-running-ConsoleLogWriterTest] test message\n")
+      out should startWith("[trace] - [")
+      out should endWith("ScalaTest-running-ConsoleLogWriterTest] test message\n")
     }
 
     "print the expected info to the console" in {
 
       val out = capturedConsoleOutOf(
-        consoleLog[IO].flatMap(
-          _.info("test message")
-        ).unsafeRunSync()
+        consoleLog[IO]
+          .flatMap(
+            _.info("test message")
+          )
+          .unsafeRunSync()
       ).unsafeRunSync()
 
       info(out.trim)
-      out should startWith ("[info] - [")
-      out should endWith ("ScalaTest-running-ConsoleLogWriterTest] test message\n")
+      out should startWith("[info] - [")
+      out should endWith("ScalaTest-running-ConsoleLogWriterTest] test message\n")
     }
 
     "print the expected debug to the console" in {
 
       val out = capturedConsoleOutOf(
-        consoleLog[IO].flatMap(
-          _.debug("test message")
-        ).unsafeRunSync()
+        consoleLog[IO]
+          .flatMap(
+            _.debug("test message")
+          )
+          .unsafeRunSync()
       ).unsafeRunSync()
 
       info(out.trim)
-      out should startWith ("[debug] - [")
-      out should endWith ("ScalaTest-running-ConsoleLogWriterTest] test message\n")
+      out should startWith("[debug] - [")
+      out should endWith("ScalaTest-running-ConsoleLogWriterTest] test message\n")
     }
 
     "print the expected error to the console" in {
 
       val out = capturedConsoleOutOf(
-        consoleLog[IO].flatMap(
-          _.error("test message")
-        ).unsafeRunSync()
+        consoleLog[IO]
+          .flatMap(
+            _.error("test message")
+          )
+          .unsafeRunSync()
       ).unsafeRunSync()
 
       info(out.trim)
-      out should startWith ("[error] - [")
-      out should endWith ("ScalaTest-running-ConsoleLogWriterTest] test message\n")
+      out should startWith("[error] - [")
+      out should endWith("ScalaTest-running-ConsoleLogWriterTest] test message\n")
     }
 
     "print the expected warn to the console" in {
 
       val out = capturedConsoleOutOf(
-        consoleLog[IO].flatMap(
-          _.warn("test message")
-        ).unsafeRunSync()
+        consoleLog[IO]
+          .flatMap(
+            _.warn("test message")
+          )
+          .unsafeRunSync()
       ).unsafeRunSync()
 
       info(out.trim)
-      out should startWith ("[warn] - [")
-      out should endWith ("ScalaTest-running-ConsoleLogWriterTest] test message\n")
+      out should startWith("[warn] - [")
+      out should endWith("ScalaTest-running-ConsoleLogWriterTest] test message\n")
     }
   }
 
@@ -89,15 +99,19 @@ final class ConsoleLogWriterTest extends WordSpecLike with Matchers {
     "print the expected error message and the exception to the console" in {
 
       val out = capturedConsoleOutOf(
-        consoleLog[IO].flatMap(
-          _.error("I have an error message", new Throwable("oh! there's also an exception"))
-        ).unsafeRunSync()
+        consoleLog[IO]
+          .flatMap(
+            _.error("I have an error message", new Throwable("oh! there's also an exception"))
+          )
+          .unsafeRunSync()
       ).unsafeRunSync()
 
       info(out.trim)
-      out should startWith ("[error] - [")
-      out should include ("ScalaTest-running-ConsoleLogWriterTest] I have an error message\n")
-      out should include ("Failed with exception java.lang.Throwable: oh! there's also an exception\n")
+      out should startWith("[error] - [")
+      out should include("ScalaTest-running-ConsoleLogWriterTest] I have an error message\n")
+      out should include(
+        "Failed with exception java.lang.Throwable: oh! there's also an exception\n"
+      )
     }
   }
 }
