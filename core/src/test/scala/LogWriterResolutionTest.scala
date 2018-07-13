@@ -1,4 +1,4 @@
-import org.scalatest.{Matchers, WordSpecLike}
+import org.scalatest.{ Matchers, WordSpecLike }
 
 final class LogWriterResolutionTest extends WordSpecLike with Matchers {
 

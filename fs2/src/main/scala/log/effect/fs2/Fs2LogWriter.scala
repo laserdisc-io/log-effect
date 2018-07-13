@@ -1,12 +1,12 @@
 package log.effect.fs2
 
-import java.util.{logging => jul}
+import java.util.{ logging => jul }
 
 import cats.effect.Sync
 import fs2.Stream
 import log.effect.LogWriter
 import log.effect.LogWriter._
-import org.{log4s => l4s}
+import org.{ log4s => l4s }
 
 object Fs2LogWriter {
 
@@ -19,6 +19,6 @@ object Fs2LogWriter {
   def julLogStream[F[_]](implicit F: Sync[F]): Stream[F, LogWriter[F]] =
     Stream eval { julLog(F.delay(jul.Logger.getGlobal)) }
 
-  def consoleLogStream[F[_] : Sync]: Stream[F, LogWriter[F]] =
+  def consoleLogStream[F[_]: Sync]: Stream[F, LogWriter[F]] =
     Stream eval { consoleLog }
 }
