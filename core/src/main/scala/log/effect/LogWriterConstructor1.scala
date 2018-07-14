@@ -20,9 +20,8 @@ object LogWriterConstructor1 extends LogWriterConstructor1Instances {
   @inline final def apply[F[_]]: LogWriterConstructor1Partially[F] =
     new LogWriterConstructor1Partially()
 
-  private[effect] type AUX[T, F[_], LWT] = LogWriterConstructor1[T, F] {
-    type LogWriterType = LWT
-  }
+  private[effect] type AUX[T, F[_], LWT] =
+    LogWriterConstructor1[T, F] { type LogWriterType = LWT }
 
   final private[effect] class LogWriterConstructor1Partially[F[_]](private val d: Boolean = true)
       extends AnyVal {
