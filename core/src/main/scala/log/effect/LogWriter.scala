@@ -31,6 +31,11 @@ object LogWriter extends LogWriterSyntax with LogWriterAliasingSyntax {
     constructor()
   }
 
+  def noOpLog[F[_]](implicit F: Sync[F]): F[LogWriter[F]] = {
+    val constructor = LogWriterConstructor0[F](NoOp)
+    constructor()
+  }
+
   final case object Log4s
   final case object Jul
   final case object Console

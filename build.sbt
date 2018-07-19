@@ -110,8 +110,8 @@ lazy val releaseSettings: Seq[Def.Setting[_]] = Seq(
     publishArtifacts,
     setNextVersion,
     commitNextVersion,
-    pushChanges,
-    releaseStepCommand("sonatypeRelease")
+    releaseStepCommand("sonatypeRelease"),
+    pushChanges
   ),
   releaseCrossBuild             := true,
   publishMavenStyle             := true,
