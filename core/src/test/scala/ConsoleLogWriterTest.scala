@@ -22,9 +22,7 @@ final class ConsoleLogWriterTest extends WordSpecLike with Matchers {
 
       val out = capturedConsoleOutOf(
         consoleLog[IO]
-          .flatMap(
-            _.trace("test message")
-          )
+          .trace("test message")
           .unsafeRunSync()
       ).unsafeRunSync()
 
@@ -37,9 +35,7 @@ final class ConsoleLogWriterTest extends WordSpecLike with Matchers {
 
       val out = capturedConsoleOutOf(
         consoleLog[IO]
-          .flatMap(
-            _.info("test message")
-          )
+          .info("test message")
           .unsafeRunSync()
       ).unsafeRunSync()
 
@@ -52,9 +48,7 @@ final class ConsoleLogWriterTest extends WordSpecLike with Matchers {
 
       val out = capturedConsoleOutOf(
         consoleLog[IO]
-          .flatMap(
-            _.debug("test message")
-          )
+          .debug("test message")
           .unsafeRunSync()
       ).unsafeRunSync()
 
@@ -67,9 +61,7 @@ final class ConsoleLogWriterTest extends WordSpecLike with Matchers {
 
       val out = capturedConsoleOutOf(
         consoleLog[IO]
-          .flatMap(
-            _.error("test message")
-          )
+          .error("test message")
           .unsafeRunSync()
       ).unsafeRunSync()
 
@@ -82,9 +74,7 @@ final class ConsoleLogWriterTest extends WordSpecLike with Matchers {
 
       val out = capturedConsoleOutOf(
         consoleLog[IO]
-          .flatMap(
-            _.warn("test message")
-          )
+          .warn("test message")
           .unsafeRunSync()
       ).unsafeRunSync()
 
@@ -100,9 +90,7 @@ final class ConsoleLogWriterTest extends WordSpecLike with Matchers {
 
       val out = capturedConsoleOutOf(
         consoleLog[IO]
-          .flatMap(
-            _.error("I have an error message", new Throwable("oh! there's also an exception"))
-          )
+          .error("I have an error message", new Throwable("oh! there's also an exception"))
           .unsafeRunSync()
       ).unsafeRunSync()
 

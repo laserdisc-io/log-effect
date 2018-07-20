@@ -2,8 +2,8 @@ package log.effect
 
 import java.util.{ logging => jul }
 
-import cats.Show
 import cats.effect.Sync
+import cats.{ Applicative, Show }
 import com.github.ghik.silencer.silent
 import log.effect.LogWriter.{ FailureMessage, LogLevel }
 import org.{ log4s => l4s }
@@ -26,12 +26,12 @@ object LogWriter extends LogWriterSyntax with LogWriterAliasingSyntax {
     constructor(fa)
   }
 
-  def consoleLog[F[_]](implicit F: Sync[F]): F[LogWriter[F]] = {
+  def consoleLog[F[_]: Sync]: LogWriter[F] = {
     val constructor = LogWriterConstructor0[F](Console)
     constructor()
   }
 
-  def noOpLog[F[_]](implicit F: Sync[F]): F[LogWriter[F]] = {
+  def noOpLog[F[_]: Applicative]: LogWriter[F] = {
     val constructor = LogWriterConstructor0[F](NoOp)
     constructor()
   }

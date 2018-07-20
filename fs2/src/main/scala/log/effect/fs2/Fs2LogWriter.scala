@@ -20,5 +20,8 @@ object Fs2LogWriter {
     Stream eval { julLog(F.delay(jul.Logger.getGlobal)) }
 
   def consoleLogStream[F[_]: Sync]: Stream[F, LogWriter[F]] =
-    Stream eval { consoleLog }
+    Stream(consoleLog)
+
+  def noOpLogStream[F[_]: Sync]: Stream[F, LogWriter[F]] =
+    Stream(noOpLog)
 }
