@@ -1,12 +1,12 @@
 package log.effect
 
-import java.util.{ logging => jul }
+import java.util.{logging => jul}
 
 import cats.effect.Sync
-import cats.{ Applicative, Show }
+import cats.{Applicative, Show}
 import com.github.ghik.silencer.silent
-import log.effect.LogWriter.{ FailureMessage, LogLevel }
-import org.{ log4s => l4s }
+import log.effect.LogWriter.{FailureMessage, LogLevel}
+import org.{log4s => l4s}
 
 import scala.language.implicitConversions
 
@@ -19,6 +19,16 @@ object LogWriter extends LogWriterSyntax with LogWriterAliasingSyntax {
   def log4sLog[F[_]: Sync](fa: F[l4s.Logger]): F[LogWriter[F]] = {
     val constructor = LogWriterConstructor1[F](Log4s)
     constructor(fa)
+  }
+
+  def log4sLog[F[_]](c: Class[_])(implicit F: Sync[F]): F[LogWriter[F]] = {
+    val constructor = LogWriterConstructor1[F](Log4s)
+    constructor(F.delay(l4s.getLogger(c)))
+  }
+
+  def log4sLog[F[_]](n: String)(implicit F: Sync[F]): F[LogWriter[F]] = {
+    val constructor = LogWriterConstructor1[F](Log4s)
+    constructor(F.delay(l4s.getLogger(n)))
   }
 
   def julLog[F[_]: Sync](fa: F[jul.Logger]): F[LogWriter[F]] = {
