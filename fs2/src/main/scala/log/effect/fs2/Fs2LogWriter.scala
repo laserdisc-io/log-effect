@@ -1,6 +1,6 @@
 package log.effect.fs2
 
-import java.util.{logging => jul}
+import java.util.{ logging => jul }
 
 import cats.effect.Sync
 import fs2.Stream

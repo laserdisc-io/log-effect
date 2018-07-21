@@ -1,12 +1,12 @@
 package log.effect
 
-import java.util.{logging => jul}
+import java.util.{ logging => jul }
 
 import cats.effect.Sync
-import cats.{Applicative, Show}
+import cats.{ Applicative, Show }
 import com.github.ghik.silencer.silent
-import log.effect.LogWriter.{FailureMessage, LogLevel}
-import org.{log4s => l4s}
+import log.effect.LogWriter.{ FailureMessage, LogLevel }
+import org.{ log4s => l4s }
 
 import scala.language.implicitConversions
 
