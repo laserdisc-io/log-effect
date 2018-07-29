@@ -154,7 +154,7 @@ lazy val root = project
       "checkFormat",
       ";scalafmtCheck;test:scalafmtCheck;scalafmtSbtCheck"
     ),
-    addCommandAlias("ciFullBuild", ";checkFormat;clean;test"),
+    addCommandAlias("fullCiBuild", ";checkFormat;clean;test"),
   )
 
 lazy val core = project

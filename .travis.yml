@@ -10,7 +10,7 @@ jdk:
   - oraclejdk8
 
 script:
-   - sbt ++$TRAVIS_SCALA_VERSION ciFullBuild
+   - sbt ++$TRAVIS_SCALA_VERSION fullCiBuild
 
 cache:
   directories:
