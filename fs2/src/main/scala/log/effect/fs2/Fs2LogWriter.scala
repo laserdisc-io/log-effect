@@ -1,10 +1,10 @@
-package log.effect.fs2
+package log.effect
+package fs2
 
 import java.util.{ logging => jul }
 
+import _root_.fs2.Stream
 import cats.effect.Sync
-import fs2.Stream
-import log.effect.LogWriter
 import log.effect.LogWriter._
 
 object Fs2LogWriter {

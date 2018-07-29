@@ -1,7 +1,8 @@
-package log.effect.fs2.syntax
+package log.effect
+package fs2
+package syntax
 
-import fs2.Stream
-import log.effect.LogWriter
+import _root_.fs2.Stream
 
 import scala.language.implicitConversions
 
