@@ -9,8 +9,24 @@
 [![Join the chat at https://gitter.im/laserdisc-io/laserdisc](https://badges.gitter.im/laserdisc-io/laserdisc.svg)](https://gitter.im/laserdisc-io/laserdisc?utm_source=badge&utm_medium=badge&utm_campaign=pr-badge&utm_content=badge)
 [![License: MIT](https://img.shields.io/badge/License-MIT-blue.svg)](https://raw.githubusercontent.com/laserdisc-io/log-effect/master/LICENSE)
 
+## Start
+Log effect is available for Scala 2.11.x and 2.12.x. To add it define the dependency in the sbt build. If you need the stream based constructors and syntax you need to depend on the `fs2` lib
+```scala
+libraryDependencies += "io.laserdisc" %% "log-effect-fs2" % <latest-fs2-version>
+```
+If the constructors and the syntax in the effect monad are enough just depend on the core 
+```scala
+libraryDependencies += "io.laserdisc" %% "log-effect-core" % <latest-core-version>
+```
+for the latest versions available please refer to the badges below the title.
 
 ## Dependencies
+
+|                 |       | Fs2    | Log Effect Core   |
+| --------------- | -----:| ------:| -----------------:|
+| log-effect-fs2  | 0.1.9 | 0.10.5 | 0.1.9             |
+
+<br>
 
 |                 |       | Cats  | Cats Effect | Log4s  |
 | --------------- | -----:| -----:| -----------:| ------:|
@@ -18,9 +34,55 @@
 
 <br>
 
-|                 |       | Fs2    | Log Effect Core   |
-| --------------- | -----:| ------:| -----------------:|
-| log-effect-fs2  | 0.1.9 | 0.10.5 | 0.1.9             |
+## Examples
+
+### Submit Logs
+
+In a monadic sequence of computations
+```scala
+import cats.syntax.functor._
+import cats.syntax.flatMap._
+
+def process[F[_]](implicit F: Sync[F], log: LogWriter[F]): F[(Int, Int)] =
+  for {
+    _ <- log.trace("We start")
+    a <- F.delay(10)
+    _ <- log.trace("Keep going")
+    b <- F.delay(20)
+    _ <- log.trace("We reached this point")
+    _ <- log.info(s"Process complete: ${(a, b)}")
+  } yield (a, b)
+```
+
+or in a streaming environment using the `LogWriter`'s syntax
+```scala
+import cats.syntax.apply._
+
+implicit final val SC: Scheduler = ???
+implicit final val EC: ExecutionContext = ???
+implicit final val CG: AsynchronousChannelGroup = ???
+
+def redisCache[F[_]: Effect](address: RedisAddress)(implicit log: LogWriter[F]): Stream[F, RedisClient[F]] =
+  RedisClient[F](Set(address)) evalMap (
+    client => log.info(s"Laserdisc Redis client for $address") *> Effect[F].pure(client)
+  )
+```
+
+or still in streams through the mtl style syntax of the singleton type and the `write` method
+```scala
+import cats.syntax.apply._
+import cats.instances.string._
+import LogWriter.Info
+
+implicit final val SC: Scheduler = ???
+implicit final val EC: ExecutionContext = ???
+implicit final val CG: AsynchronousChannelGroup = ???
+
+def redisClient[F[_]: Effect: LogWriter](address: RedisAddress): Stream[F, RedisClient[F]] =
+  RedisClient[F](Set(address)) evalMap (
+    client => LogWriter.write(Info, s"Laserdisc Redis client for $address") *> Effect[F].pure(client)
+  )
+```
 
 <br>
 
