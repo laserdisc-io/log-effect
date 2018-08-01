@@ -88,7 +88,7 @@ def process[F[_]](implicit F: Sync[F], log: LogWriter[F]): F[(Int, Int)] =
   } yield (a, b)
 ```
 
-or in a streaming environment using the `LogWriter`'s syntax
+or in a streaming environment using the `LogWriter`'s or the `fs2` streams' syntaxes
 ```scala
 import cats.syntax.apply._
 
@@ -96,10 +96,22 @@ implicit final val SC: Scheduler = ???
 implicit final val EC: ExecutionContext = ???
 implicit final val CG: AsynchronousChannelGroup = ???
 
-def redisCache[F[_]: Effect](address: RedisAddress)(implicit log: LogWriter[F]): Stream[F, RedisClient[F]] =
+def redisClient[F[_]: Effect](address: RedisAddress)(implicit log: LogWriter[F]): Stream[F, RedisClient[F]] =
   RedisClient[F](Set(address)) evalMap (
     client => log.info(s"Laserdisc Redis client for $address") *> Effect[F].pure(client)
   )
+```
+```scala
+implicit final val SC: Scheduler = ???
+implicit final val EC: ExecutionContext = ???
+implicit final val CG: AsynchronousChannelGroup = ???
+
+def redisCache[F[_]: Effect](address: RedisAddress)(implicit log: LogWriter[F]): Stream[F, RedisClient[F]] =
+  for {
+    _      <- log.infoS(s"About to connect a Laserdisc Redis client to $address")
+    client <- RedisClient[F](Set(address))
+    _      <- log.infoS("The connection went fine. Talking to the server")
+  } yield client
 ```
 
 or still in streams through the mtl style syntax of the singleton type and the `write` method
