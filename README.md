@@ -114,7 +114,7 @@ def redisCache[F[_]: Effect](address: RedisAddress)(implicit log: LogWriter[F]):
   } yield client
 ```
 
-or still in streams through the mtl style syntax of the singleton type and the `write` method
+or still in streams through the mtl style syntax for the singleton type and the `write` method
 ```scala
 import cats.syntax.apply._
 import cats.instances.string._
