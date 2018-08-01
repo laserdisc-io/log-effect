@@ -36,6 +36,40 @@ for the latest versions available please refer to the badges below the title.
 
 ## Examples
 
+### Get Instances
+
+To get an instance of `LogWriter` the following constructors are availble in the companion object
+```scala
+import log.effect.LogWriter._
+
+def log4sLog[F[_]: Sync](fa: F[l4s.Logger]): F[LogWriter[F]]
+
+def log4sLog[F[_]: Sync](c: Class[_]): F[LogWriter[F]]
+
+def log4sLog[F[_]: Sync](n: String): F[LogWriter[F]]
+
+def julLog[F[_]: Sync](fa: F[jul.Logger]): F[LogWriter[F]]
+
+def consoleLog[F[_]: Sync]: LogWriter[F]
+
+def noOpLog[F[_]: Applicative]: LogWriter[F]
+```
+
+and the following for constructing in a streaming application
+```scala
+import log.effect.fs2.Fs2LogWriter._
+
+def log4sLogStream[F[_]: Sync](c: Class[_]): Stream[F, LogWriter[F]]
+
+def log4sLogStream[F[_]: Sync](n: String): Stream[F, LogWriter[F]]
+
+def julLogStream[F[_]: Sync]: Stream[F, LogWriter[F]]
+
+def consoleLogStream[F[_]: Sync]: Stream[F, LogWriter[F]]
+
+def noOpLogStream[F[_]: Sync]: Stream[F, LogWriter[F]]
+```
+
 ### Submit Logs
 
 In a monadic sequence of computations
