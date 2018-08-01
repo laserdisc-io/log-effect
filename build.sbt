@@ -52,7 +52,7 @@ lazy val versionOf = new {
   val scalaCheck    = "1.14.0"
   val scalaTest     = "3.0.5"
   val kindProjector = "0.9.7"
-  val silencer      = "1.0"
+  val silencer      = "1.1"
 }
 
 lazy val sharedDependencies = Seq(
