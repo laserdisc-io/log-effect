@@ -22,15 +22,15 @@ for the latest versions available please refer to the badges below the title.
 
 ## Dependencies
 
-|                 |       | Fs2    | Log Effect Core   |
-| --------------- | -----:| ------:| -----------------:|
-| log-effect-fs2  | 0.1.9 | 0.10.5 | 0.1.9             |
+|                 |        | Fs2    | Log Effect Core   |
+| --------------- | ------:| ------:| -----------------:|
+| log-effect-fs2  | 0.1.10 | 0.10.5 | 0.1.10             |
 
 <br>
 
-|                 |       | Cats  | Cats Effect | Log4s  |
-| --------------- | -----:| -----:| -----------:| ------:|
-| log-effect-core | 0.1.9 | 1.1.0 | 0.10.1      | 1.6.1  |
+|                 |        | Cats  | Cats Effect | Log4s  |
+| --------------- | ------:| -----:| -----------:| ------:|
+| log-effect-core | 0.1.10 | 1.1.0 | 0.10.1      | 1.6.1  |
 
 <br>
 
