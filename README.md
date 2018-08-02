@@ -114,20 +114,33 @@ def redisCache[F[_]: Effect](address: RedisAddress)(implicit log: LogWriter[F]):
   } yield client
 ```
 
-or still in streams through the mtl style syntax for the singleton type and the `write` method
+or still in streams through the mtl style syntax for the singleton type of the companion and the `write` method (notice the `write` method called on the `LogWriter` singleton companion object)
 ```scala
+import cats.Show
 import cats.syntax.apply._
 import cats.instances.string._
-import LogWriter.Info
+import LogWriter.Debug
+import laserdisc.fs2.{RedisAddress, RedisClient}
 
 implicit final val SC: Scheduler = ???
 implicit final val EC: ExecutionContext = ???
 implicit final val CG: AsynchronousChannelGroup = ???
 
-def redisClient[F[_]: Effect: LogWriter](address: RedisAddress): Stream[F, RedisClient[F]] =
+def redisClient[F[_]: Effect: LogWriter](address: RedisAddress): Stream[F, RedisClient[F]] = {
+
+  // Show instances are needed for every type
+  // that needs to be logged
+  implicit val addressShow: Show[RedisAddress] = ???
+  implicit val clientShow: Show[RedisClient[F]] = ???
+
   RedisClient[F](Set(address)) evalMap (
-    client => LogWriter.write(Info, s"Laserdisc Redis client for $address") *> Effect[F].pure(client)
+    client =>
+      LogWriter.write(Debug, "Connecting") *>
+      LogWriter.write(Debug, address) *>
+      LogWriter.write(Debug, client) *>
+      Effect[F].pure(client)
   )
+}
 ```
 
 <br>
