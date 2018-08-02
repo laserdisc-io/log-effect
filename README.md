@@ -91,6 +91,7 @@ def process[F[_]](implicit F: Sync[F], log: LogWriter[F]): F[(Int, Int)] =
 or in a streaming environment using the `LogWriter`'s or the `fs2` streams' syntaxes
 ```scala
 import cats.syntax.apply._
+import laserdisc.fs2.{RedisAddress, RedisClient}
 
 implicit final val SC: Scheduler = ???
 implicit final val EC: ExecutionContext = ???
@@ -102,6 +103,8 @@ def redisClient[F[_]: Effect](address: RedisAddress)(implicit log: LogWriter[F])
   )
 ```
 ```scala
+import laserdisc.fs2.{RedisAddress, RedisClient}
+
 implicit final val SC: Scheduler = ???
 implicit final val EC: ExecutionContext = ???
 implicit final val CG: AsynchronousChannelGroup = ???
