@@ -7,7 +7,7 @@ import cats.effect.Sync
 import cats.syntax.functor._
 import cats.syntax.show._
 import com.github.ghik.silencer.silent
-import log.effect.LogWriter.{ FailureMessage, Jul, Log4s, LogLevel }
+import log.effect.LogWriter.{ Failure, Jul, Log4s, LogLevel }
 import org.{ log4s => l4s }
 
 sealed trait LogWriterConstructor1[T, F[_]] {
@@ -58,8 +58,8 @@ sealed private[effect] trait LogWriterConstructor1Instances {
 
               F.delay {
                 a match {
-                  case FailureMessage(msg, th) => l4sLogger(l4sLevel)(th)(msg)
-                  case _                       => l4sLogger(l4sLevel)(a.show)
+                  case Failure(msg, th) => l4sLogger(l4sLevel)(th)(msg)
+                  case _                => l4sLogger(l4sLevel)(a.show)
                 }
               }
             }
@@ -91,7 +91,7 @@ sealed private[effect] trait LogWriterConstructor1Instances {
                 if (julLogger.isLoggable(jdkLevel)) {
                   julLogger.log(
                     a match {
-                      case FailureMessage(msg, th) =>
+                      case Failure(msg, th) =>
                         val r = new jul.LogRecord(jdkLevel, msg)
                         r.setThrown(th)
                         r

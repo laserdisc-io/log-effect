@@ -5,7 +5,7 @@ import java.util.{ logging => jul }
 import cats.effect.Sync
 import cats.{ Applicative, Show }
 import com.github.ghik.silencer.silent
-import log.effect.LogWriter.{ FailureMessage, LogLevel }
+import log.effect.LogWriter.{ Failure, LogLevel }
 import org.{ log4s => l4s }
 
 import scala.language.implicitConversions
@@ -104,19 +104,19 @@ object LogWriter extends LogWriterSyntax with LogWriterAliasingSyntax {
       }
   }
 
-  final private[effect] class FailureMessage(val msg: String, val th: Throwable)
+  final private[effect] class Failure(val msg: String, val th: Throwable)
 
-  private[effect] object FailureMessage {
+  private[effect] object Failure {
 
-    def apply(msg: String, th: Throwable): FailureMessage =
-      new FailureMessage(msg, th)
+    def apply(msg: String, th: Throwable): Failure =
+      new Failure(msg, th)
 
-    def unapply(arg: FailureMessage): Option[(String, Throwable)] =
+    def unapply(arg: Failure): Option[(String, Throwable)] =
       Some((arg.msg, arg.th))
 
-    implicit def errorMessageShow: Show[FailureMessage] =
-      new Show[FailureMessage] {
-        def show(t: FailureMessage): String =
+    implicit def errorMessageShow: Show[Failure] =
+      new Show[Failure] {
+        def show(t: Failure): String =
           s"""${t.msg}
            |  Failed with exception ${t.th}
            |  Stack trace:
@@ -153,29 +153,29 @@ final private[effect] class LogWriterOps[F[_]](private val aLogger: LogWriter[F]
     aLogger.write(LogWriter.Trace, msg)
 
   @inline def trace(msg: =>String, th: =>Throwable): F[Unit] =
-    aLogger.write(LogWriter.Trace, FailureMessage(msg, th))
+    aLogger.write(LogWriter.Trace, Failure(msg, th))
 
   @inline def debug(msg: =>String): F[Unit] =
     aLogger.write(LogWriter.Debug, msg)
 
   @inline def debug(msg: =>String, th: =>Throwable): F[Unit] =
-    aLogger.write(LogWriter.Debug, FailureMessage(msg, th))
+    aLogger.write(LogWriter.Debug, Failure(msg, th))
 
   @inline def info(msg: =>String): F[Unit] =
     aLogger.write(LogWriter.Info, msg)
 
   @inline def info(msg: =>String, th: =>Throwable): F[Unit] =
-    aLogger.write(LogWriter.Info, FailureMessage(msg, th))
+    aLogger.write(LogWriter.Info, Failure(msg, th))
 
   @inline def error(msg: =>String): F[Unit] =
     aLogger.write(LogWriter.Error, msg)
 
   @inline def error(msg: =>String, th: =>Throwable): F[Unit] =
-    aLogger.write(LogWriter.Error, FailureMessage(msg, th))
+    aLogger.write(LogWriter.Error, Failure(msg, th))
 
   @inline def warn(msg: =>String): F[Unit] =
     aLogger.write(LogWriter.Warn, msg)
 
   @inline def warn(msg: =>String, th: =>Throwable): F[Unit] =
-    aLogger.write(LogWriter.Warn, FailureMessage(msg, th))
+    aLogger.write(LogWriter.Warn, Failure(msg, th))
 }
