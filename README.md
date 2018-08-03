@@ -30,7 +30,7 @@ for the latest versions available please refer to the badges below the title.
 
 |                          | Cats  | Cats Effect | Log4s  |
 | ------------------------:| -----:| -----------:| ------:|
-| [![Maven Central](https://img.shields.io/maven-central/v/io.laserdisc/log-effect-core_2.12.svg?label=log-effect-core&colorB=2282c3)](https://maven-badges.herokuapp.com/maven-central/io.laserdisc/log-effect-core_2.12) | 1.1.0 | 0.10.1      | 1.6.1  |
+| [![Maven Central](https://img.shields.io/maven-central/v/io.laserdisc/log-effect-core_2.12.svg?label=log-effect-core&colorB=2282c3)](https://maven-badges.herokuapp.com/maven-central/io.laserdisc/log-effect-core_2.12) | 1.2.0 | 0.10.1      | 1.6.1  |
 
 <br>
 
