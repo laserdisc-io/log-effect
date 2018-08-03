@@ -1,5 +1,3 @@
-package log.effect
-
 import org.scalatest.{ Matchers, WordSpecLike }
 
 final class LogWriterSyntaxResolutionTest extends WordSpecLike with Matchers {
@@ -37,9 +35,22 @@ final class LogWriterSyntaxResolutionTest extends WordSpecLike with Matchers {
 
       """
         |import log.effect.LogWriter
+        |import log.effect.LogWriter.Trace
         |import cats.instances.string.catsStdShowForString
         |
-        |def f[F[_]: LogWriter] = LogWriter.write(LogWriter.Trace, "test")
+        |def f[F[_]: LogWriter] = LogWriter.write(Trace, "test")
+      """.stripMargin should compile
+    }
+
+    "be inferred allowing a boilerplate free mtl-style syntax for errors" in {
+
+      """
+        |import log.effect.LogWriter
+        |import log.effect.LogWriter.Error
+        |import log.effect.LogWriter.Failure
+        |import cats.instances.string.catsStdShowForString
+        |
+        |def f[F[_]: LogWriter] = LogWriter.write(Error, Failure("test", new Exception("test exception")))
       """.stripMargin should compile
     }
   }

@@ -1,5 +1,3 @@
-package log.effect
-
 import java.io.{ ByteArrayOutputStream, PrintStream }
 
 import cats.effect.IO

@@ -1,5 +1,3 @@
-package log.effect
-
 import org.scalatest.{ Matchers, WordSpecLike }
 
 final class LogWriterResolutionTest extends WordSpecLike with Matchers {

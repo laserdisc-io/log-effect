@@ -74,39 +74,39 @@ object LogWriter extends LogWriterSyntax with LogWriterAliasingSyntax {
     @silent private def showFor[A](a: A)(implicit ev: Show[A]): Show[A] = ev
   }
   final case object Trace extends LogLevel {
-    implicit private[effect] val traceShow: Show[Trace.type] =
+    implicit val traceShow: Show[Trace.type] =
       new Show[Trace.type] {
         def show(t: Trace.type): String = "TRACE"
       }
   }
   final case object Debug extends LogLevel {
-    implicit private[effect] val debugShow: Show[Debug.type] =
+    implicit val debugShow: Show[Debug.type] =
       new Show[Debug.type] {
         def show(t: Debug.type): String = "DEBUG"
       }
   }
   final case object Info extends LogLevel {
-    implicit private[effect] val infoShow: Show[Info.type] =
+    implicit val infoShow: Show[Info.type] =
       new Show[Info.type] {
         def show(t: Info.type): String = "INFO"
       }
   }
   final case object Warn extends LogLevel {
-    implicit private[effect] val warnShow: Show[Warn.type] =
+    implicit val warnShow: Show[Warn.type] =
       new Show[Warn.type] {
         def show(t: Warn.type): String = "WARN"
       }
   }
   final case object Error extends LogLevel {
-    implicit private[effect] val errorShow: Show[Error.type] =
+    implicit val errorShow: Show[Error.type] =
       new Show[Error.type] {
         def show(t: Error.type): String = "ERROR"
       }
   }
 
-  final private[effect] class Failure(val msg: String, val th: Throwable)
+  final class Failure(val msg: String, val th: Throwable)
 
-  private[effect] object Failure {
+  object Failure {
 
     def apply(msg: String, th: Throwable): Failure =
       new Failure(msg, th)
@@ -114,7 +114,7 @@ object LogWriter extends LogWriterSyntax with LogWriterAliasingSyntax {
     def unapply(arg: Failure): Option[(String, Throwable)] =
       Some((arg.msg, arg.th))
 
-    implicit def errorMessageShow: Show[Failure] =
+    implicit def failureShow: Show[Failure] =
       new Show[Failure] {
         def show(t: Failure): String =
           s"""${t.msg}
