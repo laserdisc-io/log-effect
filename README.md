@@ -22,15 +22,15 @@ for the latest versions available please refer to the badges below the title.
 
 ## Dependencies
 
-|                 |        | Fs2    | Log Effect Core   |
-| --------------- | ------:| ------:| -----------------:|
-| log-effect-fs2  | 0.1.11 | 0.10.5 | 0.1.11            |
+|                          | Fs2    | Log Effect Core   |
+| ------------------------:| ------:| -----------------:|
+| [![Maven Central](https://img.shields.io/maven-central/v/io.laserdisc/log-effect-fs2_2.12.svg?label=log-effect-fs2&colorB=2282c3)](https://maven-badges.herokuapp.com/maven-central/io.laserdisc/log-effect-fs2_2.12) | 0.10.5 | [![Maven Central](https://img.shields.io/maven-central/v/io.laserdisc/log-effect-core_2.12.svg?label=%20&colorB=2282c3)](https://maven-badges.herokuapp.com/maven-central/io.laserdisc/log-effect-core_2.12) |
 
 <br>
 
-|                 |        | Cats  | Cats Effect | Log4s  |
-| --------------- | ------:| -----:| -----------:| ------:|
-| log-effect-core | 0.1.11 | 1.1.0 | 0.10.1      | 1.6.1  |
+|                          | Cats  | Cats Effect | Log4s  |
+| ------------------------:| -----:| -----------:| ------:|
+| [![Maven Central](https://img.shields.io/maven-central/v/io.laserdisc/log-effect-core_2.12.svg?label=log-effect-core&colorB=2282c3)](https://maven-badges.herokuapp.com/maven-central/io.laserdisc/log-effect-core_2.12) | 1.1.0 | 0.10.1      | 1.6.1  |
 
 <br>
 
