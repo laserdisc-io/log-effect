@@ -4,7 +4,7 @@ import cats.effect.Sync
 import cats.syntax.show._
 import cats.{ Applicative, Show }
 import com.github.ghik.silencer.silent
-import log.effect.LogWriter.{ Console, NoOp }
+import log.effect.LogWriter.{ Console, LogLevel, NoOp }
 
 trait LogWriterConstructor0[T, F[_]] {
   def evaluation: LogWriter[F]
@@ -31,7 +31,7 @@ sealed private[effect] trait LogWriterConstructor0Instances {
     new LogWriterConstructor0[Console, F] {
       def evaluation: LogWriter[F] =
         new LogWriter[F] {
-          def write[A: Show](level: LogWriter.LogLevel, a: =>A): F[Unit] =
+          def write[A: Show, L <: LogLevel: Show](level: L, a: =>A): F[Unit] =
             F.delay {
               println(
                 s"[${level.show.toLowerCase}] - [${Thread.currentThread().getName}] ${a.show}"
@@ -44,8 +44,7 @@ sealed private[effect] trait LogWriterConstructor0Instances {
     new LogWriterConstructor0[NoOp, F] {
       def evaluation: LogWriter[F] =
         new LogWriter[F] {
-          def write[A: Show](level: LogWriter.LogLevel, a: =>A): F[Unit] =
-            F.unit
+          def write[A: Show, L <: LogLevel: Show](level: L, a: =>A): F[Unit] = F.unit
         }
     }
 }

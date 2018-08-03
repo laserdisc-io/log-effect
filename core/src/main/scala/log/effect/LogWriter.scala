@@ -11,7 +11,7 @@ import org.{ log4s => l4s }
 import scala.language.implicitConversions
 
 trait LogWriter[F[_]] {
-  def write[A: Show](level: LogWriter.LogLevel, a: =>A): F[Unit]
+  def write[A: Show, L <: LogLevel: Show](level: L, a: =>A): F[Unit]
 }
 
 object LogWriter extends LogWriterSyntax with LogWriterAliasingSyntax {
@@ -56,25 +56,51 @@ object LogWriter extends LogWriterSyntax with LogWriterAliasingSyntax {
   type Console = Console.type
   type NoOp    = NoOp.type
 
-  sealed trait LogLevel   extends Product with Serializable
-  final case object Trace extends LogLevel
-  final case object Debug extends LogLevel
-  final case object Info  extends LogLevel
-  final case object Error extends LogLevel
-  final case object Warn  extends LogLevel
-
+  sealed trait LogLevel extends Product with Serializable
   object LogLevel extends LogLevelSyntax {
 
     implicit private[effect] val logLevelShow: Show[LogLevel] =
       new Show[LogLevel] {
         def show(t: LogLevel): String =
           t match {
-            case LogWriter.Trace => "TRACE"
-            case LogWriter.Debug => "DEBUG"
-            case LogWriter.Info  => "INFO"
-            case LogWriter.Warn  => "WARN"
-            case LogWriter.Error => "ERROR"
+            case l @ Trace => showFor(l).show(l)
+            case l @ Debug => showFor(l).show(l)
+            case l @ Info  => showFor(l).show(l)
+            case l @ Warn  => showFor(l).show(l)
+            case l @ Error => showFor(l).show(l)
           }
+      }
+
+    @silent private def showFor[A](a: A)(implicit ev: Show[A]): Show[A] = ev
+  }
+  final case object Trace extends LogLevel {
+    implicit private[effect] val traceShow: Show[Trace.type] =
+      new Show[Trace.type] {
+        def show(t: Trace.type): String = "TRACE"
+      }
+  }
+  final case object Debug extends LogLevel {
+    implicit private[effect] val debugShow: Show[Debug.type] =
+      new Show[Debug.type] {
+        def show(t: Debug.type): String = "DEBUG"
+      }
+  }
+  final case object Info extends LogLevel {
+    implicit private[effect] val infoShow: Show[Info.type] =
+      new Show[Info.type] {
+        def show(t: Info.type): String = "INFO"
+      }
+  }
+  final case object Warn extends LogLevel {
+    implicit private[effect] val warnShow: Show[Warn.type] =
+      new Show[Warn.type] {
+        def show(t: Warn.type): String = "WARN"
+      }
+  }
+  final case object Error extends LogLevel {
+    implicit private[effect] val errorShow: Show[Error.type] =
+      new Show[Error.type] {
+        def show(t: Error.type): String = "ERROR"
       }
   }
 
@@ -92,9 +118,9 @@ object LogWriter extends LogWriterSyntax with LogWriterAliasingSyntax {
       new Show[FailureMessage] {
         def show(t: FailureMessage): String =
           s"""${t.msg}
-             |  Failed with exception ${t.th}
-             |  Stack trace:
-             |    ${t.th.getStackTrace.toList
+           |  Failed with exception ${t.th}
+           |  Stack trace:
+           |    ${t.th.getStackTrace.toList
                .mkString("\n|    ")}""".stripMargin
       }
   }

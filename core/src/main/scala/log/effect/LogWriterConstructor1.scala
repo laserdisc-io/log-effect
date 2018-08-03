@@ -7,7 +7,7 @@ import cats.effect.Sync
 import cats.syntax.functor._
 import cats.syntax.show._
 import com.github.ghik.silencer.silent
-import log.effect.LogWriter.{ FailureMessage, Jul, Log4s }
+import log.effect.LogWriter.{ FailureMessage, Jul, Log4s, LogLevel }
 import org.{ log4s => l4s }
 
 sealed trait LogWriterConstructor1[T, F[_]] {
@@ -46,7 +46,7 @@ sealed private[effect] trait LogWriterConstructor1Instances {
       def evaluation(g: F[l4s.Logger]): F[LogWriter[F]] =
         g map { l4sLogger =>
           new LogWriter[F] {
-            def write[A: Show](level: LogWriter.LogLevel, a: =>A): F[Unit] = {
+            def write[A: Show, L <: LogLevel: Show](level: L, a: =>A): F[Unit] = {
 
               val l4sLevel = level match {
                 case LogWriter.Trace => l4s.Trace
@@ -77,7 +77,7 @@ sealed private[effect] trait LogWriterConstructor1Instances {
       def evaluation(g: F[jul.Logger]): F[LogWriter[F]] =
         g map { julLogger =>
           new LogWriter[F] {
-            def write[A: Show](level: LogWriter.LogLevel, a: =>A): F[Unit] = {
+            def write[A: Show, L <: LogLevel: Show](level: L, a: =>A): F[Unit] = {
 
               val jdkLevel = level match {
                 case LogWriter.Trace => jul.Level.FINEST
