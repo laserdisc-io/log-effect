@@ -121,15 +121,18 @@ or through the mtl style syntax for the singleton type of the companion and the 
 ```scala
 import cats.Show
 import cats.syntax.apply._
+import cats.syntax.either._
 import cats.instances.string._
-import LogWriter.Debug
+import LogWriter.{Debug, Error, Failure}
 import laserdisc.fs2.{RedisAddress, RedisClient}
+
+type |[A, B] = Either[A, B]
 
 implicit final val SC: Scheduler = ???
 implicit final val EC: ExecutionContext = ???
 implicit final val CG: AsynchronousChannelGroup = ???
 
-def redisClient[F[_]: Effect: LogWriter](address: RedisAddress): Stream[F, RedisClient[F]] = {
+def redisClient[F[_]: Effect: LogWriter](address: RedisAddress): Stream[F, Unit | RedisClient[F]] = {
 
   // Show instances are needed for every type
   // that needs to be logged
@@ -141,7 +144,9 @@ def redisClient[F[_]: Effect: LogWriter](address: RedisAddress): Stream[F, Redis
       LogWriter.write(Debug, "Connecting") *>
       LogWriter.write(Debug, address) *>
       LogWriter.write(Debug, client) *>
-      Effect[F].pure(client)
+      Effect[F].pure(client.asRight)
+  ) handleErrorWith (
+    th => Stream.eval(LogWriter.write(Error, Failure("Ops, something didn't work", th))) map (_.asLeft)
   )
 }
 ```
