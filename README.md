@@ -132,7 +132,7 @@ implicit final val SC: Scheduler = ???
 implicit final val EC: ExecutionContext = ???
 implicit final val CG: AsynchronousChannelGroup = ???
 
-def redisClient[F[_]: Effect: LogWriter](address: RedisAddress): Stream[F, Unit | RedisClient[F]] = {
+def redisClient[F[_]: Effect: LogWriter](address: RedisAddress): Stream[F, Throwable | RedisClient[F]] = {
 
   // Show instances are needed for every type
   // that needs to be logged
@@ -146,7 +146,9 @@ def redisClient[F[_]: Effect: LogWriter](address: RedisAddress): Stream[F, Unit 
       LogWriter.write(Debug, client) *>
       Effect[F].pure(client.asRight)
   ) handleErrorWith (
-    th => Stream.eval(LogWriter.write(Error, Failure("Ops, something didn't work", th))) map (_.asLeft)
+    th => Stream.eval(
+      LogWriter.write(Error, Failure("Ops, something didn't work", th)) *> Effect[F].pure(th.asLeft)
+    )
   )
 }
 ```
