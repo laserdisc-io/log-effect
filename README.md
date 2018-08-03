@@ -24,13 +24,13 @@ for the latest versions available please refer to the badges below the title.
 
 |                 |        | Fs2    | Log Effect Core   |
 | --------------- | ------:| ------:| -----------------:|
-| log-effect-fs2  | 0.1.10 | 0.10.5 | 0.1.10             |
+| log-effect-fs2  | 0.1.11 | 0.10.5 | 0.1.11            |
 
 <br>
 
 |                 |        | Cats  | Cats Effect | Log4s  |
 | --------------- | ------:| -----:| -----------:| ------:|
-| log-effect-core | 0.1.10 | 1.1.0 | 0.10.1      | 1.6.1  |
+| log-effect-core | 0.1.11 | 1.1.0 | 0.10.1      | 1.6.1  |
 
 <br>
 
