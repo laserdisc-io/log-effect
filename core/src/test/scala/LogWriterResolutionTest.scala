@@ -86,7 +86,7 @@ final class LogWriterResolutionTest extends WordSpecLike with Matchers {
         |  LogWriterConstructor0[F](Console)
         |}
         |
-        |def l[F[_]](implicit F: Sync[F]): LogWriter[F] = c()
+        |def l[F[_]]: LogWriter[F] = c()
         |
         |def l1[F[_]: Sync]: LogWriter[F] = consoleLog[F]
       """.stripMargin should compile
@@ -109,6 +109,46 @@ final class LogWriterResolutionTest extends WordSpecLike with Matchers {
         |def l[F[_]: Applicative]: LogWriter[F] = c()
         |
         |def l1[F[_]: Applicative]: LogWriter[F] = noOpLog[F]
+      """.stripMargin should compile
+    }
+
+    "correctly infer a valid console constructor for an F[_] with a minimum level" in {
+
+      """
+        |import cats.effect.Sync
+        |import log.effect.Info
+        |import log.effect.LogWriter
+        |import log.effect.LogWriter.consoleLog
+        |import log.effect.LogWriter.Console
+        |import log.effect.LogWriterConstructor0
+        |
+        |def c[F[_]]: () => LogWriter[F] = {
+        |  implicit val F: Sync[F] = ???
+        |  LogWriterConstructor0[F](Console, Info)
+        |}
+        |
+        |def l[F[_]]: LogWriter[F] = c()
+        |
+        |def l1[F[_]: Sync]: LogWriter[F] = consoleLog(Info)
+      """.stripMargin should compile
+    }
+
+    "correctly infer a valid no-op constructor for an F[_] with a minimum level" in {
+
+      """
+        |import cats.Applicative
+        |import log.effect.Info
+        |import log.effect.LogWriter
+        |import log.effect.LogWriter.noOpLog
+        |import log.effect.LogWriter.NoOp
+        |import log.effect.LogWriterConstructor0
+        |
+        |def c[F[_]]: () => LogWriter[F] = {
+        |  implicit val F: Applicative[F] = ???
+        |  LogWriterConstructor0[F](NoOp, Info)
+        |}
+        |
+        |def l[F[_]]: LogWriter[F] = c()
       """.stripMargin should compile
     }
   }
@@ -183,3 +223,21 @@ final class LogWriterResolutionTest extends WordSpecLike with Matchers {
     }
   }
 }
+
+//object test {
+//  import cats.effect.Sync
+//  import log.effect.Info
+//  import log.effect.LogWriter
+//  import log.effect.LogWriter.consoleLog
+//  import log.effect.LogWriter.Console
+//  import log.effect.LogWriterConstructor0
+//
+//  def c[F[_]]: () => LogWriter[F] = {
+//    implicit val F: Sync[F] = ???
+//    LogWriterConstructor0[F](Console, Info)
+//  }
+//
+//  def l[F[_]]: LogWriter[F] = c()
+//
+//  def l1[F[_]: Sync]: LogWriter[F] = consoleLog[F, Info](Info)
+//}

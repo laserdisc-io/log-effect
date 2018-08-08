@@ -7,12 +7,12 @@ import cats.effect.Sync
 import cats.syntax.functor._
 import cats.syntax.show._
 import com.github.ghik.silencer.silent
-import log.effect.LogWriter.{ Failure, Jul, Log4s, LogLevel }
+import log.effect.LogWriter.{ Failure, Jul, Log4s }
 import org.{ log4s => l4s }
 
 sealed trait LogWriterConstructor1[T, F[_]] {
   type LogWriterType
-  def evaluation(g: F[LogWriterType]): F[LogWriter[F]]
+  def evaluation: F[LogWriterType] => F[LogWriter[F]]
 }
 
 object LogWriterConstructor1 extends LogWriterConstructor1Instances {
@@ -43,17 +43,17 @@ sealed private[effect] trait LogWriterConstructor1Instances {
 
       type LogWriterType = l4s.Logger
 
-      def evaluation(g: F[l4s.Logger]): F[LogWriter[F]] =
-        g map { l4sLogger =>
+      def evaluation: F[LogWriterType] => F[LogWriter[F]] =
+        _ map { l4sLogger =>
           new LogWriter[F] {
             def write[A: Show, L <: LogLevel: Show](level: L, a: =>A): F[Unit] = {
 
               val l4sLevel = level match {
-                case LogWriter.Trace => l4s.Trace
-                case LogWriter.Debug => l4s.Debug
-                case LogWriter.Info  => l4s.Info
-                case LogWriter.Error => l4s.Error
-                case LogWriter.Warn  => l4s.Warn
+                case Trace => l4s.Trace
+                case Debug => l4s.Debug
+                case Info  => l4s.Info
+                case Error => l4s.Error
+                case Warn  => l4s.Warn
               }
 
               F.delay {
@@ -74,17 +74,17 @@ sealed private[effect] trait LogWriterConstructor1Instances {
 
       type LogWriterType = jul.Logger
 
-      def evaluation(g: F[jul.Logger]): F[LogWriter[F]] =
-        g map { julLogger =>
+      def evaluation: F[LogWriterType] => F[LogWriter[F]] =
+        _ map { julLogger =>
           new LogWriter[F] {
             def write[A: Show, L <: LogLevel: Show](level: L, a: =>A): F[Unit] = {
 
               val jdkLevel = level match {
-                case LogWriter.Trace => jul.Level.FINEST
-                case LogWriter.Debug => jul.Level.FINE
-                case LogWriter.Info  => jul.Level.INFO
-                case LogWriter.Warn  => jul.Level.WARNING
-                case LogWriter.Error => jul.Level.SEVERE
+                case Trace => jul.Level.FINEST
+                case Debug => jul.Level.FINE
+                case Info  => jul.Level.INFO
+                case Warn  => jul.Level.WARNING
+                case Error => jul.Level.SEVERE
               }
 
               F.delay {

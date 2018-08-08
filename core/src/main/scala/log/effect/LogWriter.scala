@@ -5,7 +5,7 @@ import java.util.{ logging => jul }
 import cats.effect.Sync
 import cats.{ Applicative, Show }
 import com.github.ghik.silencer.silent
-import log.effect.LogWriter.{ Failure, LogLevel }
+import log.effect.LogWriter.Failure
 import org.{ log4s => l4s }
 
 import scala.language.implicitConversions
@@ -41,6 +41,11 @@ object LogWriter extends LogWriterSyntax with LogWriterAliasingSyntax {
     constructor()
   }
 
+  def consoleLog[F[_]: Sync, LL <: LogLevel](minLevel: LL): LogWriter[F] = {
+    val constructor = LogWriterConstructor0[F](Console, minLevel)
+    constructor()
+  }
+
   def noOpLog[F[_]: Applicative]: LogWriter[F] = {
     val constructor = LogWriterConstructor0[F](NoOp)
     constructor()
@@ -55,54 +60,6 @@ object LogWriter extends LogWriterSyntax with LogWriterAliasingSyntax {
   type Jul     = Jul.type
   type Console = Console.type
   type NoOp    = NoOp.type
-
-  sealed trait LogLevel extends Product with Serializable
-  object LogLevel extends LogLevelSyntax {
-
-    implicit private[effect] val logLevelShow: Show[LogLevel] =
-      new Show[LogLevel] {
-        def show(t: LogLevel): String =
-          t match {
-            case l @ Trace => showFor(l).show(l)
-            case l @ Debug => showFor(l).show(l)
-            case l @ Info  => showFor(l).show(l)
-            case l @ Warn  => showFor(l).show(l)
-            case l @ Error => showFor(l).show(l)
-          }
-      }
-
-    @silent private def showFor[A](a: A)(implicit ev: Show[A]): Show[A] = ev
-  }
-  final case object Trace extends LogLevel {
-    implicit val traceShow: Show[Trace.type] =
-      new Show[Trace.type] {
-        def show(t: Trace.type): String = "TRACE"
-      }
-  }
-  final case object Debug extends LogLevel {
-    implicit val debugShow: Show[Debug.type] =
-      new Show[Debug.type] {
-        def show(t: Debug.type): String = "DEBUG"
-      }
-  }
-  final case object Info extends LogLevel {
-    implicit val infoShow: Show[Info.type] =
-      new Show[Info.type] {
-        def show(t: Info.type): String = "INFO"
-      }
-  }
-  final case object Warn extends LogLevel {
-    implicit val warnShow: Show[Warn.type] =
-      new Show[Warn.type] {
-        def show(t: Warn.type): String = "WARN"
-      }
-  }
-  final case object Error extends LogLevel {
-    implicit val errorShow: Show[Error.type] =
-      new Show[Error.type] {
-        def show(t: Error.type): String = "ERROR"
-      }
-  }
 
   final class Failure(val msg: String, val th: Throwable)
 
@@ -126,14 +83,6 @@ object LogWriter extends LogWriterSyntax with LogWriterAliasingSyntax {
   }
 }
 
-sealed private[effect] trait LogLevelSyntax {
-  implicit def logLevelSyntax(l: LogLevel): LogLevelOps = new LogLevelOps(l)
-}
-
-final private[effect] class LogLevelOps(private val l: LogLevel) extends AnyVal {
-  def show(implicit ev: Show[LogLevel]): String = ev.show(l)
-}
-
 sealed private[effect] trait LogWriterAliasingSyntax {
   @silent implicit def logWriterSingleton[F[_]](co: LogWriter.type)(
     implicit LW: LogWriter[F]
@@ -150,32 +99,32 @@ final private[effect] class LogWriterOps[F[_]](private val aLogger: LogWriter[F]
   import cats.instances.string._
 
   @inline def trace(msg: =>String): F[Unit] =
-    aLogger.write(LogWriter.Trace, msg)
+    aLogger.write(Trace, msg)
 
   @inline def trace(msg: =>String, th: =>Throwable): F[Unit] =
-    aLogger.write(LogWriter.Trace, Failure(msg, th))
+    aLogger.write(Trace, Failure(msg, th))
 
   @inline def debug(msg: =>String): F[Unit] =
-    aLogger.write(LogWriter.Debug, msg)
+    aLogger.write(Debug, msg)
 
   @inline def debug(msg: =>String, th: =>Throwable): F[Unit] =
-    aLogger.write(LogWriter.Debug, Failure(msg, th))
+    aLogger.write(Debug, Failure(msg, th))
 
   @inline def info(msg: =>String): F[Unit] =
-    aLogger.write(LogWriter.Info, msg)
+    aLogger.write(Info, msg)
 
   @inline def info(msg: =>String, th: =>Throwable): F[Unit] =
-    aLogger.write(LogWriter.Info, Failure(msg, th))
+    aLogger.write(Info, Failure(msg, th))
 
   @inline def error(msg: =>String): F[Unit] =
-    aLogger.write(LogWriter.Error, msg)
+    aLogger.write(Error, msg)
 
   @inline def error(msg: =>String, th: =>Throwable): F[Unit] =
-    aLogger.write(LogWriter.Error, Failure(msg, th))
+    aLogger.write(Error, Failure(msg, th))
 
   @inline def warn(msg: =>String): F[Unit] =
-    aLogger.write(LogWriter.Warn, msg)
+    aLogger.write(Warn, msg)
 
   @inline def warn(msg: =>String, th: =>Throwable): F[Unit] =
-    aLogger.write(LogWriter.Warn, Failure(msg, th))
+    aLogger.write(Warn, Failure(msg, th))
 }
