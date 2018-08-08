@@ -116,7 +116,7 @@ final class LogWriterResolutionTest extends WordSpecLike with Matchers {
 
       """
         |import cats.effect.Sync
-        |import log.effect.Info
+        |import log.effect.LogLevels.Info
         |import log.effect.LogWriter
         |import log.effect.LogWriter.consoleLog
         |import log.effect.LogWriter.Console
@@ -137,7 +137,7 @@ final class LogWriterResolutionTest extends WordSpecLike with Matchers {
 
       """
         |import cats.Applicative
-        |import log.effect.Info
+        |import log.effect.LogLevels.Info
         |import log.effect.LogWriter
         |import log.effect.LogWriter.noOpLog
         |import log.effect.LogWriter.NoOp

@@ -96,6 +96,7 @@ sealed private[effect] trait LogWriterSyntax {
 
 final private[effect] class LogWriterOps[F[_]](private val aLogger: LogWriter[F]) extends AnyVal {
 
+  import LogLevels._
   import cats.instances.string._
 
   @inline def trace(msg: =>String): F[Unit] =

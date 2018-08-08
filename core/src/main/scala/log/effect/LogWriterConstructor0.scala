@@ -11,7 +11,7 @@ trait LogWriterConstructor0[T, F[_]] {
   def evaluation[LL <: LogLevel]: LL => LogWriter[F]
 
   def evaluation: () => LogWriter[F] =
-    () => evaluation(Trace)
+    () => evaluation(LogLevels.Trace)
 }
 
 object LogWriterConstructor0 extends LogWriterConstructor0Instances {

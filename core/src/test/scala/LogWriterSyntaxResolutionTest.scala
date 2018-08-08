@@ -35,7 +35,7 @@ final class LogWriterSyntaxResolutionTest extends WordSpecLike with Matchers {
 
       """
         |import log.effect.LogWriter
-        |import log.effect.Trace
+        |import log.effect.LogLevels.Trace
         |import cats.instances.string.catsStdShowForString
         |
         |def f[F[_]: LogWriter] = LogWriter.write(Trace, "test")
@@ -46,7 +46,7 @@ final class LogWriterSyntaxResolutionTest extends WordSpecLike with Matchers {
 
       """
         |import log.effect.LogWriter
-        |import log.effect.Error
+        |import log.effect.LogLevels.Error
         |import log.effect.LogWriter.Failure
         |import cats.instances.string.catsStdShowForString
         |

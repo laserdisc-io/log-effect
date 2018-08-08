@@ -8,6 +8,8 @@ import scala.language.implicitConversions
 sealed trait LogLevel extends Product with Serializable
 object LogLevel extends LogLevelSyntax {
 
+  import LogLevels._
+
   implicit private[effect] val logLevelShow: Show[LogLevel] =
     new Show[LogLevel] {
       def show(t: LogLevel): String =
@@ -20,14 +22,6 @@ object LogLevel extends LogLevelSyntax {
         }
     }
 
-  /** Returns an integer whose sign communicates how x compares to y.
-    *
-    * The result sign has the following meaning:
-    *
-    *  - negative if x < y
-    *  - positive if x > y
-    *  - zero otherwise (if x == y)
-    */
   implicit private[effect] val logLevelOrdering: Ordering[LogLevel] =
     new Ordering[LogLevel] {
       def compare(x: LogLevel, y: LogLevel): Int =
@@ -83,37 +77,46 @@ final private[effect] class LogLevelOps[L <: LogLevel](private val l: L) extends
     ord.gteq(l, other)
 }
 
-case object Trace extends LogLevel {
-  implicit val traceShow: Show[Trace] =
-    new Show[Trace] {
-      def show(t: Trace): String = "TRACE"
-    }
-}
+object LogLevels {
 
-case object Debug extends LogLevel {
-  implicit val debugShow: Show[Debug] =
-    new Show[Debug] {
-      def show(t: Debug): String = "DEBUG"
-    }
-}
+  type Trace = Trace.type
+  type Debug = Debug.type
+  type Info  = Info.type
+  type Warn  = Warn.type
+  type Error = Error.type
 
-case object Info extends LogLevel {
-  implicit val infoShow: Show[Info] =
-    new Show[Info] {
-      def show(t: Info): String = "INFO"
-    }
-}
+  case object Trace extends LogLevel {
+    implicit val traceShow: Show[Trace] =
+      new Show[Trace] {
+        def show(t: Trace): String = "TRACE"
+      }
+  }
 
-case object Warn extends LogLevel {
-  implicit val warnShow: Show[Warn] =
-    new Show[Warn] {
-      def show(t: Warn): String = "WARN"
-    }
-}
+  case object Debug extends LogLevel {
+    implicit val debugShow: Show[Debug] =
+      new Show[Debug] {
+        def show(t: Debug): String = "DEBUG"
+      }
+  }
 
-case object Error extends LogLevel {
-  implicit val errorShow: Show[Error] =
-    new Show[Error] {
-      def show(t: Error): String = "ERROR"
-    }
+  case object Info extends LogLevel {
+    implicit val infoShow: Show[Info] =
+      new Show[Info] {
+        def show(t: Info): String = "INFO"
+      }
+  }
+
+  case object Warn extends LogLevel {
+    implicit val warnShow: Show[Warn] =
+      new Show[Warn] {
+        def show(t: Warn): String = "WARN"
+      }
+  }
+
+  case object Error extends LogLevel {
+    implicit val errorShow: Show[Error] =
+      new Show[Error] {
+        def show(t: Error): String = "ERROR"
+      }
+  }
 }

@@ -49,11 +49,11 @@ sealed private[effect] trait LogWriterConstructor1Instances {
             def write[A: Show, L <: LogLevel: Show](level: L, a: =>A): F[Unit] = {
 
               val l4sLevel = level match {
-                case Trace => l4s.Trace
-                case Debug => l4s.Debug
-                case Info  => l4s.Info
-                case Error => l4s.Error
-                case Warn  => l4s.Warn
+                case LogLevels.Trace => l4s.Trace
+                case LogLevels.Debug => l4s.Debug
+                case LogLevels.Info  => l4s.Info
+                case LogLevels.Error => l4s.Error
+                case LogLevels.Warn  => l4s.Warn
               }
 
               F.delay {
@@ -80,11 +80,11 @@ sealed private[effect] trait LogWriterConstructor1Instances {
             def write[A: Show, L <: LogLevel: Show](level: L, a: =>A): F[Unit] = {
 
               val jdkLevel = level match {
-                case Trace => jul.Level.FINEST
-                case Debug => jul.Level.FINE
-                case Info  => jul.Level.INFO
-                case Warn  => jul.Level.WARNING
-                case Error => jul.Level.SEVERE
+                case LogLevels.Trace => jul.Level.FINEST
+                case LogLevels.Debug => jul.Level.FINE
+                case LogLevels.Info  => jul.Level.INFO
+                case LogLevels.Warn  => jul.Level.WARNING
+                case LogLevels.Error => jul.Level.SEVERE
               }
 
               F.delay {
