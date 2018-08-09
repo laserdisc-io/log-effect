@@ -53,7 +53,10 @@ def julLog[F[_]: Sync](fa: F[jul.Logger]): F[LogWriter[F]]
 def consoleLog[F[_]: Sync]: LogWriter[F]
 
 // for a console logger that will write only up to the specified level
-
+// 
+// val log = consoleLogUpToLevel[F](LogLevels.Info)
+// 
+def consoleLogUpToLevel[F[_]]: ConsoleLogPartial[F]
 
 def noOpLog[F[_]: Applicative]: LogWriter[F]
 ```
@@ -69,6 +72,12 @@ def log4sLogStream[F[_]: Sync](n: String): Stream[F, LogWriter[F]]
 def julLogStream[F[_]: Sync]: Stream[F, LogWriter[F]]
 
 def consoleLogStream[F[_]: Sync]: Stream[F, LogWriter[F]]
+
+// for a console logger that will write only up to the specified level 
+// 
+// val log = consoleLogStreamUpToLevel[F](LogLevels.Info)
+// 
+def consoleLogStreamUpToLevel[F[_]]: ConsoleLogStreamPartial[F]
 
 def noOpLogStream[F[_]: Sync]: Stream[F, LogWriter[F]]
 ```
