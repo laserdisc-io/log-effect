@@ -118,7 +118,7 @@ final class LogWriterResolutionTest extends WordSpecLike with Matchers {
         |import cats.effect.Sync
         |import log.effect.LogLevels.Info
         |import log.effect.LogWriter
-        |import log.effect.LogWriter.consoleLog
+        |import log.effect.LogWriter.consoleLogUpToLevel
         |import log.effect.LogWriter.Console
         |import log.effect.LogWriterConstructor0
         |
@@ -129,7 +129,7 @@ final class LogWriterResolutionTest extends WordSpecLike with Matchers {
         |
         |def l[F[_]]: LogWriter[F] = c()
         |
-        |def l1[F[_]: Sync]: LogWriter[F] = consoleLog(Info)
+        |def l1[F[_]: Sync]: LogWriter[F] = consoleLogUpToLevel(Info)
       """.stripMargin should compile
     }
 

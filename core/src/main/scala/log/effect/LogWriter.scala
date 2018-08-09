@@ -41,9 +41,15 @@ object LogWriter extends LogWriterSyntax with LogWriterAliasingSyntax {
     constructor()
   }
 
-  def consoleLog[F[_]: Sync, LL <: LogLevel](minLevel: LL): LogWriter[F] = {
-    val constructor = LogWriterConstructor0[F](Console, minLevel)
-    constructor()
+  def consoleLogUpToLevel[F[_]]: ConsoleLogPartial[F] =
+    new ConsoleLogPartial[F]
+
+  final private[effect] class ConsoleLogPartial[F[_]](private val d: Boolean = true)
+      extends AnyVal {
+    def apply[LL <: LogLevel](minLevel: LL)(implicit F: Sync[F]): LogWriter[F] = {
+      val constructor = LogWriterConstructor0[F](Console, minLevel)
+      constructor()
+    }
   }
 
   def noOpLog[F[_]: Applicative]: LogWriter[F] = {

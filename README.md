@@ -52,6 +52,9 @@ def julLog[F[_]: Sync](fa: F[jul.Logger]): F[LogWriter[F]]
 
 def consoleLog[F[_]: Sync]: LogWriter[F]
 
+// for a console logger that will write only up to the specified level
+
+
 def noOpLog[F[_]: Applicative]: LogWriter[F]
 ```
 
