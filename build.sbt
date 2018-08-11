@@ -71,8 +71,7 @@ lazy val fs2Dependencies = Seq(
 ) map (_.withSources)
 
 lazy val zioDependencies = Seq(
-  "org.scalaz" %% "scalaz-zio"         % versionOf.zio changing (),
-  "org.scalaz" %% "scalaz-zio-interop" % versionOf.zio changing ()
+  "org.scalaz" %% "scalaz-zio" % versionOf.zio changing ()
 ) map (_.withSources)
 
 lazy val testDependencies = Seq(
