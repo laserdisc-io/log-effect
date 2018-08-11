@@ -1,13 +1,13 @@
 package log.effect.fs2
 
-import java.util.{logging => jul}
+import java.util.{ logging => jul }
 
 import cats.Applicative
 import cats.effect.Sync
-import log.effect.LogWriter.{Console, Jul, Log4s, NoOp}
+import log.effect.LogWriter.{ Console, Jul, Log4s, NoOp }
 import log.effect.internal.EffectSuspension
-import log.effect.{LogLevel, LogWriter, LogWriterConstructor0, LogWriterConstructor1}
-import org.{log4s => l4s}
+import log.effect.{ LogLevel, LogWriter, LogWriterConstructor0, LogWriterConstructor1 }
+import org.{ log4s => l4s }
 
 object SyncLogWriter {
 
@@ -52,7 +52,7 @@ object SyncLogWriter {
     constructor()
   }
 
-  implicit final def syncInstance[F[_]](implicit F: Sync[F]): EffectSuspension[F] =
+  implicit final private def syncInstance[F[_]](implicit F: Sync[F]): EffectSuspension[F] =
     new EffectSuspension[F] {
       def suspend[A](a: =>A): F[A] = F.delay(a)
     }
