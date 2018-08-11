@@ -60,13 +60,13 @@ lazy val sharedDependencies = Seq(
 ) map (_.withSources)
 
 lazy val coreDependencies = Seq(
-  "org.typelevel" %% "cats-core"   % versionOf.cats,
-  "org.typelevel" %% "cats-effect" % versionOf.catsEffect,
-  "org.log4s"     %% "log4s"       % versionOf.log4s,
+  "org.typelevel" %% "cats-core" % versionOf.cats,
+  "org.log4s"     %% "log4s"     % versionOf.log4s,
 ) map (_.withSources)
 
 lazy val fs2Dependencies = Seq(
-  "co.fs2" %% "fs2-core" % versionOf.fs2
+  "org.typelevel" %% "cats-effect" % versionOf.catsEffect,
+  "co.fs2"        %% "fs2-core"    % versionOf.fs2
 ) map (_.withSources)
 
 lazy val testDependencies = Seq(

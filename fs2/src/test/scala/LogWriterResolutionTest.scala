@@ -7,14 +7,17 @@ final class LogWriterResolutionTest extends WordSpecLike with Matchers {
     "correctly infer a valid log4s constructor for an F[_] given an implicit evidence of Sync[F]" in {
 
       """
+        |import cats.Functor
         |import cats.effect.Sync
+        |import log.effect.internal.EffectSuspension
         |import log.effect.LogWriter
-        |import log.effect.LogWriter.log4sLog
+        |import log.effect.fs2.SyncLogWriter.log4sLog
         |import log.effect.LogWriter.Log4s
         |import log.effect.LogWriterConstructor1
         |
         |def c[F[_]]: F[org.log4s.Logger] => F[LogWriter[F]] = {
-        |  implicit val F: Sync[F] = ???
+        |  implicit val F: EffectSuspension[F] = ???
+        |  implicit val FF: Functor[F] = ???
         |  LogWriterConstructor1[F](Log4s)
         |}
         |
@@ -27,14 +30,17 @@ final class LogWriterResolutionTest extends WordSpecLike with Matchers {
     "correctly infer a valid jul constructor for an F[_] given an implicit evidence of Sync[F]" in {
 
       """
+        |import cats.Functor
         |import cats.effect.Sync
         |import log.effect.LogWriter
-        |import log.effect.LogWriter.julLog
         |import log.effect.LogWriter.Jul
+        |import log.effect.internal.EffectSuspension
+        |import log.effect.fs2.SyncLogWriter.julLog
         |import log.effect.LogWriterConstructor1
         |
         |def c[F[_]]: F[java.util.logging.Logger] => F[LogWriter[F]] = {
-        |  implicit val F: Sync[F] = ???
+        |  implicit val F: EffectSuspension[F] = ???
+        |  implicit val FF: Functor[F] = ???
         |  LogWriterConstructor1[F](Jul)
         |}
         |
@@ -77,12 +83,13 @@ final class LogWriterResolutionTest extends WordSpecLike with Matchers {
       """
         |import cats.effect.Sync
         |import log.effect.LogWriter
-        |import log.effect.LogWriter.consoleLog
+        |import log.effect.internal.EffectSuspension
+        |import log.effect.fs2.SyncLogWriter.consoleLog
         |import log.effect.LogWriter.Console
         |import log.effect.LogWriterConstructor0
         |
         |def c[F[_]]: () => LogWriter[F] = {
-        |  implicit val F: Sync[F] = ???
+        |  implicit val F: EffectSuspension[F] = ???
         |  LogWriterConstructor0[F](Console)
         |}
         |
@@ -97,7 +104,7 @@ final class LogWriterResolutionTest extends WordSpecLike with Matchers {
       """
         |import cats.Applicative
         |import log.effect.LogWriter
-        |import log.effect.LogWriter.noOpLog
+        |import log.effect.fs2.SyncLogWriter.noOpLog
         |import log.effect.LogWriter.NoOp
         |import log.effect.LogWriterConstructor0
         |
@@ -118,12 +125,13 @@ final class LogWriterResolutionTest extends WordSpecLike with Matchers {
         |import cats.effect.Sync
         |import log.effect.LogLevels.Info
         |import log.effect.LogWriter
-        |import log.effect.LogWriter.consoleLogUpToLevel
+        |import log.effect.internal.EffectSuspension
+        |import log.effect.fs2.SyncLogWriter.consoleLogUpToLevel
         |import log.effect.LogWriter.Console
         |import log.effect.LogWriterConstructor0
         |
         |def c[F[_]]: () => LogWriter[F] = {
-        |  implicit val F: Sync[F] = ???
+        |  implicit val F: EffectSuspension[F] = ???
         |  LogWriterConstructor0[F](Console, Info)
         |}
         |
@@ -139,7 +147,7 @@ final class LogWriterResolutionTest extends WordSpecLike with Matchers {
         |import cats.Applicative
         |import log.effect.LogLevels.Info
         |import log.effect.LogWriter
-        |import log.effect.LogWriter.noOpLog
+        |import log.effect.fs2.SyncLogWriter.noOpLog
         |import log.effect.LogWriter.NoOp
         |import log.effect.LogWriterConstructor0
         |
@@ -160,9 +168,15 @@ final class LogWriterResolutionTest extends WordSpecLike with Matchers {
       """
         |import cats.effect.IO
         |import log.effect.LogWriter
-        |import log.effect.LogWriter.log4sLog
+        |import log.effect.internal.EffectSuspension
+        |import log.effect.fs2.SyncLogWriter.log4sLog
         |import log.effect.LogWriter.Log4s
         |import log.effect.LogWriterConstructor1
+        |
+        |implicit val F: EffectSuspension[IO] =
+        |  new EffectSuspension[IO] {
+        |    def suspend[A](a: => A): IO[A] = IO(a)
+        |  }
         |
         |val c: IO[org.log4s.Logger] => IO[LogWriter[IO]] = LogWriterConstructor1[IO](Log4s)
         |val l: IO[LogWriter[IO]] = c(IO(org.log4s.getLogger("test")))
@@ -176,9 +190,15 @@ final class LogWriterResolutionTest extends WordSpecLike with Matchers {
       """
         |import cats.effect.IO
         |import log.effect.LogWriter
-        |import log.effect.LogWriter.julLog
+        |import log.effect.internal.EffectSuspension
+        |import log.effect.fs2.SyncLogWriter.julLog
         |import log.effect.LogWriter.Jul
         |import log.effect.LogWriterConstructor1
+        |
+        |implicit val F: EffectSuspension[IO] =
+        |  new EffectSuspension[IO] {
+        |    def suspend[A](a: => A): IO[A] = IO(a)
+        |  }
         |
         |val c: IO[java.util.logging.Logger] => IO[LogWriter[IO]] = LogWriterConstructor1[IO](Jul)
         |val l: IO[LogWriter[IO]] = c(IO(java.util.logging.Logger.getGlobal))
@@ -195,9 +215,15 @@ final class LogWriterResolutionTest extends WordSpecLike with Matchers {
       """
         |import cats.effect.IO
         |import log.effect.LogWriter
-        |import log.effect.LogWriter.consoleLog
+        |import log.effect.internal.EffectSuspension
+        |import log.effect.fs2.SyncLogWriter.consoleLog
         |import log.effect.LogWriter.Console
         |import log.effect.LogWriterConstructor0
+        |
+        |implicit val F: EffectSuspension[IO] =
+        |  new EffectSuspension[IO] {
+        |    def suspend[A](a: => A): IO[A] = IO(a)
+        |  }
         |
         |val c: () => LogWriter[IO] = LogWriterConstructor0[IO](Console)
         |val l: LogWriter[IO] = c()
@@ -211,7 +237,7 @@ final class LogWriterResolutionTest extends WordSpecLike with Matchers {
       """
         |import cats.effect.IO
         |import log.effect.LogWriter
-        |import log.effect.LogWriter.noOpLog
+        |import log.effect.fs2.SyncLogWriter.noOpLog
         |import log.effect.LogWriter.NoOp
         |import log.effect.LogWriterConstructor0
         |

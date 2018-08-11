@@ -2,12 +2,12 @@ package log.effect
 
 import java.util.{ logging => jul }
 
-import cats.Show
-import cats.effect.Sync
 import cats.syntax.functor._
 import cats.syntax.show._
+import cats.{ Functor, Show }
 import com.github.ghik.silencer.silent
 import log.effect.LogWriter.{ Failure, Jul, Log4s }
+import log.effect.internal.EffectSuspension
 import org.{ log4s => l4s }
 
 sealed trait LogWriterConstructor1[T, F[_]] {
@@ -27,7 +27,7 @@ object LogWriterConstructor1 extends LogWriterConstructor1Instances {
       extends AnyVal {
 
     @inline @silent def apply[T](t: T)(
-      implicit F: Sync[F],
+      implicit F: EffectSuspension[F],
       LWC: LogWriterConstructor1[T, F]
     ): F[LWC.LogWriterType] => F[LogWriter[F]] =
       LWC.evaluation
@@ -36,8 +36,8 @@ object LogWriterConstructor1 extends LogWriterConstructor1Instances {
 
 sealed private[effect] trait LogWriterConstructor1Instances {
 
-  implicit def log4sConstructor[F[_]](
-    implicit F: Sync[F]
+  implicit def log4sConstructor[F[_]: Functor](
+    implicit F: EffectSuspension[F]
   ): LogWriterConstructor1.AUX[Log4s, F, l4s.Logger] =
     new LogWriterConstructor1[Log4s, F] {
 
@@ -56,19 +56,19 @@ sealed private[effect] trait LogWriterConstructor1Instances {
                 case LogLevels.Warn  => l4s.Warn
               }
 
-              F.delay {
+              F.suspend(
                 a match {
                   case Failure(msg, th) => l4sLogger(l4sLevel)(th)(msg)
                   case _                => l4sLogger(l4sLevel)(a.show)
                 }
-              }
+              )
             }
           }
         }
     }
 
-  implicit def julConstructor[F[_]](
-    implicit F: Sync[F]
+  implicit def julConstructor[F[_]: Functor](
+    implicit F: EffectSuspension[F]
   ): LogWriterConstructor1.AUX[Jul, F, jul.Logger] =
     new LogWriterConstructor1[Jul, F] {
 
@@ -87,7 +87,7 @@ sealed private[effect] trait LogWriterConstructor1Instances {
                 case LogLevels.Error => jul.Level.SEVERE
               }
 
-              F.delay {
+              F.suspend(
                 if (julLogger.isLoggable(jdkLevel)) {
                   julLogger.log(
                     a match {
@@ -99,7 +99,7 @@ sealed private[effect] trait LogWriterConstructor1Instances {
                     }
                   )
                 }
-              }
+              )
             }
           }
         }
