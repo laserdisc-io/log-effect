@@ -1,10 +1,10 @@
 package log.effect
 
-import cats.effect.Sync
 import cats.syntax.show._
 import cats.{ Applicative, Show }
 import com.github.ghik.silencer.silent
 import log.effect.LogWriter.{ Console, NoOp }
+import log.effect.internal.EffectSuspension
 
 trait LogWriterConstructor0[T, F[_]] {
 
@@ -34,7 +34,9 @@ object LogWriterConstructor0 extends LogWriterConstructor0Instances {
 
 sealed private[effect] trait LogWriterConstructor0Instances {
 
-  implicit def consoleConstructor0[F[_]](implicit F: Sync[F]): LogWriterConstructor0[Console, F] =
+  implicit def consoleConstructor0[F[_]](
+    implicit F: EffectSuspension[F]
+  ): LogWriterConstructor0[Console, F] =
     new LogWriterConstructor0[Console, F] {
       def evaluation[LL <: LogLevel]: LL => LogWriter[F] =
         ll =>
@@ -42,11 +44,13 @@ sealed private[effect] trait LogWriterConstructor0Instances {
             private val minLogLevel = ll
 
             def write[A: Show, L <: LogLevel: Show](level: L, a: =>A): F[Unit] =
-              if (level >= minLogLevel) F.delay {
-                println(
-                  s"[${level.show.toLowerCase}] - [${Thread.currentThread().getName}] ${a.show}"
+              if (level >= minLogLevel)
+                F.suspend(
+                  println(
+                    s"[${level.show.toLowerCase}] - [${Thread.currentThread().getName}] ${a.show}"
+                  )
                 )
-              } else F.unit
+              else F.unit
         }
     }
 

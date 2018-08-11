@@ -1,10 +1,10 @@
 import java.io.{ ByteArrayOutputStream, PrintStream }
 
 import cats.effect.IO
-import log.effect.LogWriter.{ consoleLog, consoleLogUpToLevel }
-import org.scalatest.{ Matchers, WordSpecLike }
-import log.effect.LogLevels._
 import cats.syntax.apply._
+import log.effect.LogLevels._
+import log.effect.fs2.SyncLogWriter.{ consoleLog, consoleLogUpToLevel }
+import org.scalatest.{ Matchers, WordSpecLike }
 
 final class ConsoleLogWriterTest extends WordSpecLike with Matchers {
 

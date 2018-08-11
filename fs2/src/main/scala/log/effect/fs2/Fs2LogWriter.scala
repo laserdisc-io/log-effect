@@ -5,7 +5,7 @@ import java.util.{ logging => jul }
 
 import _root_.fs2.Stream
 import cats.effect.Sync
-import log.effect.LogWriter._
+import log.effect.fs2.SyncLogWriter._
 
 object Fs2LogWriter {
 
