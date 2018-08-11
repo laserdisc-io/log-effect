@@ -13,15 +13,20 @@
 
 
 ## Start
-Log effect is available for Scala 2.11.x and 2.12.x. To add it define the dependency in the sbt build. If you need the stream based constructors and syntax you need to depend on the `fs2` lib
+Log Effect is available for Scala 2.11.x and 2.12.x. Helper constructors are provided for **Cats Effect**'s `Sync` `F[_]`, for **Fs2**'s `Stream` and for **Scalaz ZIO**'s `IO`. 
+Add
 ```scala
 libraryDependencies += "io.laserdisc" %% "log-effect-fs2" % <latest-fs2-version>
 ```
-If the constructors and the syntax in the effect monad are enough just depend on the core 
+for **Fs2** or **Cats Effect**. Add instead
+```scala
+libraryDependencies += "io.laserdisc" %% "log-effect-zio" % <latest-zio-version>
+```
+for **Scalaz ZIO**. If the intention is to create your own instance for the typeclass, adding
 ```scala
 libraryDependencies += "io.laserdisc" %% "log-effect-core" % <latest-core-version>
 ```
-for the latest versions available please refer to the badges below the title.
+will be enough. For the latest version available for each of the above please refer to the badges below the title.
 
 ## Dependencies
 
