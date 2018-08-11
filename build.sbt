@@ -187,7 +187,7 @@ lazy val zio = project
   .settings(crossBuildSettings)
   .settings(releaseSettings)
   .settings(
-    name := "log-effect-zio",
-    resolvers += Resolver.sonatypeRepo("snapshots"),
+    name                := "log-effect-zio",
+    resolvers           += Resolver.sonatypeRepo("snapshots"),
     libraryDependencies ++= zioDependencies
   )
