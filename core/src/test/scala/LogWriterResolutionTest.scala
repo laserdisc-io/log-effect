@@ -223,21 +223,3 @@ final class LogWriterResolutionTest extends WordSpecLike with Matchers {
     }
   }
 }
-
-//object test {
-//  import cats.effect.Sync
-//  import log.effect.Info
-//  import log.effect.LogWriter
-//  import log.effect.LogWriter.consoleLog
-//  import log.effect.LogWriter.Console
-//  import log.effect.LogWriterConstructor0
-//
-//  def c[F[_]]: () => LogWriter[F] = {
-//    implicit val F: Sync[F] = ???
-//    LogWriterConstructor0[F](Console, Info)
-//  }
-//
-//  def l[F[_]]: LogWriter[F] = c()
-//
-//  def l1[F[_]: Sync]: LogWriter[F] = consoleLog[F, Info](Info)
-//}
