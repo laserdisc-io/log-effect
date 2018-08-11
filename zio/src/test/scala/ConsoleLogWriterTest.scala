@@ -1,32 +1,29 @@
 import java.io.{ ByteArrayOutputStream, PrintStream }
 
-import cats.effect.IO
-import cats.syntax.apply._
 import log.effect.LogLevels._
-import log.effect.fs2.SyncLogWriter.{ consoleLog, consoleLogUpToLevel }
+import log.effect.zio.ZioLogWriter.{ consoleLogZio, consoleLogZioUpToLevel }
 import org.scalatest.{ Matchers, WordSpecLike }
+import scalaz.zio
+import scalaz.zio.IO
 
-final class ConsoleLogWriterTest extends WordSpecLike with Matchers {
+final class ConsoleLogWriterTest extends WordSpecLike with Matchers with zio.App {
 
-  private def capturedConsoleOutOf[A](thunk: =>A): IO[String] =
-    IO {
-      val lowerStream = new ByteArrayOutputStream()
-      val outStream   = new PrintStream(lowerStream)
+  private def capturedConsoleOutOf[A](write: IO[Exception, Unit]): String = {
+    val lowerStream = new ByteArrayOutputStream()
+    val outStream   = new PrintStream(lowerStream)
 
-      Console.withOut(outStream)(thunk)
+    Console.withOut(outStream)(unsafeRun(write))
 
-      lowerStream.toString
-    }
+    lowerStream.toString
+  }
 
   "the console LogWriter's syntax for string message" should {
 
     "print the expected trace to the console" in {
 
       val out = capturedConsoleOutOf(
-        consoleLog[IO]
-          .trace("test message")
-          .unsafeRunSync()
-      ).unsafeRunSync()
+        consoleLogZio.trace("test message")
+      )
 
       info(out.trim)
       out should startWith("[trace] - [")
@@ -36,10 +33,8 @@ final class ConsoleLogWriterTest extends WordSpecLike with Matchers {
     "print the expected info to the console" in {
 
       val out = capturedConsoleOutOf(
-        consoleLog[IO]
-          .info("test message")
-          .unsafeRunSync()
-      ).unsafeRunSync()
+        consoleLogZio.info("test message")
+      )
 
       info(out.trim)
       out should startWith("[info] - [")
@@ -49,10 +44,8 @@ final class ConsoleLogWriterTest extends WordSpecLike with Matchers {
     "print the expected debug to the console" in {
 
       val out = capturedConsoleOutOf(
-        consoleLog[IO]
-          .debug("test message")
-          .unsafeRunSync()
-      ).unsafeRunSync()
+        consoleLogZio.debug("test message")
+      )
 
       info(out.trim)
       out should startWith("[debug] - [")
@@ -62,10 +55,8 @@ final class ConsoleLogWriterTest extends WordSpecLike with Matchers {
     "print the expected error to the console" in {
 
       val out = capturedConsoleOutOf(
-        consoleLog[IO]
-          .error("test message")
-          .unsafeRunSync()
-      ).unsafeRunSync()
+        consoleLogZio.error("test message")
+      )
 
       info(out.trim)
       out should startWith("[error] - [")
@@ -75,10 +66,8 @@ final class ConsoleLogWriterTest extends WordSpecLike with Matchers {
     "print the expected warn to the console" in {
 
       val out = capturedConsoleOutOf(
-        consoleLog[IO]
-          .warn("test message")
-          .unsafeRunSync()
-      ).unsafeRunSync()
+        consoleLogZio.warn("test message")
+      )
 
       info(out.trim)
       out should startWith("[warn] - [")
@@ -91,10 +80,9 @@ final class ConsoleLogWriterTest extends WordSpecLike with Matchers {
     "print the expected error message and the exception to the console" in {
 
       val out = capturedConsoleOutOf(
-        consoleLog[IO]
+        consoleLogZio
           .error("I have an error message", new Throwable("oh! there's also an exception"))
-          .unsafeRunSync()
-      ).unsafeRunSync()
+      )
 
       info(out.trim)
       out should startWith("[error] - [")
@@ -110,11 +98,10 @@ final class ConsoleLogWriterTest extends WordSpecLike with Matchers {
     "created with level Error" should {
 
       "log error messages" in {
+
         val out = capturedConsoleOutOf(
-          consoleLogUpToLevel[IO](Error)
-            .error("error message")
-            .unsafeRunSync()
-        ).unsafeRunSync()
+          consoleLogZioUpToLevel(Error).error("error message")
+        )
 
         info(out.trim)
         out should startWith("[error] - [")
@@ -122,15 +109,15 @@ final class ConsoleLogWriterTest extends WordSpecLike with Matchers {
       }
 
       "not log warn, info, debug or trace messages" in {
-        val out = capturedConsoleOutOf({
-          val cl = consoleLogUpToLevel[IO](Error)
+
+        val out = capturedConsoleOutOf {
+          val cl = consoleLogZioUpToLevel(Error)
 
           (cl.warn("warn message")
             *> cl.info("info message")
             *> cl.debug("debug message")
-            *> cl.trace("trace message")).unsafeRunSync()
-
-        }).unsafeRunSync()
+            *> cl.trace("trace message"))
+        }
 
         out should be(empty)
       }
@@ -139,11 +126,11 @@ final class ConsoleLogWriterTest extends WordSpecLike with Matchers {
     "created with level Warn" should {
 
       "log error and warn messages" in {
-        val out = capturedConsoleOutOf({
-          val cl = consoleLogUpToLevel[IO](Warn)
 
-          (cl.error("error message") *> cl.warn("warn message")).unsafeRunSync()
-        }).unsafeRunSync()
+        val out = capturedConsoleOutOf {
+          val cl = consoleLogZioUpToLevel(Warn)
+          cl.error("error message") *> cl.warn("warn message")
+        }
 
         info(out.trim)
 
@@ -155,14 +142,14 @@ final class ConsoleLogWriterTest extends WordSpecLike with Matchers {
       }
 
       "not log info, debug or trace messages" in {
-        val out = capturedConsoleOutOf({
-          val cl = consoleLogUpToLevel[IO](Warn)
+
+        val out = capturedConsoleOutOf {
+          val cl = consoleLogZioUpToLevel(Warn)
 
           (cl.info("info message")
             *> cl.debug("debug message")
-            *> cl.trace("trace message")).unsafeRunSync()
-
-        }).unsafeRunSync()
+            *> cl.trace("trace message"))
+        }
 
         out should be(empty)
       }
@@ -171,14 +158,14 @@ final class ConsoleLogWriterTest extends WordSpecLike with Matchers {
     "created with level Info" should {
 
       "log error, warn and info messages" in {
-        val out = capturedConsoleOutOf({
-          val cl = consoleLogUpToLevel[IO](Info)
+
+        val out = capturedConsoleOutOf {
+          val cl = consoleLogZioUpToLevel(Info)
 
           (cl.error("error message")
             *> cl.warn("warn message")
-            *> cl.info("info message")).unsafeRunSync()
-
-        }).unsafeRunSync()
+            *> cl.info("info message"))
+        }
 
         info(out.trim)
 
@@ -193,11 +180,11 @@ final class ConsoleLogWriterTest extends WordSpecLike with Matchers {
       }
 
       "not log debug or trace messages" in {
-        val out = capturedConsoleOutOf({
-          val cl = consoleLogUpToLevel[IO](Info)
 
-          (cl.debug("debug message") *> cl.trace("trace message")).unsafeRunSync()
-        }).unsafeRunSync()
+        val out = capturedConsoleOutOf {
+          val cl = consoleLogZioUpToLevel(Info)
+          cl.debug("debug message") *> cl.trace("trace message")
+        }
 
         out should be(empty)
       }
@@ -206,15 +193,15 @@ final class ConsoleLogWriterTest extends WordSpecLike with Matchers {
     "created with level Debug" should {
 
       "log error, warn, info and debug messages" in {
-        val out = capturedConsoleOutOf({
-          val cl = consoleLogUpToLevel[IO](Debug)
+
+        val out = capturedConsoleOutOf {
+          val cl = consoleLogZioUpToLevel(Debug)
 
           (cl.error("error message")
             *> cl.warn("warn message")
             *> cl.info("info message")
-            *> cl.debug("debug message")).unsafeRunSync()
-
-        }).unsafeRunSync()
+            *> cl.debug("debug message"))
+        }
 
         info(out.trim)
 
@@ -232,11 +219,11 @@ final class ConsoleLogWriterTest extends WordSpecLike with Matchers {
       }
 
       "not log trace messages" in {
-        val out = capturedConsoleOutOf({
-          val cl = consoleLogUpToLevel[IO](Debug)
 
-          cl.trace("trace message").unsafeRunSync()
-        }).unsafeRunSync()
+        val out = capturedConsoleOutOf {
+          val cl = consoleLogZioUpToLevel(Debug)
+          cl.trace("trace message")
+        }
 
         out should be(empty)
       }
@@ -245,16 +232,15 @@ final class ConsoleLogWriterTest extends WordSpecLike with Matchers {
     "created with level Trace" should {
 
       "log all the messages" in {
-        val out = capturedConsoleOutOf({
-          val cl = consoleLogUpToLevel[IO](Trace)
+        val out = capturedConsoleOutOf {
+          val cl = consoleLogZioUpToLevel(Trace)
 
           (cl.error("error message")
             *> cl.warn("warn message")
             *> cl.info("info message")
             *> cl.debug("debug message")
-            *> cl.trace("trace message")).unsafeRunSync()
-
-        }).unsafeRunSync()
+            *> cl.trace("trace message"))
+        }
 
         info(out.trim)
 
@@ -275,4 +261,6 @@ final class ConsoleLogWriterTest extends WordSpecLike with Matchers {
       }
     }
   }
+
+  def run(args: List[String]): IO[Nothing, ExitStatus] = ???
 }

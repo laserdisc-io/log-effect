@@ -54,7 +54,9 @@ sealed private[effect] trait LogWriterConstructor0Instances {
         }
     }
 
-  implicit def noOpConstructor0[F[_]](implicit F: Applicative[F]): LogWriterConstructor0[NoOp, F] =
+  implicit def noOpConstructor0[F[_]](
+    implicit F: Applicative[F]
+  ): LogWriterConstructor0[NoOp, F] =
     new LogWriterConstructor0[NoOp, F] {
       def evaluation[LL <: LogLevel]: LL => LogWriter[F] =
         _ =>

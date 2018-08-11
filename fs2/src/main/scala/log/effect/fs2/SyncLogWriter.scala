@@ -1,4 +1,5 @@
-package log.effect.fs2
+package log.effect
+package fs2
 
 import java.util.{ logging => jul }
 
@@ -6,7 +7,6 @@ import cats.Applicative
 import cats.effect.Sync
 import log.effect.LogWriter.{ Console, Jul, Log4s, NoOp }
 import log.effect.internal.EffectSuspension
-import log.effect.{ LogLevel, LogWriter, LogWriterConstructor0, LogWriterConstructor1 }
 import org.{ log4s => l4s }
 
 object SyncLogWriter {
