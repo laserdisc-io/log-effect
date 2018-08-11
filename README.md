@@ -4,8 +4,8 @@
 [![Join the chat at https://gitter.im/laserdisc-io/laserdisc](https://badges.gitter.im/laserdisc-io/laserdisc.svg)](https://gitter.im/laserdisc-io/laserdisc?utm_source=badge&utm_medium=badge&utm_campaign=pr-badge&utm_content=badge)
 [![License: MIT](https://img.shields.io/badge/License-MIT-blue.svg)](https://raw.githubusercontent.com/laserdisc-io/log-effect/master/LICENSE)
 
-[![Maven Central](https://img.shields.io/maven-central/v/io.laserdisc/log-effect-core_2.11.svg?label=core%202.11&colorB=2282c3)](https://maven-badges.herokuapp.com/maven-central/io.laserdisc/log-effect-core_2.11)
-[![Maven Central](https://img.shields.io/maven-central/v/io.laserdisc/log-effect-core_2.12.svg?label=core%202.12&colorB=2282c3)](https://maven-badges.herokuapp.com/maven-central/io.laserdisc/log-effect-core_2.12)
+[![Maven Central](https://img.shields.io/maven-central/v/io.laserdisc/log-effect-core_2.11.svg?label=core%202.11&colorB=9311fc)](https://maven-badges.herokuapp.com/maven-central/io.laserdisc/log-effect-core_2.11)
+[![Maven Central](https://img.shields.io/maven-central/v/io.laserdisc/log-effect-core_2.12.svg?label=core%202.12&colorB=9311fc)](https://maven-badges.herokuapp.com/maven-central/io.laserdisc/log-effect-core_2.12)
 [![Maven Central](https://img.shields.io/maven-central/v/io.laserdisc/log-effect-fs2_2.11.svg?label=fs2%202.11&colorB=2282c3)](https://maven-badges.herokuapp.com/maven-central/io.laserdisc/log-effect-fs2_2.11)
 [![Maven Central](https://img.shields.io/maven-central/v/io.laserdisc/log-effect-fs2_2.12.svg?label=fs2%202.12&colorB=2282c3)](https://maven-badges.herokuapp.com/maven-central/io.laserdisc/log-effect-fs2_2.12)
 [![Maven Central](https://img.shields.io/maven-central/v/io.laserdisc/log-effect-zio_2.11.svg?label=zio%202.11&colorB=fb0005)](https://maven-badges.herokuapp.com/maven-central/io.laserdisc/log-effect-zio_2.11)
@@ -32,20 +32,20 @@ will be enough. For the latest version available for each of the above please re
 
 |                          | Fs2    | Cats Effect | Log Effect Core   |
 | ------------------------:| ------:| -----------:| -----------------:|
-| [![Maven Central](https://img.shields.io/maven-central/v/io.laserdisc/log-effect-fs2_2.12.svg?label=log-effect-fs2&colorB=2282c3)](https://maven-badges.herokuapp.com/maven-central/io.laserdisc/log-effect-fs2_2.12) | 0.10.5 | 0.10.1 | [![Maven Central](https://img.shields.io/maven-central/v/io.laserdisc/log-effect-core_2.12.svg?label=%20&colorB=2282c3)](https://maven-badges.herokuapp.com/maven-central/io.laserdisc/log-effect-core_2.12) |
+| [![Maven Central](https://img.shields.io/maven-central/v/io.laserdisc/log-effect-fs2_2.12.svg?label=log-effect-fs2&colorB=2282c3)](https://maven-badges.herokuapp.com/maven-central/io.laserdisc/log-effect-fs2_2.12) | 0.10.5 | 0.10.1 | [![Maven Central](https://img.shields.io/maven-central/v/io.laserdisc/log-effect-core_2.12.svg?label=%20&colorB=9311fc)](https://maven-badges.herokuapp.com/maven-central/io.laserdisc/log-effect-core_2.12) |
 | v0.1.14 | 0.10.5 |  | v0.1.14 |
 
 <br>
 
 |                          | Scalaz ZIO | Log Effect Core   |
 | ------------------------:| ----------:| -----------------:|
-| [![Maven Central](https://img.shields.io/maven-central/v/io.laserdisc/log-effect-zio_2.12.svg?label=log-effect-zio&colorB=fb0005)](https://maven-badges.herokuapp.com/maven-central/io.laserdisc/log-effect-zio_2.12) | 0.1.0-SNAPSHOT | [![Maven Central](https://img.shields.io/maven-central/v/io.laserdisc/log-effect-core_2.12.svg?label=%20&colorB=2282c3)](https://maven-badges.herokuapp.com/maven-central/io.laserdisc/log-effect-core_2.12) 
+| [![Maven Central](https://img.shields.io/maven-central/v/io.laserdisc/log-effect-zio_2.12.svg?label=log-effect-zio&colorB=fb0005)](https://maven-badges.herokuapp.com/maven-central/io.laserdisc/log-effect-zio_2.12) | 0.1.0-SNAPSHOT | [![Maven Central](https://img.shields.io/maven-central/v/io.laserdisc/log-effect-core_2.12.svg?label=%20&colorB=9311fc)](https://maven-badges.herokuapp.com/maven-central/io.laserdisc/log-effect-core_2.12) 
 
 <br>
 
 |                          | Cats  | Cats Effect | Log4s  |
 | ------------------------:| -----:| -----------:| ------:|
-| [![Maven Central](https://img.shields.io/maven-central/v/io.laserdisc/log-effect-core_2.12.svg?label=log-effect-core&colorB=2282c3)](https://maven-badges.herokuapp.com/maven-central/io.laserdisc/log-effect-core_2.12) | 1.2.0 |  | 1.6.1  |
+| [![Maven Central](https://img.shields.io/maven-central/v/io.laserdisc/log-effect-core_2.12.svg?label=log-effect-core&colorB=9311fc)](https://maven-badges.herokuapp.com/maven-central/io.laserdisc/log-effect-core_2.12) | 1.2.0 |  | 1.6.1  |
 | v0.1.14 | 1.2.0 | 0.10.1      | 1.6.1  |
 
 <br>
@@ -54,9 +54,9 @@ will be enough. For the latest version available for each of the above please re
 
 ### Get Instances
 
-To get an instance of `LogWriter` the following constructors are availble in the companion object
+To get an instance of `LogWriter` for **Cats Effect**'s `Sync`
 ```scala
-import log.effect.LogWriter._
+import log.effect.fs2.SyncLogWriter._
 
 def log4sLog[F[_]: Sync](fa: F[l4s.Logger]): F[LogWriter[F]]
 
@@ -77,9 +77,11 @@ def consoleLogUpToLevel[F[_]]: ConsoleLogPartial[F]
 def noOpLog[F[_]: Applicative]: LogWriter[F]
 ```
 
-and the following for constructing in a streaming application
+To get an instance of `LogWriter` for **Fs2**'s `Stream`
 ```scala
 import log.effect.fs2.Fs2LogWriter._
+
+def log4sLogStream[F[_]: Sync](fa: F[l4s.Logger]): Stream[F, LogWriter[F]]
 
 def log4sLogStream[F[_]: Sync](c: Class[_]): Stream[F, LogWriter[F]]
 
@@ -97,6 +99,32 @@ def consoleLogStreamUpToLevel[F[_]]: ConsoleLogStreamPartial[F]
 
 def noOpLogStream[F[_]: Sync]: Stream[F, LogWriter[F]]
 ```
+*See [here](https://github.com/laserdisc-io/laserdisc#example-usage) for an example whit [Laserdisc](https://github.com/laserdisc-io/laserdisc)*
+
+To get an instance for **Scalaz ZIO**'s `IO` use the ones below
+```scala
+import log.effect.zio.ZioLogWriter._
+
+def log4sLogZio(fa: ExIO[l4s.Logger]): ExIO[LogWriter[ExIO]]
+
+def log4sLogZio(c: Class[_]): ExIO[LogWriter[ExIO]]
+
+def log4sLogZio[F[_]](n: String): ExIO[LogWriter[ExIO]]
+
+def julLogZio[F[_]](fa: ExIO[jul.Logger]): ExIO[LogWriter[ExIO]]
+
+def consoleLogZio: LogWriter[IO[IOException, ?]]
+
+// for a console logger that will write only up to the specified level 
+// 
+// val log = consoleLogZioUpToLevel(LogLevels.Info)
+// 
+def consoleLogZioUpToLevel: ConsoleLogZioPartial
+
+def noOpLogZio: LogWriter[IO[Nothing, ?]]
+```
+where `ExIO` is defined as `IO[Exception, ?]`
+
 
 ### Submit Logs
 
