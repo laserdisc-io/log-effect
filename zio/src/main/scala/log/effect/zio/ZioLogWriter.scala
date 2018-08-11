@@ -12,25 +12,25 @@ import scalaz.zio.IO
 
 object ZioLogWriter {
 
-  type ExceptionZIO[A] = IO[Exception, A]
+  type ExIO[A] = IO[Exception, A]
 
-  def log4sLogZio(fa: ExceptionZIO[l4s.Logger]): ExceptionZIO[LogWriter[ExceptionZIO]] = {
-    val constructor = LogWriterConstructor1[ExceptionZIO](Log4s)
+  def log4sLogZio(fa: ExIO[l4s.Logger]): ExIO[LogWriter[ExIO]] = {
+    val constructor = LogWriterConstructor1[ExIO](Log4s)
     constructor(fa)
   }
 
-  def log4sLogZio(c: Class[_]): ExceptionZIO[LogWriter[ExceptionZIO]] = {
-    val constructor = LogWriterConstructor1[ExceptionZIO](Log4s)
+  def log4sLogZio(c: Class[_]): ExIO[LogWriter[ExIO]] = {
+    val constructor = LogWriterConstructor1[ExIO](Log4s)
     constructor(IO.sync(l4s.getLogger(c)))
   }
 
-  def log4sLogZio[F[_]](n: String): ExceptionZIO[LogWriter[ExceptionZIO]] = {
-    val constructor = LogWriterConstructor1[ExceptionZIO](Log4s)
+  def log4sLogZio[F[_]](n: String): ExIO[LogWriter[ExIO]] = {
+    val constructor = LogWriterConstructor1[ExIO](Log4s)
     constructor(IO.sync(l4s.getLogger(n)))
   }
 
-  def julLogZio[F[_]](fa: ExceptionZIO[jul.Logger]): ExceptionZIO[LogWriter[ExceptionZIO]] = {
-    val constructor = LogWriterConstructor1[ExceptionZIO](Jul)
+  def julLogZio[F[_]](fa: ExIO[jul.Logger]): ExIO[LogWriter[ExIO]] = {
+    val constructor = LogWriterConstructor1[ExIO](Jul)
     constructor(fa)
   }
 
