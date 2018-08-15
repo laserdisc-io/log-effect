@@ -10,7 +10,7 @@ object LogLevel extends LogLevelSyntax {
 
   import LogLevels._
 
-  implicit private[effect] val logLevelShow: Show[LogLevel] =
+  implicit val logLevelShow: Show[LogLevel] =
     new Show[LogLevel] {
       def show(t: LogLevel): String =
         t match {
@@ -22,7 +22,7 @@ object LogLevel extends LogLevelSyntax {
         }
     }
 
-  implicit private[effect] val logLevelOrdering: Ordering[LogLevel] =
+  implicit val logLevelOrdering: Ordering[LogLevel] =
     new Ordering[LogLevel] {
       def compare(x: LogLevel, y: LogLevel): Int =
         x match {
