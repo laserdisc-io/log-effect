@@ -8,7 +8,7 @@ import scalaz.zio.IO
 
 final class ConsoleLogWriterTest extends WordSpecLike with Matchers with zio.App {
 
-  private def capturedConsoleOutOf[A](write: IO[Exception, Unit]): String = {
+  private def capturedConsoleOutOf(write: IO[Exception, Unit]): String = {
     val lowerStream = new ByteArrayOutputStream()
     val outStream   = new PrintStream(lowerStream)
 
