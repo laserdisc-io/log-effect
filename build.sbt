@@ -46,9 +46,9 @@ lazy val scala212Options = Seq(
   */
 lazy val versionOf = new {
   val cats          = "1.2.0"
-  val catsEffect    = "0.10.1"
+  val catsEffect    = "1.0.0-RC3"
   val log4s         = "1.6.1"
-  val fs2           = "0.10.5"
+  val fs2           = "1.0.0-M4"
   val zio           = "0.1.0-SNAPSHOT"
   val scalaCheck    = "1.14.0"
   val scalaTest     = "3.0.5"
@@ -61,8 +61,7 @@ lazy val sharedDependencies = Seq(
 ) map (_.withSources)
 
 lazy val coreDependencies = Seq(
-  "org.typelevel" %% "cats-core" % versionOf.cats,
-  "org.log4s"     %% "log4s"     % versionOf.log4s,
+  "org.log4s" %% "log4s" % versionOf.log4s,
 ) map (_.withSources)
 
 lazy val fs2Dependencies = Seq(

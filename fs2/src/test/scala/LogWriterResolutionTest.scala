@@ -7,46 +7,44 @@ final class LogWriterResolutionTest extends WordSpecLike with Matchers {
     "correctly infer a valid log4s constructor for an F[_] given an implicit evidence of Sync[F]" in {
 
       """
-        |import cats.Functor
         |import cats.effect.Sync
-        |import log.effect.internal.EffectSuspension
-        |import log.effect.LogWriter
-        |import log.effect.fs2.SyncLogWriter.log4sLog
         |import log.effect.LogWriter.Log4s
-        |import log.effect.LogWriterConstructor1
+        |import log.effect.{ LogWriter, LogWriterConstructor1 }
+        |import log.effect.fs2.SyncLogWriter.log4sLog
+        |import log.effect.internal.{ EffectSuspension, Functor }
         |
         |def c[F[_]]: F[org.log4s.Logger] => F[LogWriter[F]] = {
         |  implicit val F: EffectSuspension[F] = ???
-        |  implicit val FF: Functor[F] = ???
+        |  implicit val FF: Functor[F]         = ???
         |  LogWriterConstructor1[F](Log4s)
         |}
         |
         |def l[F[_]](implicit F: Sync[F]): F[LogWriter[F]] = c(F.delay(org.log4s.getLogger("test")))
         |
-        |def l1[F[_]](implicit F: Sync[F]): F[LogWriter[F]] = log4sLog(F.delay(org.log4s.getLogger("test")))
+        |def l1[F[_]](implicit F: Sync[F]): F[LogWriter[F]] =
+        |  log4sLog(F.delay(org.log4s.getLogger("test")))
       """.stripMargin should compile
     }
 
     "correctly infer a valid jul constructor for an F[_] given an implicit evidence of Sync[F]" in {
 
       """
-        |import cats.Functor
         |import cats.effect.Sync
-        |import log.effect.LogWriter
         |import log.effect.LogWriter.Jul
-        |import log.effect.internal.EffectSuspension
+        |import log.effect.{ LogWriter, LogWriterConstructor1 }
         |import log.effect.fs2.SyncLogWriter.julLog
-        |import log.effect.LogWriterConstructor1
+        |import log.effect.internal.{ EffectSuspension, Functor }
         |
         |def c[F[_]]: F[java.util.logging.Logger] => F[LogWriter[F]] = {
         |  implicit val F: EffectSuspension[F] = ???
-        |  implicit val FF: Functor[F] = ???
+        |  implicit val FF: Functor[F]         = ???
         |  LogWriterConstructor1[F](Jul)
         |}
         |
         |def l[F[_]](implicit F: Sync[F]): F[LogWriter[F]] = c(F.delay(java.util.logging.Logger.getGlobal))
         |
-        |def l1[F[_]](implicit F: Sync[F]): F[LogWriter[F]] = julLog(F.delay(java.util.logging.Logger.getGlobal))
+        |def l1[F[_]](implicit F: Sync[F]): F[LogWriter[F]] =
+        |  julLog(F.delay(java.util.logging.Logger.getGlobal))
       """.stripMargin should compile
     }
 
@@ -103,13 +101,13 @@ final class LogWriterResolutionTest extends WordSpecLike with Matchers {
 
       """
         |import cats.Applicative
-        |import log.effect.LogWriter
-        |import log.effect.fs2.SyncLogWriter.noOpLog
         |import log.effect.LogWriter.NoOp
-        |import log.effect.LogWriterConstructor0
+        |import log.effect.{ LogWriter, LogWriterConstructor0 }
+        |import log.effect.fs2.SyncLogWriter.noOpLog
+        |import log.effect.internal.NoAction
         |
         |def c[F[_]]: () => LogWriter[F] = {
-        |  implicit val F: Applicative[F] = ???
+        |  implicit val F: NoAction[F] = ???
         |  LogWriterConstructor0[F](NoOp)
         |}
         |
@@ -124,11 +122,10 @@ final class LogWriterResolutionTest extends WordSpecLike with Matchers {
       """
         |import cats.effect.Sync
         |import log.effect.LogLevels.Info
-        |import log.effect.LogWriter
-        |import log.effect.internal.EffectSuspension
-        |import log.effect.fs2.SyncLogWriter.consoleLogUpToLevel
         |import log.effect.LogWriter.Console
-        |import log.effect.LogWriterConstructor0
+        |import log.effect.{LogWriter, LogWriterConstructor0}
+        |import log.effect.fs2.SyncLogWriter.consoleLogUpToLevel
+        |import log.effect.internal.EffectSuspension
         |
         |def c[F[_]]: () => LogWriter[F] = {
         |  implicit val F: EffectSuspension[F] = ???
@@ -144,15 +141,13 @@ final class LogWriterResolutionTest extends WordSpecLike with Matchers {
     "correctly infer a valid no-op constructor for an F[_] with a minimum level" in {
 
       """
-        |import cats.Applicative
         |import log.effect.LogLevels.Info
-        |import log.effect.LogWriter
-        |import log.effect.fs2.SyncLogWriter.noOpLog
         |import log.effect.LogWriter.NoOp
-        |import log.effect.LogWriterConstructor0
+        |import log.effect.{ LogWriter, LogWriterConstructor0 }
+        |import log.effect.internal.NoAction
         |
         |def c[F[_]]: () => LogWriter[F] = {
-        |  implicit val F: Applicative[F] = ???
+        |  implicit val F: NoAction[F] = ???
         |  LogWriterConstructor0[F](NoOp, Info)
         |}
         |
@@ -167,19 +162,20 @@ final class LogWriterResolutionTest extends WordSpecLike with Matchers {
 
       """
         |import cats.effect.IO
-        |import log.effect.LogWriter
-        |import log.effect.internal.EffectSuspension
-        |import log.effect.fs2.SyncLogWriter.log4sLog
         |import log.effect.LogWriter.Log4s
-        |import log.effect.LogWriterConstructor1
+        |import log.effect.{ LogWriter, LogWriterConstructor1 }
+        |import log.effect.fs2.SyncLogWriter.log4sLog
+        |import log.effect.internal.{ EffectSuspension, Functor }
         |
-        |implicit val F: EffectSuspension[IO] =
-        |  new EffectSuspension[IO] {
-        |    def suspend[A](a: => A): IO[A] = IO(a)
-        |  }
+        |{
+        |  implicit val F: EffectSuspension[IO] = ???
+        |  implicit val FF: Functor[IO]         = ???
         |
-        |val c: IO[org.log4s.Logger] => IO[LogWriter[IO]] = LogWriterConstructor1[IO](Log4s)
-        |val l: IO[LogWriter[IO]] = c(IO(org.log4s.getLogger("test")))
+        |  val c: IO[org.log4s.Logger] => IO[LogWriter[IO]] =
+        |    LogWriterConstructor1[IO](Log4s)
+        |
+        |  val l: IO[LogWriter[IO]] = c(IO(org.log4s.getLogger("test")))
+        |}
         |
         |val l1: IO[LogWriter[IO]] = log4sLog(IO(org.log4s.getLogger("test")))
       """.stripMargin should compile
@@ -189,19 +185,20 @@ final class LogWriterResolutionTest extends WordSpecLike with Matchers {
 
       """
         |import cats.effect.IO
-        |import log.effect.LogWriter
-        |import log.effect.internal.EffectSuspension
-        |import log.effect.fs2.SyncLogWriter.julLog
         |import log.effect.LogWriter.Jul
-        |import log.effect.LogWriterConstructor1
+        |import log.effect.{ LogWriter, LogWriterConstructor1 }
+        |import log.effect.fs2.SyncLogWriter.julLog
+        |import log.effect.internal.{ EffectSuspension, Functor }
         |
-        |implicit val F: EffectSuspension[IO] =
-        |  new EffectSuspension[IO] {
-        |    def suspend[A](a: => A): IO[A] = IO(a)
-        |  }
+        |{
+        |  implicit val F: EffectSuspension[IO] = ???
+        |  implicit val FF: Functor[IO]         = ???
         |
-        |val c: IO[java.util.logging.Logger] => IO[LogWriter[IO]] = LogWriterConstructor1[IO](Jul)
-        |val l: IO[LogWriter[IO]] = c(IO(java.util.logging.Logger.getGlobal))
+        |  val c: IO[java.util.logging.Logger] => IO[LogWriter[IO]] =
+        |    LogWriterConstructor1[IO](Jul)
+        |
+        |  val l: IO[LogWriter[IO]] = c(IO(java.util.logging.Logger.getGlobal))
+        |}
         |
         |val l1: IO[LogWriter[IO]] = julLog(IO(java.util.logging.Logger.getGlobal))
       """.stripMargin should compile
@@ -214,21 +211,19 @@ final class LogWriterResolutionTest extends WordSpecLike with Matchers {
 
       """
         |import cats.effect.IO
-        |import log.effect.LogWriter
-        |import log.effect.internal.EffectSuspension
-        |import log.effect.fs2.SyncLogWriter.consoleLog
-        |import log.effect.LogWriter.Console
-        |import log.effect.LogWriterConstructor0
+        |  import log.effect.LogWriter.Console
+        |  import log.effect.{ LogWriter, LogWriterConstructor0 }
+        |  import log.effect.fs2.SyncLogWriter.consoleLog
+        |  import log.effect.internal.EffectSuspension
         |
-        |implicit val F: EffectSuspension[IO] =
-        |  new EffectSuspension[IO] {
-        |    def suspend[A](a: => A): IO[A] = IO(a)
+        |  {
+        |    implicit val F: EffectSuspension[IO] = ???
+        |
+        |    val c: () => LogWriter[IO] = LogWriterConstructor0[IO](Console)
+        |    val l: LogWriter[IO]       = c()
         |  }
         |
-        |val c: () => LogWriter[IO] = LogWriterConstructor0[IO](Console)
-        |val l: LogWriter[IO] = c()
-        |
-        |val l1: LogWriter[IO] = consoleLog[IO]
+        |  val l1: LogWriter[IO] = consoleLog[IO]
       """.stripMargin should compile
     }
 
@@ -236,15 +231,55 @@ final class LogWriterResolutionTest extends WordSpecLike with Matchers {
 
       """
         |import cats.effect.IO
-        |import log.effect.LogWriter
-        |import log.effect.fs2.SyncLogWriter.noOpLog
         |import log.effect.LogWriter.NoOp
-        |import log.effect.LogWriterConstructor0
+        |import log.effect.{ LogWriter, LogWriterConstructor0 }
+        |import log.effect.fs2.SyncLogWriter.noOpLog
+        |import log.effect.internal.NoAction
         |
-        |val c: () => LogWriter[IO] = LogWriterConstructor0[IO](NoOp)
-        |val l: LogWriter[IO] = c()
+        |{
+        |  implicit val F: NoAction[IO] = ???
+        |
+        |  val c: () => LogWriter[IO] =
+        |    LogWriterConstructor0[IO](NoOp)
+        |
+        |  val l: LogWriter[IO] = c()
+        |}
         |
         |val l1: LogWriter[IO] = noOpLog[IO]
+      """.stripMargin should compile
+    }
+  }
+
+  "the LogWriter's mtl style" should {
+
+    "infer the internal log when a cats.Show is present and the implicits are imported" in {
+      """
+        |import cats.Show
+        |import cats.effect.Sync
+        |import cats.syntax.apply._
+        |import log.effect.LogLevels.{ Debug, Error }
+        |import log.effect.LogWriter
+        |import log.effect.LogWriter.Failure
+        |import log.effect.fs2.implicits._
+        |
+        |def double[F[_]: Sync: LogWriter](source: fs2.Stream[F, Int]): fs2.Stream[F, Int] = {
+        |
+        |  // Show instances are needed for every logged type
+        |  implicit def addressShow: Show[Int] = ???
+        |
+        |  source evalMap (
+        |    n =>
+        |      LogWriter.write(Debug, "Processing a number") *>
+        |        LogWriter.write(Debug, n) *>
+        |        Sync[F].pure(n * 2) <*
+        |        LogWriter.write(Debug, "Processed")
+        |  ) handleErrorWith (
+        |    th =>
+        |      fs2.Stream.eval(
+        |        LogWriter.write(Error, Failure("Ops, something didn't work", th)) *> Sync[F].pure(0)
+        |      )
+        |  )
+        |}
       """.stripMargin should compile
     }
   }

@@ -6,7 +6,7 @@ import java.util.{ logging => jul }
 import cats.Applicative
 import cats.effect.Sync
 import log.effect.LogWriter.{ Console, Jul, Log4s, NoOp }
-import log.effect.internal.EffectSuspension
+import log.effect.internal.{ EffectSuspension, NoAction }
 import org.{ log4s => l4s }
 
 object SyncLogWriter {
@@ -52,8 +52,20 @@ object SyncLogWriter {
     constructor()
   }
 
-  implicit final private def syncInstance[F[_]](implicit F: Sync[F]): EffectSuspension[F] =
+  implicit final private def syncInstances[F[_]](implicit F: Sync[F]): EffectSuspension[F] =
     new EffectSuspension[F] {
-      def suspend[A](a: =>A): F[A] = F.delay(a)
+      def suspend[A](a: =>A): F[A] = F delay a
+    }
+
+  implicit final private def functorInstances[F[_]](
+    implicit F: cats.Functor[F]
+  ): internal.Functor[F] =
+    new internal.Functor[F] {
+      def fmap[A, B](f: A => B): F[A] => F[B] = F lift f
+    }
+
+  implicit final private def noActionInstances[F[_]](implicit F: Applicative[F]): NoAction[F] =
+    new NoAction[F] {
+      def unit: F[Unit] = F.unit
     }
 }

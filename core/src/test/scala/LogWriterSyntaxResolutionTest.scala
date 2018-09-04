@@ -34,9 +34,8 @@ final class LogWriterSyntaxResolutionTest extends WordSpecLike with Matchers {
     "be inferred allowing a boilerplate free mtl-style syntax" in {
 
       """
-        |import log.effect.LogWriter
         |import log.effect.LogLevels.Trace
-        |import cats.instances.string.catsStdShowForString
+        |import log.effect.LogWriter
         |
         |def f[F[_]: LogWriter] = LogWriter.write(Trace, "test")
       """.stripMargin should compile
@@ -45,10 +44,9 @@ final class LogWriterSyntaxResolutionTest extends WordSpecLike with Matchers {
     "be inferred allowing a boilerplate free mtl-style syntax for errors" in {
 
       """
-        |import log.effect.LogWriter
         |import log.effect.LogLevels.Error
+        |import log.effect.LogWriter
         |import log.effect.LogWriter.Failure
-        |import cats.instances.string.catsStdShowForString
         |
         |def f[F[_]: LogWriter] = LogWriter.write(Error, Failure("test", new Exception("test exception")))
       """.stripMargin should compile

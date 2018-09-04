@@ -1,8 +1,8 @@
 package log.effect
 
-import cats.Show
 import com.github.ghik.silencer.silent
 import log.effect.LogWriter.Failure
+import log.effect.internal.Show
 
 import scala.language.implicitConversions
 
@@ -58,7 +58,6 @@ sealed private[effect] trait LogWriterSyntax {
 final private[effect] class LogWriterOps[F[_]](private val aLogger: LogWriter[F]) extends AnyVal {
 
   import LogLevels._
-  import cats.instances.string._
 
   @inline def trace(msg: =>String): F[Unit] =
     aLogger.write(Trace, msg)

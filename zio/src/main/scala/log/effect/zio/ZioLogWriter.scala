@@ -4,9 +4,8 @@ package zio
 import java.io.IOException
 import java.util.{ logging => jul }
 
-import cats.Applicative
 import log.effect.LogWriter.{ Console, Jul, Log4s, NoOp }
-import log.effect.internal.EffectSuspension
+import log.effect.internal.{ EffectSuspension, NoAction }
 import org.{ log4s => l4s }
 import scalaz.zio.IO
 
@@ -59,10 +58,13 @@ object ZioLogWriter {
       def suspend[A](a: =>A): IO[E, A] = IO.sync(a)
     }
 
-  implicit final private def zioApplicative[E]: Applicative[IO[E, ?]] =
-    new Applicative[IO[E, ?]] {
-      def pure[A](x: A): IO[E, A] = IO.now(x)
-      def ap[A, B](ff: IO[E, A => B])(fa: IO[E, A]): IO[E, B] =
-        fa flatMap (a => ff map (f => f(a)))
+  implicit final private def functorInstances[E]: internal.Functor[IO[E, ?]] =
+    new internal.Functor[IO[E, ?]] {
+      def fmap[A, B](f: A => B): IO[E, A] => IO[E, B] = _ map f
+    }
+
+  implicit final private def noActionInstances[E]: NoAction[IO[E, ?]] =
+    new NoAction[IO[E, ?]] {
+      def unit: IO[E, Unit] = IO.unit
     }
 }

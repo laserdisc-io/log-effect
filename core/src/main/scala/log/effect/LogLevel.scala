@@ -1,7 +1,7 @@
 package log.effect
 
-import cats.Show
 import com.github.ghik.silencer.silent
+import log.effect.internal.Show
 
 import scala.language.implicitConversions
 

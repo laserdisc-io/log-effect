@@ -2,12 +2,10 @@ package log.effect
 
 import java.util.{ logging => jul }
 
-import cats.syntax.functor._
-import cats.syntax.show._
-import cats.{ Functor, Show }
 import com.github.ghik.silencer.silent
 import log.effect.LogWriter.{ Failure, Jul, Log4s }
-import log.effect.internal.EffectSuspension
+import log.effect.internal.syntax._
+import log.effect.internal.{ EffectSuspension, Functor, Show }
 import org.{ log4s => l4s }
 
 sealed trait LogWriterConstructor1[T, F[_]] {

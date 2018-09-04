@@ -32,8 +32,9 @@ will be enough. For the latest version available for each of the above please re
 
 |                          | Fs2    | Cats Effect | Log Effect Core   |
 | ------------------------:| ------:| -----------:| -----------------:|
-| [![Maven Central](https://img.shields.io/maven-central/v/io.laserdisc/log-effect-fs2_2.12.svg?label=log-effect-fs2&colorB=2282c3)](https://maven-badges.herokuapp.com/maven-central/io.laserdisc/log-effect-fs2_2.12) | 0.10.5 | 0.10.1 | [![Maven Central](https://img.shields.io/maven-central/v/io.laserdisc/log-effect-core_2.12.svg?label=%20&colorB=9311fc)](https://maven-badges.herokuapp.com/maven-central/io.laserdisc/log-effect-core_2.12) |
-| v0.1.14 | 0.10.5 |  | v0.1.14 |
+| [![Maven Central](https://img.shields.io/maven-central/v/io.laserdisc/log-effect-fs2_2.12.svg?label=log-effect-fs2&colorB=2282c3)](https://maven-badges.herokuapp.com/maven-central/io.laserdisc/log-effect-fs2_2.12) | 1.0.0-M4 | 1.0.0-RC3 | [![Maven Central](https://img.shields.io/maven-central/v/io.laserdisc/log-effect-core_2.12.svg?label=%20&colorB=9311fc)](https://maven-badges.herokuapp.com/maven-central/io.laserdisc/log-effect-core_2.12) |
+| v0.2.2  | 0.10.5 | 0.10.1 | v0.2.2  |
+| v0.1.14 | 0.10.5 |        | v0.1.14 |
 
 <br>
 
@@ -45,7 +46,8 @@ will be enough. For the latest version available for each of the above please re
 
 |                          | Cats  | Cats Effect | Log4s  |
 | ------------------------:| -----:| -----------:| ------:|
-| [![Maven Central](https://img.shields.io/maven-central/v/io.laserdisc/log-effect-core_2.12.svg?label=log-effect-core&colorB=9311fc)](https://maven-badges.herokuapp.com/maven-central/io.laserdisc/log-effect-core_2.12) | 1.2.0 |  | 1.6.1  |
+| [![Maven Central](https://img.shields.io/maven-central/v/io.laserdisc/log-effect-core_2.12.svg?label=log-effect-core&colorB=9311fc)](https://maven-badges.herokuapp.com/maven-central/io.laserdisc/log-effect-core_2.12) |  |  | 1.6.1  |
+| v0.2.2  | 1.2.0 |             | 1.6.1  |
 | v0.1.14 | 1.2.0 | 0.10.1      | 1.6.1  |
 
 <br>
@@ -181,6 +183,7 @@ import cats.syntax.either._
 import cats.instances.string._
 import LogWriter.{Debug, Error, Failure}
 import laserdisc.fs2.{RedisAddress, RedisClient}
+import log.effect.fs2.implicits._
 
 type |[A, B] = Either[A, B]
 
@@ -207,6 +210,35 @@ def redisClient[F[_]: Effect: LogWriter](address: RedisAddress): Stream[F, Throw
   )
 }
 ```
+```scala
+import cats.Show
+import cats.effect.Sync
+import cats.syntax.apply._
+import log.effect.LogLevels.{ Debug, Error }
+import log.effect.LogWriter
+import log.effect.LogWriter.Failure
+import log.effect.fs2.implicits._
+
+def double[F[_]: Sync: LogWriter](source: fs2.Stream[F, Int]): fs2.Stream[F, Int] = {
+
+  // Show instances are needed for every logged type
+  implicit def addressShow: Show[Int] = ???
+
+  source evalMap (
+    n =>
+      LogWriter.write(Debug, "Processing a number") *>
+        LogWriter.write(Debug, n) *>
+        Sync[F].pure(n * 2) <*
+        LogWriter.write(Debug, "Processed")
+  ) handleErrorWith (
+    th =>
+      fs2.Stream.eval(
+        LogWriter.write(Error, Failure("Ops, something didn't work", th)) *> Sync[F].pure(0)
+      )
+  )
+}
+```
+**NB:** notice the `import log.effect.fs2.implicits._`. It's needed to summon an `internal.Show` instance given the `cats.Show`.
 
 <br>
 

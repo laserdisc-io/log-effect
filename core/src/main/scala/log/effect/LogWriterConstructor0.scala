@@ -1,10 +1,9 @@
 package log.effect
 
-import cats.syntax.show._
-import cats.{ Applicative, Show }
 import com.github.ghik.silencer.silent
 import log.effect.LogWriter.{ Console, NoOp }
-import log.effect.internal.EffectSuspension
+import log.effect.internal.syntax._
+import log.effect.internal.{ EffectSuspension, NoAction, Show }
 
 trait LogWriterConstructor0[T, F[_]] {
 
@@ -55,7 +54,7 @@ sealed private[effect] trait LogWriterConstructor0Instances {
     }
 
   implicit def noOpConstructor0[F[_]](
-    implicit F: Applicative[F]
+    implicit F: NoAction[F]
   ): LogWriterConstructor0[NoOp, F] =
     new LogWriterConstructor0[NoOp, F] {
       def evaluation[LL <: LogLevel]: LL => LogWriter[F] =
