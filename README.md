@@ -222,7 +222,7 @@ import log.effect.fs2.implicits._
 def double[F[_]: Sync: LogWriter](source: fs2.Stream[F, Int]): fs2.Stream[F, Int] = {
 
   // Show instances are needed for every logged type
-  implicit def addressShow: Show[Int] = ???
+  implicit def intShow: Show[Int] = ???
 
   source evalMap (
     n =>
