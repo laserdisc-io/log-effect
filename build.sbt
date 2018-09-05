@@ -48,7 +48,7 @@ lazy val versionOf = new {
   val catsEffect    = "1.0.0-RC3"
   val log4s         = "1.6.1"
   val fs2           = "1.0.0-M4"
-  val zio           = "0.1.0-SNAPSHOT"
+  val zio           = "0.2.6"
   val scalaCheck    = "1.14.0"
   val scalaTest     = "3.0.5"
   val kindProjector = "0.9.7"
@@ -186,6 +186,5 @@ lazy val zio = project
   .settings(releaseSettings)
   .settings(
     name                := "log-effect-zio",
-    resolvers           += Resolver.sonatypeRepo("snapshots"),
     libraryDependencies ++= zioDependencies
   )
