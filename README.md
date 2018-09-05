@@ -26,7 +26,7 @@ for **Scalaz ZIO**. If the intention is to create your own instance for the type
 ```scala
 libraryDependencies += "io.laserdisc" %% "log-effect-core" % <latest-core-version>
 ```
-will be enough. For the latest version available for each of the above please refer to the badges below the title.
+will be enough. For the latest versions available please refer to the badges below the title.
 
 ## Dependencies
 
