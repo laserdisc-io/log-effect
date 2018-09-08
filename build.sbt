@@ -45,10 +45,10 @@ lazy val scala212Options = Seq(
   * Dependencies
   */
 lazy val versionOf = new {
-  val catsEffect    = "1.0.0-RC3"
+  val catsEffect    = "1.0.0"
   val log4s         = "1.6.1"
   val fs2           = "1.0.0-M4"
-  val zio           = "0.2.6"
+  val zio           = "0.2.7"
   val scalaCheck    = "1.14.0"
   val scalaTest     = "3.0.5"
   val kindProjector = "0.9.7"
