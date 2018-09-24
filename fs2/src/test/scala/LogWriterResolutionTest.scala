@@ -252,6 +252,30 @@ final class LogWriterResolutionTest extends WordSpecLike with Matchers {
 
   "the LogWriter's mtl style" should {
 
+    "infer the syntax methods when there is a LogWriter's evidence" in {
+      """
+        |import cats.effect.Sync
+        |import cats.syntax.apply._
+        |import log.effect.LogWriter
+        |
+        |def double[F[_]: Sync: LogWriter](source: fs2.Stream[F, Int]): fs2.Stream[F, Int] = {
+        |
+        |  source evalMap (
+        |    n =>
+        |      LogWriter.debug("Processing a number") *>
+        |        LogWriter.debug(n.toString) *>
+        |        Sync[F].pure(n * 2) <*
+        |        LogWriter.debug("Processed")
+        |  ) handleErrorWith (
+        |    th =>
+        |      fs2.Stream.eval(
+        |        LogWriter.error("Ops, something didn't work", th) *> Sync[F].pure(0)
+        |      )
+        |  )
+        |}
+      """.stripMargin should compile
+    }
+
     "infer the internal log when a cats.Show is present and the implicits are imported" in {
       """
         |import cats.Show

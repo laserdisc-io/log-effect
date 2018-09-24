@@ -175,7 +175,28 @@ def redisCache[F[_]: Effect](address: RedisAddress)(implicit log: LogWriter[F]):
   } yield client
 ```
 
-or through the mtl style syntax for the singleton type of the companion and the `write` method (notice the `write` method called on the `LogWriter`'s companion object)
+or through the mtl style syntax for the singleton type of the companion and the `write` method (notice the syntax or the `write` method called on the `LogWriter`'s companion object)
+```scala
+import cats.effect.Sync
+import cats.syntax.apply._
+import log.effect.LogWriter
+
+def double[F[_]: Sync: LogWriter](source: fs2.Stream[F, Int]): fs2.Stream[F, Int] = {
+
+  source evalMap (
+    n =>
+      LogWriter.debug("Processing a number") *>
+        LogWriter.debug(n.toString) *>
+        Sync[F].pure(n * 2) <*
+        LogWriter.debug("Processed")
+  ) handleErrorWith (
+    th =>
+      fs2.Stream.eval(
+        LogWriter.error("Ops, something didn't work", th) *> Sync[F].pure(0)
+      )
+  )
+}
+```
 ```scala
 import cats.Show
 import cats.syntax.apply._
@@ -238,7 +259,7 @@ def double[F[_]: Sync: LogWriter](source: fs2.Stream[F, Int]): fs2.Stream[F, Int
   )
 }
 ```
-**NB:** notice the `import log.effect.fs2.implicits._`. It's needed to summon an `internal.Show` instance given the `cats.Show`.
+**NB:** notice the `LogWriter`'s implicit evidence given as context bound and the `import log.effect.fs2.implicits._`. The latter is needed to summon an `internal.Show` instance given the `cats.Show`.
 
 <br>
 

@@ -48,6 +48,10 @@ sealed private[effect] trait LogWriterAliasingSyntax {
   @silent implicit def logWriterSingleton[F[_]](co: LogWriter.type)(
     implicit LW: LogWriter[F]
   ): LogWriter[F] = LW
+
+  @silent implicit def logWriterOpsSingleton[F[_]](co: LogWriter.type)(
+    implicit LW: LogWriter[F]
+  ): LogWriterOps[F] = new LogWriterOps(LW)
 }
 
 sealed private[effect] trait LogWriterSyntax {
