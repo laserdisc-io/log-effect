@@ -45,6 +45,7 @@ lazy val scala212Options = Seq(
   * Dependencies
   */
 lazy val versionOf = new {
+  val cats          = "1.4.0"
   val catsEffect    = "1.0.0"
   val log4s         = "1.6.1"
   val fs2           = "1.0.0-M5"
@@ -64,11 +65,14 @@ lazy val coreDependencies = Seq(
 ) map (_.withSources)
 
 lazy val fs2Dependencies = Seq(
+  "org.log4s"     %% "log4s"       % versionOf.log4s,
+  "org.typelevel" %% "cats-core"   % versionOf.cats,
   "org.typelevel" %% "cats-effect" % versionOf.catsEffect,
   "co.fs2"        %% "fs2-core"    % versionOf.fs2
 ) map (_.withSources)
 
 lazy val zioDependencies = Seq(
+  "org.log4s"  %% "log4s"      % versionOf.log4s,
   "org.scalaz" %% "scalaz-zio" % versionOf.zio changing ()
 ) map (_.withSources)
 
@@ -88,17 +92,18 @@ lazy val compilerPluginsDependencies = Seq(
   * Settings
   */
 lazy val crossBuildSettings = Seq(
-  scalaVersion              := `scala 212`,
-  crossScalaVersions        := Seq(`scala 211`, `scala 212`),
-  scalacOptions             ++= crossBuildOptions,
-  libraryDependencies       ++= sharedDependencies ++ testDependencies ++ compilerPluginsDependencies,
-  organization              := "io.laserdisc",
-  parallelExecution in Test := false,
+  scalaVersion        := `scala 212`,
+  crossScalaVersions  := Seq(`scala 211`, `scala 212`),
+  scalacOptions       ++= crossBuildOptions,
+  libraryDependencies ++= sharedDependencies ++ testDependencies ++ compilerPluginsDependencies,
+  organization        := "io.laserdisc",
+  parallelExecution   in Test := false,
   scalacOptions ++=
     (scalaVersion.value match {
       case `scala 212` => scala212Options
       case _           => Seq()
-    })
+    }),
+  parallelExecution in Test := false
 )
 
 lazy val releaseSettings: Seq[Def.Setting[_]] = Seq(
@@ -120,7 +125,7 @@ lazy val releaseSettings: Seq[Def.Setting[_]] = Seq(
   publishMavenStyle             := true,
   credentials                   := Credentials(Path.userHome / ".ivy2" / ".credentials") :: Nil,
   releasePublishArtifactsAction := PgpKeys.publishSigned.value,
-  publishArtifact in Test       := false,
+  publishArtifact               in Test := false,
   pomIncludeRepository := { _ =>
     false
   },
@@ -157,7 +162,7 @@ lazy val root = project
       "checkFormat",
       ";scalafmtCheck;test:scalafmtCheck;scalafmtSbtCheck"
     ),
-    addCommandAlias("fullCiBuild", ";checkFormat;clean;test"),
+    addCommandAlias("fullCiBuild", ";checkFormat;undeclaredCompileDependenciesTest;clean;test"),
   )
 
 lazy val core = project
