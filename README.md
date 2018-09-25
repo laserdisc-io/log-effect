@@ -175,7 +175,7 @@ def redisCache[F[_]: Effect](address: RedisAddress)(implicit log: LogWriter[F]):
   } yield client
 ```
 
-or through the mtl style syntax for the singleton type of the companion and the `write` method (notice the syntax or the `write` method called on the `LogWriter`'s companion object)
+or through the mtl style syntax for the singleton type of the companion (notice the syntax or the `write` method called on the `LogWriter`'s companion object)
 ```scala
 import cats.effect.Sync
 import cats.syntax.apply._
