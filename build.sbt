@@ -56,12 +56,9 @@ lazy val versionOf = new {
   val silencer      = "1.2"
 }
 
-lazy val sharedDependencies = Seq(
-  "com.github.ghik" %% "silencer-lib" % versionOf.silencer
-) map (_.withSources)
-
 lazy val coreDependencies = Seq(
-  "org.log4s" %% "log4s" % versionOf.log4s,
+  "com.github.ghik" %% "silencer-lib" % versionOf.silencer,
+  "org.log4s"       %% "log4s"        % versionOf.log4s,
 ) map (_.withSources)
 
 lazy val fs2Dependencies = Seq(
@@ -95,7 +92,7 @@ lazy val crossBuildSettings = Seq(
   scalaVersion        := `scala 212`,
   crossScalaVersions  := Seq(`scala 211`, `scala 212`),
   scalacOptions       ++= crossBuildOptions,
-  libraryDependencies ++= sharedDependencies ++ testDependencies ++ compilerPluginsDependencies,
+  libraryDependencies ++= testDependencies ++ compilerPluginsDependencies,
   organization        := "io.laserdisc",
   parallelExecution   in Test := false,
   scalacOptions ++=
@@ -162,7 +159,10 @@ lazy val root = project
       "checkFormat",
       ";scalafmtCheck;test:scalafmtCheck;scalafmtSbtCheck"
     ),
-    addCommandAlias("fullCiBuild", ";checkFormat;undeclaredCompileDependenciesTest;clean;test"),
+    addCommandAlias(
+      "fullCiBuild",
+      ";checkFormat;unusedCompileDependenciesTest;undeclaredCompileDependenciesTest;clean;test"
+    ),
   )
 
 lazy val core = project
