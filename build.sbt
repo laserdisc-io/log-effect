@@ -70,7 +70,7 @@ lazy val fs2Dependencies = Seq(
 
 lazy val zioDependencies = Seq(
   "org.log4s"  %% "log4s"      % versionOf.log4s,
-  "org.scalaz" %% "scalaz-zio" % versionOf.zio changing ()
+  "org.scalaz" %% "scalaz-zio" % versionOf.zio
 ) map (_.withSources)
 
 lazy val testDependencies = Seq(
