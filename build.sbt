@@ -148,7 +148,7 @@ lazy val releaseSettings: Seq[Def.Setting[_]] = Seq(
 
 lazy val root = project
   .in(file("."))
-  .aggregate(core, fs2, zio)
+  .aggregate(core, fs2, scalazZio)
   .settings(crossBuildSettings)
   .settings(releaseSettings)
   .settings(
@@ -184,7 +184,7 @@ lazy val fs2 = project
     libraryDependencies ++= fs2Dependencies
   )
 
-lazy val zio = project
+lazy val scalazZio = project
   .in(file("zio"))
   .dependsOn(core)
   .settings(crossBuildSettings)
