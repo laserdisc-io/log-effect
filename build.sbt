@@ -49,7 +49,7 @@ lazy val versionOf = new {
   val catsEffect    = "1.0.0"
   val log4s         = "1.6.1"
   val fs2           = "1.0.0"
-  val zio           = "0.2.7"
+  val scalazZio     = "0.2.7"
   val scalaCheck    = "1.14.0"
   val scalaTest     = "3.0.5"
   val kindProjector = "0.9.8"
@@ -70,7 +70,7 @@ lazy val fs2Dependencies = Seq(
 
 lazy val zioDependencies = Seq(
   "org.log4s"  %% "log4s"      % versionOf.log4s,
-  "org.scalaz" %% "scalaz-zio" % versionOf.zio
+  "org.scalaz" %% "scalaz-zio" % versionOf.scalazZio
 ) map (_.withSources)
 
 lazy val testDependencies = Seq(
@@ -148,7 +148,7 @@ lazy val releaseSettings: Seq[Def.Setting[_]] = Seq(
 
 lazy val root = project
   .in(file("."))
-  .aggregate(core, fs2, scalazZio)
+  .aggregate(core, fs2, zio)
   .settings(crossBuildSettings)
   .settings(releaseSettings)
   .settings(
@@ -184,7 +184,7 @@ lazy val fs2 = project
     libraryDependencies ++= fs2Dependencies
   )
 
-lazy val scalazZio = project
+lazy val zio = project
   .in(file("zio"))
   .dependsOn(core)
   .settings(crossBuildSettings)
