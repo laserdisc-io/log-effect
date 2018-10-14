@@ -7,10 +7,10 @@ import log.effect.internal.{ EffectSuspension, NoAction, Show }
 
 trait LogWriterConstructor0[T, F[_]] {
 
-  def evaluation[LL <: LogLevel]: LL => LogWriter[F]
+  def construction[LL <: LogLevel]: LL => LogWriter[F]
 
-  def evaluation: () => LogWriter[F] =
-    () => evaluation(LogLevels.Trace)
+  def construction: () => LogWriter[F] =
+    () => construction(LogLevels.Trace)
 }
 
 object LogWriterConstructor0 extends LogWriterConstructor0Instances {
@@ -23,11 +23,11 @@ object LogWriterConstructor0 extends LogWriterConstructor0Instances {
 
     @inline @silent def apply[T](t: T)(
       implicit LWC: LogWriterConstructor0[T, F]
-    ): () => LogWriter[F] = () => LWC.evaluation()
+    ): () => LogWriter[F] = () => LWC.construction()
 
     @inline @silent def apply[T, LL <: LogLevel](t: T, minLevel: LL)(
       implicit LWC: LogWriterConstructor0[T, F]
-    ): () => LogWriter[F] = () => LWC.evaluation(minLevel)
+    ): () => LogWriter[F] = () => LWC.construction(minLevel)
   }
 }
 
@@ -37,7 +37,8 @@ sealed private[effect] trait LogWriterConstructor0Instances {
     implicit F: EffectSuspension[F]
   ): LogWriterConstructor0[Console, F] =
     new LogWriterConstructor0[Console, F] {
-      def evaluation[LL <: LogLevel]: LL => LogWriter[F] =
+
+      def construction[LL <: LogLevel]: LL => LogWriter[F] =
         ll =>
           new LogWriter[F] {
             private val minLogLevel = ll
@@ -57,7 +58,8 @@ sealed private[effect] trait LogWriterConstructor0Instances {
     implicit F: NoAction[F]
   ): LogWriterConstructor0[NoOp, F] =
     new LogWriterConstructor0[NoOp, F] {
-      def evaluation[LL <: LogLevel]: LL => LogWriter[F] =
+
+      def construction[LL <: LogLevel]: LL => LogWriter[F] =
         _ =>
           new LogWriter[F] {
             def write[A: Show, L <: LogLevel: Show](level: L, a: =>A): F[Unit] = F.unit

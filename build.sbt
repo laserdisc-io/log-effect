@@ -65,6 +65,7 @@ lazy val coreDependencies = Seq(
 
 lazy val fs2Dependencies = Seq(
   "org.log4s"     %% "log4s"       % versionOf.log4s,
+  "com.outr"      %% "scribe"      % versionOf.scribe,
   "org.typelevel" %% "cats-core"   % versionOf.cats,
   "org.typelevel" %% "cats-effect" % versionOf.catsEffect,
   "co.fs2"        %% "fs2-core"    % versionOf.fs2
@@ -72,6 +73,7 @@ lazy val fs2Dependencies = Seq(
 
 lazy val zioDependencies = Seq(
   "org.log4s"  %% "log4s"      % versionOf.log4s,
+  "com.outr"   %% "scribe"     % versionOf.scribe,
   "org.scalaz" %% "scalaz-zio" % versionOf.scalazZio
 ) map (_.withSources)
 

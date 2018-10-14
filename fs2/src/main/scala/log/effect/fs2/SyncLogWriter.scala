@@ -5,7 +5,7 @@ import java.util.{ logging => jul }
 
 import cats.Applicative
 import cats.effect.Sync
-import log.effect.LogWriter.{ Console, Jul, Log4s, NoOp }
+import log.effect.LogWriter.{ Console, Jul, Log4s, NoOp, Scribe }
 import log.effect.internal.{ EffectSuspension, NoAction }
 import org.{ log4s => l4s }
 
@@ -29,6 +29,30 @@ object SyncLogWriter {
   def julLog[F[_]: Sync](fa: F[jul.Logger]): F[LogWriter[F]] = {
     val constructor = LogWriterConstructor1[F](Jul)
     constructor(fa)
+  }
+
+  def julLog[F[_]](implicit F: Sync[F]): F[LogWriter[F]] = {
+    val constructor = LogWriterConstructor1[F](Jul)
+    constructor(F.delay(jul.Logger.getGlobal))
+  }
+
+  def scribeLog[F[_]: Sync](fa: F[scribe.Logger]): F[LogWriter[F]] = {
+    val constructor = LogWriterConstructor1[F](Scribe)
+    constructor(fa)
+  }
+
+  def scribeLog[F[_]](c: Class[_])(
+    implicit
+    F: Sync[F],
+    ev: Class[_] <:< scribe.Logger
+  ): F[LogWriter[F]] = {
+    val constructor = LogWriterConstructor1[F](Scribe)
+    constructor(F.delay(c))
+  }
+
+  def scribeLog[F[_]](n: String)(implicit F: Sync[F]): F[LogWriter[F]] = {
+    val constructor = LogWriterConstructor1[F](Scribe)
+    constructor(F.delay(scribe.Logger(n)))
   }
 
   def consoleLog[F[_]: Sync]: LogWriter[F] = {

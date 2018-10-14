@@ -10,7 +10,7 @@ import org.{ log4s => l4s }
 
 sealed trait LogWriterConstructor1[T, F[_]] {
   type LogWriterType
-  def evaluation: F[LogWriterType] => F[LogWriter[F]]
+  def construction: F[LogWriterType] => F[LogWriter[F]]
 }
 
 object LogWriterConstructor1 extends LogWriterConstructor1Instances {
@@ -28,7 +28,7 @@ object LogWriterConstructor1 extends LogWriterConstructor1Instances {
       implicit F: EffectSuspension[F],
       LWC: LogWriterConstructor1[T, F]
     ): F[LWC.LogWriterType] => F[LogWriter[F]] =
-      LWC.evaluation
+      LWC.construction
   }
 }
 
@@ -41,7 +41,7 @@ sealed private[effect] trait LogWriterConstructor1Instances {
 
       type LogWriterType = l4s.Logger
 
-      def evaluation: F[LogWriterType] => F[LogWriter[F]] =
+      val construction: F[LogWriterType] => F[LogWriter[F]] =
         _ map { l4sLogger =>
           new LogWriter[F] {
             def write[A: Show, L <: LogLevel: Show](level: L, a: =>A): F[Unit] = {
@@ -72,7 +72,7 @@ sealed private[effect] trait LogWriterConstructor1Instances {
 
       type LogWriterType = jul.Logger
 
-      def evaluation: F[LogWriterType] => F[LogWriter[F]] =
+      val construction: F[LogWriterType] => F[LogWriter[F]] =
         _ map { julLogger =>
           new LogWriter[F] {
             def write[A: Show, L <: LogLevel: Show](level: L, a: =>A): F[Unit] = {
@@ -110,7 +110,7 @@ sealed private[effect] trait LogWriterConstructor1Instances {
 
       type LogWriterType = scribe.Logger
 
-      def evaluation: F[LogWriterType] => F[LogWriter[F]] =
+      val construction: F[LogWriterType] => F[LogWriter[F]] =
         _ map { scribeLogger =>
           new LogWriter[F] {
             def write[A: Show, L <: LogLevel: Show](level: L, a: =>A): F[Unit] = {

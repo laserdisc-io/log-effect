@@ -4,7 +4,7 @@ package zio
 import java.io.IOException
 import java.util.{ logging => jul }
 
-import log.effect.LogWriter.{ Console, Jul, Log4s, NoOp }
+import log.effect.LogWriter.{ Console, Jul, Log4s, NoOp, Scribe }
 import log.effect.internal.{ EffectSuspension, NoAction }
 import org.{ log4s => l4s }
 import scalaz.zio.IO
@@ -23,14 +23,31 @@ object ZioLogWriter {
     constructor(IO.sync(l4s.getLogger(c)))
   }
 
-  def log4sLogZio[F[_]](n: String): ExIO[LogWriter[ExIO]] = {
+  def log4sLogZio(n: String): ExIO[LogWriter[ExIO]] = {
     val constructor = LogWriterConstructor1[ExIO](Log4s)
     constructor(IO.sync(l4s.getLogger(n)))
   }
 
-  def julLogZio[F[_]](fa: ExIO[jul.Logger]): ExIO[LogWriter[ExIO]] = {
+  def julLogZio(fa: ExIO[jul.Logger]): ExIO[LogWriter[ExIO]] = {
     val constructor = LogWriterConstructor1[ExIO](Jul)
     constructor(fa)
+  }
+
+  def scribeLog(fa: ExIO[scribe.Logger]): ExIO[LogWriter[ExIO]] = {
+    val constructor = LogWriterConstructor1[ExIO](Scribe)
+    constructor(fa)
+  }
+
+  def scribeLog(c: Class[_])(
+    implicit ev: Class[_] <:< scribe.Logger
+  ): ExIO[LogWriter[ExIO]] = {
+    val constructor = LogWriterConstructor1[ExIO](Scribe)
+    constructor(IO.sync(c))
+  }
+
+  def scribeLog(n: String): ExIO[LogWriter[ExIO]] = {
+    val constructor = LogWriterConstructor1[ExIO](Scribe)
+    constructor(IO.sync(scribe.Logger(n)))
   }
 
   def consoleLogZio: LogWriter[IO[IOException, ?]] = {
