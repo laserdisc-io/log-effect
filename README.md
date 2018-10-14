@@ -69,6 +69,16 @@ def log4sLog[F[_]: Sync](n: String): F[LogWriter[F]]
 
 def julLog[F[_]: Sync](fa: F[jul.Logger]): F[LogWriter[F]]
 
+def julLog[F[_]: Sync]: F[LogWriter[F]] // will use jul.Logger.getGlobal
+
+def scribeLog[F[_]: Sync](fa: F[scribe.Logger]): F[LogWriter[F]]
+
+def scribeLog[F[_]: Sync](c: Class[_])(
+  implicit ev: Class[_] <:< scribe.Logger
+): F[LogWriter[F]]
+
+def scribeLog[F[_]: Sync](n: String): F[LogWriter[F]]
+
 def consoleLog[F[_]: Sync]: LogWriter[F]
 
 // for a console logger that will write only up to the specified level
@@ -90,7 +100,17 @@ def log4sLogStream[F[_]: Sync](c: Class[_]): Stream[F, LogWriter[F]]
 
 def log4sLogStream[F[_]: Sync](n: String): Stream[F, LogWriter[F]]
 
-def julLogStream[F[_]: Sync]: Stream[F, LogWriter[F]]
+def julLogStream[F[_]: Sync](fa: F[jul.Logger]): Stream[F, LogWriter[F]]
+
+def julLogStream[F[_]: Sync]: Stream[F, LogWriter[F]] // will use jul.Logger.getGlobal
+
+def scribeLogStream[F[_]: Sync](fa: F[scribe.Logger]): Stream[F, LogWriter[F]]
+
+def scribeLogStream[F[_]: Sync](c: Class[_])(
+  implicit ev: Class[_] <:< scribe.Logger
+): Stream[F, LogWriter[F]]
+
+def scribeLogStream[F[_]: Sync](n: String): Stream[F, LogWriter[F]]
 
 def consoleLogStream[F[_]: Sync]: Stream[F, LogWriter[F]]
 

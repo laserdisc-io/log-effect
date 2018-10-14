@@ -33,19 +33,24 @@ object ZioLogWriter {
     constructor(fa)
   }
 
-  def scribeLog(fa: ExIO[scribe.Logger]): ExIO[LogWriter[ExIO]] = {
+  def julLogZio[F[_]]: ExIO[LogWriter[ExIO]] = {
+    val constructor = LogWriterConstructor1[ExIO](Jul)
+    constructor(IO.sync(jul.Logger.getGlobal))
+  }
+
+  def scribeLogZio(fa: ExIO[scribe.Logger]): ExIO[LogWriter[ExIO]] = {
     val constructor = LogWriterConstructor1[ExIO](Scribe)
     constructor(fa)
   }
 
-  def scribeLog(c: Class[_])(
+  def scribeLogZio(c: Class[_])(
     implicit ev: Class[_] <:< scribe.Logger
   ): ExIO[LogWriter[ExIO]] = {
     val constructor = LogWriterConstructor1[ExIO](Scribe)
     constructor(IO.sync(c))
   }
 
-  def scribeLog(n: String): ExIO[LogWriter[ExIO]] = {
+  def scribeLogZio(n: String): ExIO[LogWriter[ExIO]] = {
     val constructor = LogWriterConstructor1[ExIO](Scribe)
     constructor(IO.sync(scribe.Logger(n)))
   }
