@@ -48,6 +48,7 @@ lazy val versionOf = new {
   val cats          = "1.4.0"
   val catsEffect    = "1.0.0"
   val log4s         = "1.6.1"
+  val scribe        = "2.6.0"
   val fs2           = "1.0.0"
   val scalazZio     = "0.2.11"
   val scalaCheck    = "1.14.0"
@@ -59,6 +60,7 @@ lazy val versionOf = new {
 lazy val coreDependencies = Seq(
   "com.github.ghik" %% "silencer-lib" % versionOf.silencer,
   "org.log4s"       %% "log4s"        % versionOf.log4s,
+  "com.outr"        %% "scribe"       % versionOf.scribe
 ) map (_.withSources)
 
 lazy val fs2Dependencies = Seq(

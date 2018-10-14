@@ -3,7 +3,7 @@ package log.effect
 import java.util.{ logging => jul }
 
 import com.github.ghik.silencer.silent
-import log.effect.LogWriter.{ Failure, Jul, Log4s }
+import log.effect.LogWriter.{ Failure, Jul, Log4s, Scribe }
 import log.effect.internal.syntax._
 import log.effect.internal.{ EffectSuspension, Functor, Show }
 import org.{ log4s => l4s }
@@ -46,7 +46,7 @@ sealed private[effect] trait LogWriterConstructor1Instances {
           new LogWriter[F] {
             def write[A: Show, L <: LogLevel: Show](level: L, a: =>A): F[Unit] = {
 
-              val l4sLevel = level match {
+              val beLevel = level match {
                 case LogLevels.Trace => l4s.Trace
                 case LogLevels.Debug => l4s.Debug
                 case LogLevels.Info  => l4s.Info
@@ -56,8 +56,8 @@ sealed private[effect] trait LogWriterConstructor1Instances {
 
               F.suspend(
                 a match {
-                  case Failure(msg, th) => l4sLogger(l4sLevel)(th)(msg)
-                  case _                => l4sLogger(l4sLevel)(a.show)
+                  case Failure(msg, th) => l4sLogger(beLevel)(th)(msg)
+                  case _                => l4sLogger(beLevel)(a.show)
                 }
               )
             }
@@ -77,7 +77,7 @@ sealed private[effect] trait LogWriterConstructor1Instances {
           new LogWriter[F] {
             def write[A: Show, L <: LogLevel: Show](level: L, a: =>A): F[Unit] = {
 
-              val jdkLevel = level match {
+              val beLevel = level match {
                 case LogLevels.Trace => jul.Level.FINEST
                 case LogLevels.Debug => jul.Level.FINE
                 case LogLevels.Info  => jul.Level.INFO
@@ -86,16 +86,47 @@ sealed private[effect] trait LogWriterConstructor1Instances {
               }
 
               F.suspend(
-                if (julLogger.isLoggable(jdkLevel)) {
+                if (julLogger.isLoggable(beLevel)) {
                   julLogger.log(
                     a match {
                       case Failure(msg, th) =>
-                        val r = new jul.LogRecord(jdkLevel, msg)
+                        val r = new jul.LogRecord(beLevel, msg)
                         r.setThrown(th)
                         r
-                      case _ => new jul.LogRecord(jdkLevel, a.show)
+                      case _ => new jul.LogRecord(beLevel, a.show)
                     }
                   )
+                }
+              )
+            }
+          }
+        }
+    }
+
+  implicit def scribeConstructor[F[_]: Functor](
+    implicit F: EffectSuspension[F]
+  ): LogWriterConstructor1.AUX[Scribe, F, scribe.Logger] =
+    new LogWriterConstructor1[Scribe, F] {
+
+      type LogWriterType = scribe.Logger
+
+      def evaluation: F[LogWriterType] => F[LogWriter[F]] =
+        _ map { scribeLogger =>
+          new LogWriter[F] {
+            def write[A: Show, L <: LogLevel: Show](level: L, a: =>A): F[Unit] = {
+
+              val beLevel = level match {
+                case LogLevels.Trace => scribe.Level.Trace
+                case LogLevels.Debug => scribe.Level.Debug
+                case LogLevels.Info  => scribe.Level.Info
+                case LogLevels.Warn  => scribe.Level.Warn
+                case LogLevels.Error => scribe.Level.Error
+              }
+
+              F.suspend(
+                a match {
+                  case Failure(msg, th) => scribeLogger.log(beLevel, msg, Some(th))
+                  case _                => scribeLogger.log(beLevel, a.show, None)
                 }
               )
             }

@@ -14,13 +14,15 @@ object LogWriter extends LogWriterSyntax with LogWriterAliasingSyntax {
 
   final case object Log4s
   final case object Jul
+  final case object Scribe
   final case object Console
   final case object NoOp
 
-  type Log4s   = Log4s.type
-  type Jul     = Jul.type
-  type Console = Console.type
-  type NoOp    = NoOp.type
+  final type Log4s   = Log4s.type
+  final type Jul     = Jul.type
+  final type Scribe  = Scribe.type
+  final type Console = Console.type
+  final type NoOp    = NoOp.type
 
   final class Failure(val msg: String, val th: Throwable)
 
