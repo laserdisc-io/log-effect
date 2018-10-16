@@ -1,6 +1,7 @@
 # Log Effect
-[![Codacy Badge](https://api.codacy.com/project/badge/Grade/f3d016e4069a445b866ec4a059b23d1c)](https://app.codacy.com/app/barambani/log-effect?utm_source=github.com&utm_medium=referral&utm_content=laserdisc-io/log-effect&utm_campaign=Badge_Grade_Dashboard)
 [![Build Status](https://travis-ci.org/laserdisc-io/log-effect.svg?branch=master)](https://travis-ci.org/laserdisc-io/log-effect)
+[![Codacy Badge](https://api.codacy.com/project/badge/Grade/f3d016e4069a445b866ec4a059b23d1c)](https://app.codacy.com/app/barambani/log-effect?utm_source=github.com&utm_medium=referral&utm_content=laserdisc-io/log-effect&utm_campaign=Badge_Grade_Dashboard)
+[![Known Vulnerabilities](https://snyk.io/test/github/laserdisc-io/log-effect/badge.svg?targetFile=build.sbt)](https://snyk.io/test/github/laserdisc-io/log-effect?targetFile=build.sbt)
 [![scaladex](https://img.shields.io/badge/scaladex-log--effect-orange.svg)](https://index.scala-lang.org/laserdisc-io/log-effect)
 [![Join the chat at https://gitter.im/laserdisc-io/laserdisc](https://badges.gitter.im/laserdisc-io/laserdisc.svg)](https://gitter.im/laserdisc-io/laserdisc?utm_source=badge&utm_medium=badge&utm_campaign=pr-badge&utm_content=badge)
 [![License: MIT](https://img.shields.io/badge/License-MIT-blue.svg)](https://raw.githubusercontent.com/laserdisc-io/log-effect/master/LICENSE)
