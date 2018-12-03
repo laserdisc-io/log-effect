@@ -46,9 +46,9 @@ lazy val scala212Options = Seq(
   */
 lazy val versionOf = new {
   val cats          = "1.5.0"
-  val catsEffect    = "1.0.0"
+  val catsEffect    = "1.1.0"
   val log4s         = "1.6.1"
-  val scribe        = "2.6.0"
+  val scribe        = "2.7.0"
   val fs2           = "1.0.0"
   val scalazZio     = "0.4.1"
   val scalaCheck    = "1.14.0"
