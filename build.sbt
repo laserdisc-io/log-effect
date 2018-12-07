@@ -1,7 +1,7 @@
 import sbtrelease.ReleasePlugin.autoImport.ReleaseTransformations._
 
 lazy val `scala 211` = "2.11.12"
-lazy val `scala 212` = "2.12.7"
+lazy val `scala 212` = "2.12.8"
 
 /**
   * Scalac options
