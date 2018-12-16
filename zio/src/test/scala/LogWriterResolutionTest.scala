@@ -1,17 +1,18 @@
 import com.github.ghik.silencer.silent
-import org.scalatest.{ Matchers, WordSpecLike }
+import org.scalatest.Matchers
+import org.scalatest.wordspec.AnyWordSpecLike
 
-final class LogWriterResolutionTest extends WordSpecLike with Matchers {
+final class LogWriterResolutionTest extends AnyWordSpecLike with Matchers {
 
   "the construction" should {
 
     "correctly infer a valid log4s constructor for ZIO" in {
 
+      import _root_.zio.{ IO, Task }
       import log.effect.internal.{ EffectSuspension, Functor }
       import log.effect.zio.ZioLogWriter.log4sFromLogger
       import log.effect.{ LogWriter, LogWriterConstructor }
       import org.{ log4s => l4s }
-      import _root_.zio.{ IO, Task }
 
       def c: Task[l4s.Logger] => Task[LogWriter[Task]] = {
         implicit def F: EffectSuspension[Task] = ???
@@ -30,10 +31,10 @@ final class LogWriterResolutionTest extends WordSpecLike with Matchers {
 
       import java.util.{ logging => jul }
 
+      import _root_.zio.{ IO, Task }
       import log.effect.internal.{ EffectSuspension, Functor }
       import log.effect.zio.ZioLogWriter.julFromLogger
       import log.effect.{ LogWriter, LogWriterConstructor }
-      import _root_.zio.{ IO, Task }
 
       def c: Task[jul.Logger] => Task[LogWriter[Task]] = {
         implicit def F: EffectSuspension[Task] = ???
@@ -53,10 +54,10 @@ final class LogWriterResolutionTest extends WordSpecLike with Matchers {
 
     "correctly infer a valid console constructor for IO" in {
 
+      import _root_.zio.Task
       import log.effect.internal.{ EffectSuspension, Id }
       import log.effect.zio.ZioLogWriter.{ console, consoleUpToLevel }
       import log.effect.{ LogLevel, LogLevels, LogWriter, LogWriterConstructor }
-      import _root_.zio.Task
 
       def c[L <: LogLevel]: L => LogWriter[Task] = {
         implicit def F: EffectSuspension[Task] = ???
