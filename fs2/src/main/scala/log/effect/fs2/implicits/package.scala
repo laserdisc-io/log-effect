@@ -1,4 +1,5 @@
-package log.effect
+package log
+package effect
 package fs2
 
 package object implicits {
