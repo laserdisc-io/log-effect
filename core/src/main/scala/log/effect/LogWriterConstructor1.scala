@@ -1,9 +1,10 @@
-package log.effect
+package log
+package effect
 
 import java.util.{ logging => jul }
 
 import com.github.ghik.silencer.silent
-import log.effect.LogWriter.{ Failure, Jul, Log4s, Scribe }
+import log.effect.LogWriter.{ Jul, Log4s, Scribe }
 import log.effect.internal.syntax._
 import log.effect.internal.{ EffectSuspension, Functor, Show }
 import org.{ log4s => l4s }

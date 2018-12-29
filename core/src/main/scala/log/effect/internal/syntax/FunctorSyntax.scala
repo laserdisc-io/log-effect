@@ -1,4 +1,5 @@
-package log.effect
+package log
+package effect
 package internal
 package syntax
 

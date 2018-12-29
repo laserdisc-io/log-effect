@@ -46,7 +46,7 @@ final class LogWriterSyntaxResolutionTest extends WordSpecLike with Matchers {
       """
         |import log.effect.LogLevels.Error
         |import log.effect.LogWriter
-        |import log.effect.LogWriter.Failure
+        |import log.effect.Failure
         |
         |def f[F[_]: LogWriter] = LogWriter.write(Error, Failure("test", new Exception("test exception")))
       """.stripMargin should compile

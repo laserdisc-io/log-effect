@@ -283,7 +283,7 @@ final class LogWriterResolutionTest extends WordSpecLike with Matchers {
         |import cats.syntax.apply._
         |import log.effect.LogLevels.{ Debug, Error }
         |import log.effect.LogWriter
-        |import log.effect.LogWriter.Failure
+        |import log.effect.Failure
         |import log.effect.fs2.implicits._
         |
         |def double[F[_]: Sync: LogWriter](source: fs2.Stream[F, Int]): fs2.Stream[F, Int] = {

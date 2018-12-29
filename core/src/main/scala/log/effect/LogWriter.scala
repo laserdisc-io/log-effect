@@ -1,7 +1,7 @@
-package log.effect
+package log
+package effect
 
 import com.github.ghik.silencer.silent
-import log.effect.LogWriter.Failure
 import log.effect.internal.Show
 
 import scala.language.implicitConversions
@@ -23,30 +23,10 @@ object LogWriter extends LogWriterSyntax with LogWriterAliasingSyntax {
   final type Scribe  = Scribe.type
   final type Console = Console.type
   final type NoOp    = NoOp.type
-
-  final class Failure(val msg: String, val th: Throwable)
-
-  object Failure {
-
-    def apply(msg: String, th: Throwable): Failure =
-      new Failure(msg, th)
-
-    def unapply(arg: Failure): Option[(String, Throwable)] =
-      Some((arg.msg, arg.th))
-
-    implicit def failureShow: Show[Failure] =
-      new Show[Failure] {
-        def show(t: Failure): String =
-          s"""${t.msg}
-           |  Failed with exception ${t.th}
-           |  Stack trace:
-           |    ${t.th.getStackTrace.toList
-               .mkString("\n|    ")}""".stripMargin
-      }
-  }
 }
 
 sealed private[effect] trait LogWriterAliasingSyntax {
+
   @silent implicit def logWriterSingleton[F[_]](co: LogWriter.type)(
     implicit LW: LogWriter[F]
   ): LogWriter[F] = LW
@@ -57,6 +37,7 @@ sealed private[effect] trait LogWriterAliasingSyntax {
 }
 
 sealed private[effect] trait LogWriterSyntax {
+
   implicit def loggerSyntax[T, F[_]](l: LogWriter[F]): LogWriterOps[F] =
     new LogWriterOps(l)
 }
@@ -68,11 +49,17 @@ final private[effect] class LogWriterOps[F[_]](private val aLogger: LogWriter[F]
   @inline def trace(msg: =>String): F[Unit] =
     aLogger.write(Trace, msg)
 
+  @inline def trace(th: =>Throwable)(implicit `_`: DummyImplicit): F[Unit] =
+    aLogger.write(Trace, th)
+
   @inline def trace(msg: =>String, th: =>Throwable): F[Unit] =
     aLogger.write(Trace, Failure(msg, th))
 
   @inline def debug(msg: =>String): F[Unit] =
     aLogger.write(Debug, msg)
+
+  @inline def debug(th: =>Throwable)(implicit `_`: DummyImplicit): F[Unit] =
+    aLogger.write(Debug, th)
 
   @inline def debug(msg: =>String, th: =>Throwable): F[Unit] =
     aLogger.write(Debug, Failure(msg, th))
@@ -80,17 +67,26 @@ final private[effect] class LogWriterOps[F[_]](private val aLogger: LogWriter[F]
   @inline def info(msg: =>String): F[Unit] =
     aLogger.write(Info, msg)
 
+  @inline def info(th: =>Throwable)(implicit `_`: DummyImplicit): F[Unit] =
+    aLogger.write(Info, th)
+
   @inline def info(msg: =>String, th: =>Throwable): F[Unit] =
     aLogger.write(Info, Failure(msg, th))
 
   @inline def error(msg: =>String): F[Unit] =
     aLogger.write(Error, msg)
 
+  @inline def error(th: =>Throwable)(implicit `_`: DummyImplicit): F[Unit] =
+    aLogger.write(Error, th)
+
   @inline def error(msg: =>String, th: =>Throwable): F[Unit] =
     aLogger.write(Error, Failure(msg, th))
 
   @inline def warn(msg: =>String): F[Unit] =
     aLogger.write(Warn, msg)
+
+  @inline def warn(th: =>Throwable)(implicit `_`: DummyImplicit): F[Unit] =
+    aLogger.write(Warn, th)
 
   @inline def warn(msg: =>String, th: =>Throwable): F[Unit] =
     aLogger.write(Warn, Failure(msg, th))

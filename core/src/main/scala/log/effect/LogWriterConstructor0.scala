@@ -1,4 +1,5 @@
-package log.effect
+package log
+package effect
 
 import com.github.ghik.silencer.silent
 import log.effect.LogWriter.{ Console, NoOp }
