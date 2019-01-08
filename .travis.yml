@@ -15,9 +15,12 @@ script:
 
 cache:
   directories:
+  - "$HOME/.coursier/cache"
   - "$HOME/.ivy2/cache"
-  - "$HOME/.sbt/boot/"
+  - "$HOME/.sbt"
 
 before_cache:
   - find $HOME/.ivy2/cache -name "ivydata-*.properties" | xargs rm
   - find $HOME/.ivy2/cache -name "*SNAPSHOT*" | xargs rm -rf
+  - find $HOME/.ivy2/cache -name "*.lock" | xargs rm -rf
+  - find $HOME/.coursier/cache -name "*.lock" -type f -delete
