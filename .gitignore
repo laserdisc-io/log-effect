@@ -10,7 +10,8 @@ target/
 lib_managed/
 src_managed/
 project/target
-project/project
+!project/project
+project/project/*
 !project/project/plugins.sbt
 
 # Scala-IDE specific
