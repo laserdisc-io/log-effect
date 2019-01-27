@@ -262,5 +262,5 @@ final class ConsoleLogWriterTest extends WordSpecLike with Matchers with zio.App
     }
   }
 
-  def run(args: List[String]): IO[Nothing, ExitStatus] = IO.point(ExitStatus.ExitNow(0))
+  def run(args: List[String]): IO[Nothing, ExitStatus] = IO.succeed(ExitStatus.ExitNow(0))
 }
