@@ -247,7 +247,7 @@ import cats.syntax.either._
 import cats.instances.string._
 import LogWriter.{Debug, Error, Failure}
 import laserdisc.fs2.{RedisAddress, RedisClient}
-import log.effect.fs2.implicits._
+import log.effect.fs2.interop.show._
 
 type |[A, B] = Either[A, B]
 
@@ -281,7 +281,7 @@ import cats.syntax.apply._
 import log.effect.LogLevels.{ Debug, Error }
 import log.effect.LogWriter
 import log.effect.LogWriter.Failure
-import log.effect.fs2.implicits._
+import log.effect.fs2.interop.show._
 
 def double[F[_]: Sync: LogWriter](source: fs2.Stream[F, Int]): fs2.Stream[F, Int] = {
 
@@ -302,7 +302,7 @@ def double[F[_]: Sync: LogWriter](source: fs2.Stream[F, Int]): fs2.Stream[F, Int
   )
 }
 ```
-**NB:** notice the `LogWriter`'s implicit evidence given as context bound and the `import log.effect.fs2.implicits._`. The latter is needed to summon an `internal.Show` instance given the `cats.Show`.
+**NB:** notice the `LogWriter`'s implicit evidence given as context bound and the `import log.effect.fs2.interop.show._`. The latter is needed to summon an `internal.Show` instance given the `cats.Show`.
 
 <br>
 

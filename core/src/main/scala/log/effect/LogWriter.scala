@@ -10,7 +10,7 @@ trait LogWriter[F[_]] {
   def write[A: Show, L <: LogLevel: Show](level: L, a: =>A): F[Unit]
 }
 
-object LogWriter extends LogWriterSyntax with LogWriterAliasingSyntax {
+object LogWriter extends LogWriterSyntax {
 
   final case object Log4s
   final case object Jul
@@ -25,6 +25,12 @@ object LogWriter extends LogWriterSyntax with LogWriterAliasingSyntax {
   final type NoOp    = NoOp.type
 }
 
+sealed private[effect] trait LogWriterSyntax extends LogWriterAliasingSyntax {
+
+  implicit def loggerSyntax[T, F[_]](l: LogWriter[F]): LogWriterOps[F] =
+    new LogWriterOps(l)
+}
+
 sealed private[effect] trait LogWriterAliasingSyntax {
 
   @silent implicit def logWriterSingleton[F[_]](co: LogWriter.type)(
@@ -34,12 +40,6 @@ sealed private[effect] trait LogWriterAliasingSyntax {
   @silent implicit def logWriterOpsSingleton[F[_]](co: LogWriter.type)(
     implicit LW: LogWriter[F]
   ): LogWriterOps[F] = new LogWriterOps(LW)
-}
-
-sealed private[effect] trait LogWriterSyntax {
-
-  implicit def loggerSyntax[T, F[_]](l: LogWriter[F]): LogWriterOps[F] =
-    new LogWriterOps(l)
 }
 
 final private[effect] class LogWriterOps[F[_]](private val aLogger: LogWriter[F]) extends AnyVal {

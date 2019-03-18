@@ -1,8 +1,9 @@
 package log
 package effect
 package fs2
+package interop
 
-package object implicits {
+object show {
 
   implicit def showInstances[A](implicit ev: cats.Show[A]): internal.Show[A] =
     new internal.Show[A] {

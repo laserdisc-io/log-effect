@@ -1,3 +1,4 @@
+import com.github.ghik.silencer.silent
 import org.scalatest.{ Matchers, WordSpecLike }
 
 final class LogWriterResolutionTest extends WordSpecLike with Matchers {
@@ -284,7 +285,7 @@ final class LogWriterResolutionTest extends WordSpecLike with Matchers {
         |import log.effect.LogLevels.{ Debug, Error }
         |import log.effect.LogWriter
         |import log.effect.Failure
-        |import log.effect.fs2.implicits._
+        |import log.effect.fs2.interop.show._
         |
         |def double[F[_]: Sync: LogWriter](source: fs2.Stream[F, Int]): fs2.Stream[F, Int] = {
         |
@@ -305,6 +306,24 @@ final class LogWriterResolutionTest extends WordSpecLike with Matchers {
         |  )
         |}
       """.stripMargin should compile
+    }
+
+    "be able to summon the LogWriter for ReaderT when LogWriter for `F` is in scope and `mtl.readerT._` is imported" in {
+
+      import cats.data.ReaderT
+      import cats.effect.Sync
+      import cats.syntax.flatMap._
+      import log.effect.LogWriter
+      import log.effect.fs2.SyncLogWriter._
+      import log.effect.fs2.mtl.readerT._
+
+      def aLogger[F[_], Env](implicit F: LogWriter[ReaderT[F, Env, ?]]): ReaderT[F, Env, Unit] =
+        F.info("A message")
+
+      @silent def anotherLogger[F[_]: Sync, Env](env: Env) =
+        log4sLog[F]("A log") >>= { implicit log =>
+          aLogger[F, Env].run(env)
+        }
     }
   }
 }
