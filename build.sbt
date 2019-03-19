@@ -52,7 +52,7 @@ lazy val versionOf = new {
   val fs2           = "1.0.4"
   val scalazZio     = "0.6.3"
   val scalaCheck    = "1.14.0"
-  val scalaTest     = "3.0.6"
+  val scalaTest     = "3.0.7"
   val kindProjector = "0.9.9"
   val silencer      = "1.3.1"
 }
