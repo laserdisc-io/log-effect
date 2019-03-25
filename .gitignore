@@ -14,6 +14,9 @@ project/target
 project/project/*
 !project/project/plugins.sbt
 
+# IDEA specific
+.idea
+
 # Scala-IDE specific
 .scala_dependencies
 .worksheet
