@@ -2,7 +2,6 @@ package log
 package effect
 package zio
 
-import java.io.IOException
 import java.util.{ logging => jul }
 
 import log.effect.LogWriter.{ Console, Jul, Log4s, NoOp, Scribe }
@@ -54,8 +53,8 @@ object ZioLogWriter {
     constructor(IO.effect(scribe.Logger(n)))
   }
 
-  def consoleLogZio: LogWriter[IO[IOException, ?]] = {
-    val constructor = LogWriterConstructor0[IO[IOException, ?]](Console)
+  def consoleLogZio: LogWriter[Task] = {
+    val constructor = LogWriterConstructor0[Task](Console)
     constructor()
   }
 
@@ -63,8 +62,8 @@ object ZioLogWriter {
     new ConsoleLogZioPartial
 
   final private[zio] class ConsoleLogZioPartial(private val d: Boolean = true) extends AnyVal {
-    def apply[LL <: LogLevel](minLevel: LL): LogWriter[IO[IOException, ?]] = {
-      val constructor = LogWriterConstructor0[IO[IOException, ?]](Console, minLevel)
+    def apply[LL <: LogLevel](minLevel: LL): LogWriter[Task] = {
+      val constructor = LogWriterConstructor0[Task](Console, minLevel)
       constructor()
     }
   }
@@ -74,9 +73,9 @@ object ZioLogWriter {
     constructor()
   }
 
-  implicit final private def instance[E]: EffectSuspension[IO[E, ?]] =
-    new EffectSuspension[IO[E, ?]] {
-      def suspend[A](a: =>A): IO[E, A] = IO.suspend(IO.succeed(a))
+  implicit final private val instance: EffectSuspension[Task] =
+    new EffectSuspension[Task] {
+      def suspend[A](a: =>A): Task[A] = IO.effect(a)
     }
 
   implicit final private def functorInstances[E]: internal.Functor[IO[E, ?]] =

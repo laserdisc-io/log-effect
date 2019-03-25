@@ -4,11 +4,11 @@ import log.effect.LogLevels._
 import log.effect.zio.ZioLogWriter.{ consoleLogZio, consoleLogZioUpToLevel }
 import org.scalatest.{ Matchers, WordSpecLike }
 import scalaz.zio
-import scalaz.zio.{ Exit, IO }
+import scalaz.zio.{ Exit, IO, Task, ZIO }
 
 final class ConsoleLogWriterTest extends WordSpecLike with Matchers with zio.App {
 
-  private def capturedConsoleOutOf(write: IO[Exception, Unit]): String = {
+  private def capturedConsoleOutOf(write: Task[Unit]): String = {
     val lowerStream = new ByteArrayOutputStream()
     val outStream   = new PrintStream(lowerStream)
 
@@ -262,5 +262,5 @@ final class ConsoleLogWriterTest extends WordSpecLike with Matchers with zio.App
     }
   }
 
-  def run(args: List[String]): IO[Nothing, Int] = IO.done(Exit.succeed(0))
+  override def run(args: List[String]): ZIO[Environment, Nothing, Int] = IO.done(Exit.succeed(0))
 }
