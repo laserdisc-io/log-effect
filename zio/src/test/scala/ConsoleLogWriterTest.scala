@@ -1,18 +1,18 @@
 import java.io.{ ByteArrayOutputStream, PrintStream }
 
 import log.effect.LogLevels._
-import log.effect.zio.ZioLogWriter.{ consoleLogZio, consoleLogZioUpToLevel }
+import log.effect.zio.ZioLogWriter.{ console, consoleUpToLevel }
 import org.scalatest.{ Matchers, WordSpecLike }
 import scalaz.zio
 import scalaz.zio.{ Exit, IO, Task, ZIO }
 
 final class ConsoleLogWriterTest extends WordSpecLike with Matchers with zio.App {
 
-  private def capturedConsoleOutOf(write: Task[Unit]): String = {
+  private[this] def capturedConsoleOutOf(aWrite: Task[Unit]): String = {
     val lowerStream = new ByteArrayOutputStream()
     val outStream   = new PrintStream(lowerStream)
 
-    Console.withOut(outStream)(unsafeRun(write))
+    Console.withOut(outStream)(unsafeRun(aWrite))
 
     lowerStream.toString
   }
@@ -22,7 +22,7 @@ final class ConsoleLogWriterTest extends WordSpecLike with Matchers with zio.App
     "print the expected trace to the console" in {
 
       val out = capturedConsoleOutOf(
-        consoleLogZio.trace("test message")
+        console.trace("test message")
       )
 
       info(out.trim)
@@ -33,7 +33,7 @@ final class ConsoleLogWriterTest extends WordSpecLike with Matchers with zio.App
     "print the expected info to the console" in {
 
       val out = capturedConsoleOutOf(
-        consoleLogZio.info("test message")
+        console.info("test message")
       )
 
       info(out.trim)
@@ -44,7 +44,7 @@ final class ConsoleLogWriterTest extends WordSpecLike with Matchers with zio.App
     "print the expected debug to the console" in {
 
       val out = capturedConsoleOutOf(
-        consoleLogZio.debug("test message")
+        console.debug("test message")
       )
 
       info(out.trim)
@@ -55,7 +55,7 @@ final class ConsoleLogWriterTest extends WordSpecLike with Matchers with zio.App
     "print the expected error to the console" in {
 
       val out = capturedConsoleOutOf(
-        consoleLogZio.error("test message")
+        console.error("test message")
       )
 
       info(out.trim)
@@ -66,7 +66,7 @@ final class ConsoleLogWriterTest extends WordSpecLike with Matchers with zio.App
     "print the expected warn to the console" in {
 
       val out = capturedConsoleOutOf(
-        consoleLogZio.warn("test message")
+        console.warn("test message")
       )
 
       info(out.trim)
@@ -80,7 +80,7 @@ final class ConsoleLogWriterTest extends WordSpecLike with Matchers with zio.App
     "print the expected error message and the exception to the console" in {
 
       val out = capturedConsoleOutOf(
-        consoleLogZio
+        console
           .error("I have an error message", new Throwable("oh! there's also an exception"))
       )
 
@@ -100,7 +100,7 @@ final class ConsoleLogWriterTest extends WordSpecLike with Matchers with zio.App
       "log error messages" in {
 
         val out = capturedConsoleOutOf(
-          consoleLogZioUpToLevel(Error).error("error message")
+          consoleUpToLevel(Error).error("error message")
         )
 
         info(out.trim)
@@ -111,7 +111,7 @@ final class ConsoleLogWriterTest extends WordSpecLike with Matchers with zio.App
       "not log warn, info, debug or trace messages" in {
 
         val out = capturedConsoleOutOf {
-          val cl = consoleLogZioUpToLevel(Error)
+          val cl = consoleUpToLevel(Error)
 
           (cl.warn("warn message")
             *> cl.info("info message")
@@ -128,7 +128,7 @@ final class ConsoleLogWriterTest extends WordSpecLike with Matchers with zio.App
       "log error and warn messages" in {
 
         val out = capturedConsoleOutOf {
-          val cl = consoleLogZioUpToLevel(Warn)
+          val cl = consoleUpToLevel(Warn)
           cl.error("error message") *> cl.warn("warn message")
         }
 
@@ -144,7 +144,7 @@ final class ConsoleLogWriterTest extends WordSpecLike with Matchers with zio.App
       "not log info, debug or trace messages" in {
 
         val out = capturedConsoleOutOf {
-          val cl = consoleLogZioUpToLevel(Warn)
+          val cl = consoleUpToLevel(Warn)
 
           (cl.info("info message")
             *> cl.debug("debug message")
@@ -160,7 +160,7 @@ final class ConsoleLogWriterTest extends WordSpecLike with Matchers with zio.App
       "log error, warn and info messages" in {
 
         val out = capturedConsoleOutOf {
-          val cl = consoleLogZioUpToLevel(Info)
+          val cl = consoleUpToLevel(Info)
 
           (cl.error("error message")
             *> cl.warn("warn message")
@@ -182,7 +182,7 @@ final class ConsoleLogWriterTest extends WordSpecLike with Matchers with zio.App
       "not log debug or trace messages" in {
 
         val out = capturedConsoleOutOf {
-          val cl = consoleLogZioUpToLevel(Info)
+          val cl = consoleUpToLevel(Info)
           cl.debug("debug message") *> cl.trace("trace message")
         }
 
@@ -195,7 +195,7 @@ final class ConsoleLogWriterTest extends WordSpecLike with Matchers with zio.App
       "log error, warn, info and debug messages" in {
 
         val out = capturedConsoleOutOf {
-          val cl = consoleLogZioUpToLevel(Debug)
+          val cl = consoleUpToLevel(Debug)
 
           (cl.error("error message")
             *> cl.warn("warn message")
@@ -221,7 +221,7 @@ final class ConsoleLogWriterTest extends WordSpecLike with Matchers with zio.App
       "not log trace messages" in {
 
         val out = capturedConsoleOutOf {
-          val cl = consoleLogZioUpToLevel(Debug)
+          val cl = consoleUpToLevel(Debug)
           cl.trace("trace message")
         }
 
@@ -233,7 +233,7 @@ final class ConsoleLogWriterTest extends WordSpecLike with Matchers with zio.App
 
       "log all the messages" in {
         val out = capturedConsoleOutOf {
-          val cl = consoleLogZioUpToLevel(Trace)
+          val cl = consoleUpToLevel(Trace)
 
           (cl.error("error message")
             *> cl.warn("warn message")

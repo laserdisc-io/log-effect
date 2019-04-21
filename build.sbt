@@ -50,7 +50,7 @@ lazy val versionOf = new {
   val log4s         = "1.7.0"
   val scribe        = "2.7.3"
   val fs2           = "1.0.4"
-  val scalazZio     = "0.19"
+  val scalazZio     = "1.0-RC4"
   val scalaCheck    = "1.14.0"
   val scalaTest     = "3.0.7"
   val kindProjector = "0.9.10"
@@ -78,8 +78,9 @@ lazy val zioDependencies = Seq(
 ) map (_.withSources)
 
 lazy val testDependencies = Seq(
-  "org.scalacheck" %% "scalacheck" % versionOf.scalaCheck % Test,
-  "org.scalatest"  %% "scalatest"  % versionOf.scalaTest  % Test
+  "org.scalacheck" %% "scalacheck"    % versionOf.scalaCheck % Test,
+  "org.scalatest"  %% "scalatest"     % versionOf.scalaTest  % Test,
+  "org.log4s"      %% "log4s-testing" % versionOf.log4s      % Test
 )
 
 lazy val compilerPluginsDependencies = Seq(

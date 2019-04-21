@@ -3,46 +3,22 @@ package effect
 
 import java.util.{ logging => jul }
 
-import com.github.ghik.silencer.silent
-import log.effect.LogWriter.{ Jul, Log4s, Scribe }
+import log.effect.internal._
 import log.effect.internal.syntax._
-import log.effect.internal.{ EffectSuspension, Functor, Show }
 import org.{ log4s => l4s }
 
-sealed trait LogWriterConstructor1[T, F[_]] {
-  type LogWriterType
-  def construction: F[LogWriterType] => F[LogWriter[F]]
+sealed trait LogWriterConstructor[-R, G[_], F[_]] {
+  def construction: R => G[LogWriter[F]]
 }
 
-object LogWriterConstructor1 extends LogWriterConstructor1Instances {
+object LogWriterConstructor {
 
-  @inline final def apply[F[_]]: LogWriterConstructor1Partially[F] =
-    new LogWriterConstructor1Partially()
-
-  private[effect] type AUX[T, F[_], LWT] =
-    LogWriterConstructor1[T, F] { type LogWriterType = LWT }
-
-  final private[effect] class LogWriterConstructor1Partially[F[_]](private val d: Boolean = true)
-      extends AnyVal {
-
-    @inline @silent def apply[T](t: T)(
-      implicit F: EffectSuspension[F],
-      LWC: LogWriterConstructor1[T, F]
-    ): F[LWC.LogWriterType] => F[LogWriter[F]] =
-      LWC.construction
-  }
-}
-
-sealed private[effect] trait LogWriterConstructor1Instances {
-
-  implicit def log4sConstructor[F[_]: Functor](
+  implicit def log4sConstructor[G[_]: Functor, F[_]](
     implicit F: EffectSuspension[F]
-  ): LogWriterConstructor1.AUX[Log4s, F, l4s.Logger] =
-    new LogWriterConstructor1[Log4s, F] {
+  ): LogWriterConstructor[G[l4s.Logger], G, F] =
+    new LogWriterConstructor[G[l4s.Logger], G, F] {
 
-      type LogWriterType = l4s.Logger
-
-      val construction: F[LogWriterType] => F[LogWriter[F]] =
+      val construction: G[l4s.Logger] => G[LogWriter[F]] =
         _ map { l4sLogger =>
           new LogWriter[F] {
             def write[A: Show, L <: LogLevel: Show](level: L, a: =>A): F[Unit] = {
@@ -66,14 +42,12 @@ sealed private[effect] trait LogWriterConstructor1Instances {
         }
     }
 
-  implicit def julConstructor[F[_]: Functor](
+  implicit def julConstructor[G[_]: Functor, F[_]](
     implicit F: EffectSuspension[F]
-  ): LogWriterConstructor1.AUX[Jul, F, jul.Logger] =
-    new LogWriterConstructor1[Jul, F] {
+  ): LogWriterConstructor[G[jul.Logger], G, F] =
+    new LogWriterConstructor[G[jul.Logger], G, F] {
 
-      type LogWriterType = jul.Logger
-
-      val construction: F[LogWriterType] => F[LogWriter[F]] =
+      val construction: G[jul.Logger] => G[LogWriter[F]] =
         _ map { julLogger =>
           new LogWriter[F] {
             def write[A: Show, L <: LogLevel: Show](level: L, a: =>A): F[Unit] = {
@@ -104,14 +78,12 @@ sealed private[effect] trait LogWriterConstructor1Instances {
         }
     }
 
-  implicit def scribeConstructor[F[_]: Functor](
+  implicit def scribeConstructor[G[_]: Functor, F[_]](
     implicit F: EffectSuspension[F]
-  ): LogWriterConstructor1.AUX[Scribe, F, scribe.Logger] =
-    new LogWriterConstructor1[Scribe, F] {
+  ): LogWriterConstructor[G[scribe.Logger], G, F] =
+    new LogWriterConstructor[G[scribe.Logger], G, F] {
 
-      type LogWriterType = scribe.Logger
-
-      val construction: F[LogWriterType] => F[LogWriter[F]] =
+      val construction: G[scribe.Logger] => G[LogWriter[F]] =
         _ map { scribeLogger =>
           new LogWriter[F] {
             def write[A: Show, L <: LogLevel: Show](level: L, a: =>A): F[Unit] = {
@@ -132,6 +104,37 @@ sealed private[effect] trait LogWriterConstructor1Instances {
               )
             }
           }
+        }
+    }
+
+  implicit def consoleConstructor[LL <: LogLevel, F[_]](
+    implicit F: EffectSuspension[F]
+  ): LogWriterConstructor[LL, Id, F] =
+    new LogWriterConstructor[LL, Id, F] {
+
+      val construction: LL => Id[LogWriter[F]] =
+        ll =>
+          new LogWriter[F] {
+            private val minLogLevel = ll
+
+            def write[A: Show, L <: LogLevel: Show](level: L, a: =>A): F[Unit] =
+              if (level >= minLogLevel)
+                F.suspend(
+                  println(
+                    s"[${level.show.toLowerCase}] - [${Thread.currentThread().getName}] ${a.show}"
+                  )
+                )
+              else F.unit
+        }
+    }
+
+  implicit val noOpConstructor: LogWriterConstructor[Unit, Id, Id] =
+    new LogWriterConstructor[Unit, Id, Id] {
+
+      val construction: Unit => Id[LogWriter[Id]] =
+        _ =>
+          new LogWriter[Id] {
+            def write[A: Show, L <: LogLevel: Show](level: L, a: =>A): Unit = ()
         }
     }
 }

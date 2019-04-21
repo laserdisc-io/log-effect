@@ -4,87 +4,72 @@ package zio
 
 import java.util.{ logging => jul }
 
-import log.effect.LogWriter.{ Console, Jul, Log4s, NoOp, Scribe }
-import log.effect.internal.{ EffectSuspension, NoAction }
+import log.effect.internal.{ EffectSuspension, Id }
 import org.{ log4s => l4s }
-import scalaz.zio.{ IO, Task }
+import scalaz.zio.{ IO, Task, ZIO }
 
 object ZioLogWriter {
 
-  def log4sLogZio(fa: Task[l4s.Logger]): Task[LogWriter[Task]] = {
-    val constructor = LogWriterConstructor1[Task](Log4s)
-    constructor(fa)
-  }
+  import instances._
 
-  def log4sLogZio(c: Class[_]): Task[LogWriter[Task]] = {
-    val constructor = LogWriterConstructor1[Task](Log4s)
-    constructor(IO.effect(l4s.getLogger(c)))
-  }
+  val console: LogWriter[Task] =
+    LogWriter.from[Id].runningEffect[Task](LogLevels.Trace)
 
-  def log4sLogZio(n: String): Task[LogWriter[Task]] = {
-    val constructor = LogWriterConstructor1[Task](Log4s)
-    constructor(IO.effect(l4s.getLogger(n)))
-  }
+  def consoleUpToLevel[LL <: LogLevel](minLevel: LL): LogWriter[Task] =
+    LogWriter.from[Id].runningEffect[Task](minLevel)
 
-  def julLogZio(fa: Task[jul.Logger]): Task[LogWriter[Task]] = {
-    val constructor = LogWriterConstructor1[Task](Jul)
-    constructor(fa)
-  }
+  val noOp: LogWriter[Id] =
+    LogWriter.of[Id](())
 
-  def julLogZio[F[_]]: Task[LogWriter[Task]] = {
-    val constructor = LogWriterConstructor1[Task](Jul)
-    constructor(IO.effect(jul.Logger.getGlobal))
-  }
-
-  def scribeLogZio(fa: Task[scribe.Logger]): Task[LogWriter[Task]] = {
-    val constructor = LogWriterConstructor1[Task](Scribe)
-    constructor(fa)
-  }
-
-  def scribeLogZio(c: Class[_])(
-    implicit ev: Class[_] <:< scribe.Logger
-  ): Task[LogWriter[Task]] = {
-    val constructor = LogWriterConstructor1[Task](Scribe)
-    constructor(IO.effect(c))
-  }
-
-  def scribeLogZio(n: String): Task[LogWriter[Task]] = {
-    val constructor = LogWriterConstructor1[Task](Scribe)
-    constructor(IO.effect(scribe.Logger(n)))
-  }
-
-  def consoleLogZio: LogWriter[Task] = {
-    val constructor = LogWriterConstructor0[Task](Console)
-    constructor()
-  }
-
-  def consoleLogZioUpToLevel: ConsoleLogZioPartial =
-    new ConsoleLogZioPartial
-
-  final private[zio] class ConsoleLogZioPartial(private val d: Boolean = true) extends AnyVal {
-    def apply[LL <: LogLevel](minLevel: LL): LogWriter[Task] = {
-      val constructor = LogWriterConstructor0[Task](Console, minLevel)
-      constructor()
-    }
-  }
-
-  def noOpLogZio: LogWriter[IO[Nothing, ?]] = {
-    val constructor = LogWriterConstructor0[IO[Nothing, ?]](NoOp)
-    constructor()
-  }
-
-  implicit final private val instance: EffectSuspension[Task] =
-    new EffectSuspension[Task] {
-      def suspend[A](a: =>A): Task[A] = IO.effect(a)
+  val log4sFromName: ZIO[String, Throwable, LogWriter[Task]] =
+    ZIO.environment[String] >>= { name =>
+      LogWriter.of[Task](ZIO.effect(l4s.getLogger(name)))
     }
 
-  implicit final private def functorInstances[E]: internal.Functor[IO[E, ?]] =
-    new internal.Functor[IO[E, ?]] {
-      def fmap[A, B](f: A => B): IO[E, A] => IO[E, B] = _ map f
+  val log4sFromClass: ZIO[Class[_], Throwable, LogWriter[Task]] =
+    ZIO.environment[Class[_]] >>= { c =>
+      LogWriter.of[Task](ZIO.effect(l4s.getLogger(c)))
     }
 
-  implicit final private def noActionInstances[E]: NoAction[IO[E, ?]] =
-    new NoAction[IO[E, ?]] {
-      def unit: IO[E, Unit] = IO.unit
+  val log4sFromLogger: ZIO[Task[l4s.Logger], Throwable, LogWriter[Task]] =
+    ZIO.environment[Task[l4s.Logger]] >>= { log4sLogger =>
+      LogWriter.of[Task](log4sLogger)
     }
+
+  val julFromLogger: ZIO[Task[jul.Logger], Throwable, LogWriter[Task]] =
+    ZIO.environment[Task[jul.Logger]] >>= { julLogger =>
+      LogWriter.of[Task](julLogger)
+    }
+
+  val julGlobal: ZIO[Any, Throwable, LogWriter[Task]] =
+    LogWriter.of[Task](IO.effect(jul.Logger.getGlobal))
+
+  val scribeFromName: ZIO[String, Throwable, LogWriter[Task]] =
+    ZIO.environment[String] >>= { name =>
+      LogWriter.of[Task](IO.effect(scribe.Logger(name)))
+    }
+
+  val scribeFromClass: ZIO[Class[_], Throwable, LogWriter[Task]] =
+    ZIO.environment[Class[_]] >>= { c =>
+      import scribe._
+      LogWriter.of[Task](IO.effect(c.logger))
+    }
+
+  val scribeFromLogger: ZIO[Task[scribe.Logger], Throwable, LogWriter[Task]] =
+    ZIO.environment[Task[scribe.Logger]] >>= { scribeLogger =>
+      LogWriter.of[Task](scribeLogger)
+    }
+
+  private[this] object instances {
+
+    implicit final private[zio] val taskEffectSuspension: EffectSuspension[Task] =
+      new EffectSuspension[Task] {
+        def suspend[A](a: =>A): Task[A] = IO.effect(a)
+      }
+
+    implicit final private[zio] def functorInstances[R, E]: internal.Functor[ZIO[R, E, ?]] =
+      new internal.Functor[ZIO[R, E, ?]] {
+        def fmap[A, B](f: A => B): ZIO[R, E, A] => ZIO[R, E, B] = _ map f
+      }
+  }
 }

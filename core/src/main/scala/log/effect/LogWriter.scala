@@ -12,17 +12,27 @@ trait LogWriter[F[_]] {
 
 object LogWriter extends LogWriterSyntax {
 
-  final case object Log4s
-  final case object Jul
-  final case object Scribe
-  final case object Console
-  final case object NoOp
+  @inline final def from[G[_]]: logWriterFromPartial[G] =
+    new logWriterFromPartial()
 
-  final type Log4s   = Log4s.type
-  final type Jul     = Jul.type
-  final type Scribe  = Scribe.type
-  final type Console = Console.type
-  final type NoOp    = NoOp.type
+  final private[effect] class logWriterFromPartial[G[_]](private val d: Boolean = true)
+      extends AnyVal {
+
+    @inline @silent def runningEffect[F[_]]: logWriterInstancePartial[G, F] =
+      new logWriterInstancePartial()
+  }
+
+  @inline final def of[F[_]]: logWriterInstancePartial[F, F] =
+    new logWriterInstancePartial()
+
+  final private[effect] class logWriterInstancePartial[G[_], F[_]](private val d: Boolean = true)
+      extends AnyVal {
+
+    @inline @silent def apply[R](read: R)(
+      implicit instance: LogWriterConstructor[R, G, F]
+    ): G[LogWriter[F]] =
+      instance construction read
+  }
 }
 
 sealed private[effect] trait LogWriterSyntax extends LogWriterAliasingSyntax {
