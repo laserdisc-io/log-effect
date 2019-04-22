@@ -76,37 +76,37 @@ import java.util.{ logging => jul }
 import cats.effect.Sync
 import log.effect.fs2.SyncLogWriter._
 import log.effect.internal.Id
-import log.effect.{LogLevels, LogWriter}
-import org.{log4s => l4s}
+import log.effect.{ LogLevels, LogWriter }
+import org.{ log4s => l4s }
 
-sealed abstract class App[F[_]: Sync] {
+sealed abstract class App[F[_]](implicit F: Sync[F]) {
 
-  val log4sApp1: F[LogWriter[F]] = log4sLog(Sync[F].delay(l4s.getLogger("a logger")))
+  val log4s1: F[LogWriter[F]] = log4sLog(F.delay(l4s.getLogger("a logger")))
 
-  val log4sApp2: F[LogWriter[F]] = log4sLog("a logger")
+  val log4s2: F[LogWriter[F]] = log4sLog("a logger")
 
-  val log4sApp3: F[LogWriter[F]] = {
+  val log4s3: F[LogWriter[F]] = {
     case class LoggerClass()
     log4sLog(classOf[LoggerClass])
   }
 
-  val julLogApp1: F[LogWriter[F]] = julLog(Sync[F].delay(jul.Logger.getLogger("a logger")))
+  val jul1: F[LogWriter[F]] = julLog(F.delay(jul.Logger.getLogger("a logger")))
 
-  val julLogApp2: F[LogWriter[F]] = julLog
-  
+  val jul2: F[LogWriter[F]] = julLog
+
   val scribe1: F[LogWriter[F]] = scribeLog(F.delay(scribe.Logger("a logger")))
-      
+
   val scribe2: F[LogWriter[F]] = scribeLog("a logger")
-  
+
   val scribe3: F[LogWriter[F]] = {
     case class LoggerClass()
     scribeLog(classOf[LoggerClass])
   }
-  
+
   val console1: LogWriter[F] = consoleLog
 
   val console2: LogWriter[F] = consoleLogUpToLevel(LogLevels.Warn)
-  
+
   val noOp: LogWriter[Id] = noOpLog
 }
 ```
