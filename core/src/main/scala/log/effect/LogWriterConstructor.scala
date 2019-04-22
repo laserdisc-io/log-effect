@@ -7,7 +7,7 @@ import log.effect.internal._
 import log.effect.internal.syntax._
 import org.{ log4s => l4s }
 
-sealed trait LogWriterConstructor[-R, G[_], F[_]] {
+sealed trait LogWriterConstructor[R, G[_], F[_]] {
   def construction: R => G[LogWriter[F]]
 }
 

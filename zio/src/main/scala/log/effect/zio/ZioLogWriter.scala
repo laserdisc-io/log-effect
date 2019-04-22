@@ -12,15 +12,6 @@ object ZioLogWriter {
 
   import instances._
 
-  val console: LogWriter[Task] =
-    LogWriter.from[Id].runningEffect[Task](LogLevels.Trace)
-
-  def consoleUpToLevel[LL <: LogLevel](minLevel: LL): LogWriter[Task] =
-    LogWriter.from[Id].runningEffect[Task](minLevel)
-
-  val noOp: LogWriter[Id] =
-    LogWriter.of[Id](())
-
   val log4sFromName: ZIO[String, Throwable, LogWriter[Task]] =
     ZIO.environment[String] >>= { name =>
       LogWriter.of[Task](ZIO.effect(l4s.getLogger(name)))
@@ -59,6 +50,15 @@ object ZioLogWriter {
     ZIO.environment[Task[scribe.Logger]] >>= { scribeLogger =>
       LogWriter.of[Task](scribeLogger)
     }
+
+  val console: LogWriter[Task] =
+    LogWriter.from[Id].runningEffect[Task](LogLevels.Trace)
+
+  def consoleUpToLevel[LL <: LogLevel](minLevel: LL): LogWriter[Task] =
+    LogWriter.from[Id].runningEffect[Task](minLevel)
+
+  val noOp: LogWriter[Id] =
+    LogWriter.of[Id](())
 
   private[this] object instances {
 
