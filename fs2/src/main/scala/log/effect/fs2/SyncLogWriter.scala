@@ -30,13 +30,13 @@ object SyncLogWriter {
   def scribeLog[F[_]: Sync](fa: F[scribe.Logger]): F[LogWriter[F]] =
     LogWriter.of[F](fa)
 
+  def scribeLog[F[_]](n: String)(implicit F: Sync[F]): F[LogWriter[F]] =
+    LogWriter.of[F](F.delay(scribe.Logger(n)))
+
   def scribeLog[F[_]](c: Class[_])(implicit F: Sync[F]): F[LogWriter[F]] = {
     import scribe._
     LogWriter.of[F](F.delay(c.logger))
   }
-
-  def scribeLog[F[_]](n: String)(implicit F: Sync[F]): F[LogWriter[F]] =
-    LogWriter.of[F](F.delay(scribe.Logger(n)))
 
   def consoleLog[F[_]: Sync]: LogWriter[F] =
     LogWriter.from[Id].runningEffect[F](LogLevels.Trace)

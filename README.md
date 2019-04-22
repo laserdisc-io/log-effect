@@ -69,106 +69,93 @@ Currently Log Effect supports the following backends
 
 ### Get Instances
 
-To get an instance of `LogWriter` for **Cats Effect**'s `Sync`
+To get an instance of `LogWriter` for **Cats Effect**'s `Sync` the options below are available
 ```scala
+import java.util.{ logging => jul }
+
+import cats.effect.Sync
 import log.effect.fs2.SyncLogWriter._
+import log.effect.internal.Id
+import log.effect.{LogLevels, LogWriter}
+import org.{log4s => l4s}
 
-def log4sLog[F[_]: Sync](fa: F[l4s.Logger]): F[LogWriter[F]]
+sealed abstract class App[F[_]: Sync] {
 
-def log4sLog[F[_]: Sync](c: Class[_]): F[LogWriter[F]]
+  val log4sApp1: F[LogWriter[F]] = log4sLog(Sync[F].delay(l4s.getLogger("a logger")))
 
-def log4sLog[F[_]: Sync](n: String): F[LogWriter[F]]
+  val log4sApp2: F[LogWriter[F]] = log4sLog("a logger")
 
-def julLog[F[_]: Sync](fa: F[jul.Logger]): F[LogWriter[F]]
+  val log4sApp3: F[LogWriter[F]] = {
+    case class LoggerClass()
+    log4sLog(classOf[LoggerClass])
+  }
 
-def julLog[F[_]: Sync]: F[LogWriter[F]] // will use jul.Logger.getGlobal
+  val julLogApp1: F[LogWriter[F]] = julLog(Sync[F].delay(jul.Logger.getLogger("a logger")))
 
-def scribeLog[F[_]: Sync](fa: F[scribe.Logger]): F[LogWriter[F]]
+  val julLogApp2: F[LogWriter[F]] = julLog
+  
+  val scribe1: F[LogWriter[F]] = scribeLog(F.delay(scribe.Logger("a logger")))
+      
+  val scribe2: F[LogWriter[F]] = scribeLog("a logger")
+  
+  val scribe3: F[LogWriter[F]] = {
+    case class LoggerClass()
+    scribeLog(classOf[LoggerClass])
+  }
+  
+  val console1: LogWriter[F] = consoleLog
 
-def scribeLog[F[_]: Sync](c: Class[_])(
-  implicit ev: Class[_] <:< scribe.Logger
-): F[LogWriter[F]]
-
-def scribeLog[F[_]: Sync](n: String): F[LogWriter[F]]
-
-def consoleLog[F[_]: Sync]: LogWriter[F]
-
-// for a console logger that will write only up to the specified level
-// 
-// val log = consoleLogUpToLevel[F](LogLevels.Info)
-// 
-def consoleLogUpToLevel[F[_]]: ConsoleLogPartial[F]
-
-def noOpLog[F[_]: Applicative]: LogWriter[F]
+  val console2: LogWriter[F] = consoleLogUpToLevel(LogLevels.Warn)
+  
+  val noOp: LogWriter[Id] = noOpLog
+}
 ```
 
-To get an instance of `LogWriter` for **Fs2**'s `Stream`
+Simirarly, to get instances of `LogWriter` for **Fs2**'s `Stream` the constructors below are available
 ```scala
+import java.util.{ logging => jul }
+
+import cats.effect.Sync
 import log.effect.fs2.Fs2LogWriter._
+import log.effect.internal.Id
+import log.effect.{ LogLevels, LogWriter }
+import org.{ log4s => l4s }
 
-def log4sLogStream[F[_]: Sync](fa: F[l4s.Logger]): Stream[F, LogWriter[F]]
+sealed abstract class App[F[_]](implicit F: Sync[F]) {
 
-def log4sLogStream[F[_]: Sync](c: Class[_]): Stream[F, LogWriter[F]]
+  val log4s1: fs2.Stream[F, LogWriter[F]] = log4sLogStream(F.delay(l4s.getLogger("a logger")))
 
-def log4sLogStream[F[_]: Sync](n: String): Stream[F, LogWriter[F]]
+  val log4s2: fs2.Stream[F, LogWriter[F]] = log4sLogStream("a logger")
 
-def julLogStream[F[_]: Sync](fa: F[jul.Logger]): Stream[F, LogWriter[F]]
+  val log4s3: fs2.Stream[F, LogWriter[F]] = {
+    case class LoggerClass()
+    log4sLogStream(classOf[LoggerClass])
+  }
 
-def julLogStream[F[_]: Sync]: Stream[F, LogWriter[F]] // will use jul.Logger.getGlobal
+  val jul1: fs2.Stream[F, LogWriter[F]] =
+    julLogStream(F.delay(jul.Logger.getLogger("a logger")))
 
-def scribeLogStream[F[_]: Sync](fa: F[scribe.Logger]): Stream[F, LogWriter[F]]
+  val jul2: fs2.Stream[F, LogWriter[F]] = julLogStream
 
-def scribeLogStream[F[_]: Sync](c: Class[_])(
-  implicit ev: Class[_] <:< scribe.Logger
-): Stream[F, LogWriter[F]]
+  val scribe1: fs2.Stream[F, LogWriter[F]] = scribeLogStream(F.delay(scribe.Logger("a logger")))
 
-def scribeLogStream[F[_]: Sync](n: String): Stream[F, LogWriter[F]]
+  val scribe2: fs2.Stream[F, LogWriter[F]] = scribeLogStream("a logger")
 
-def consoleLogStream[F[_]: Sync]: Stream[F, LogWriter[F]]
+  val scribe3: fs2.Stream[F, LogWriter[F]] = {
+    case class LoggerClass()
+    scribeLogStream(classOf[LoggerClass])
+  }
 
-// for a console logger that will write only up to the specified level 
-// 
-// val log = consoleLogStreamUpToLevel[F](LogLevels.Info)
-// 
-def consoleLogStreamUpToLevel[F[_]]: ConsoleLogStreamPartial[F]
+  val console1: fs2.Stream[F, LogWriter[F]] = consoleLogStream
 
-def noOpLogStream[F[_]: Sync]: Stream[F, LogWriter[F]]
+  val console2: fs2.Stream[F, LogWriter[F]] = consoleLogStreamUpToLevel(LogLevels.Warn)
+
+  val noOp: fs2.Stream[F, LogWriter[Id]] = noOpLogStream
+}
 ```
 *See [here](https://github.com/laserdisc-io/laserdisc#example-usage) for an example whit [Laserdisc](https://github.com/laserdisc-io/laserdisc)*
 
-To get an instance for **Scalaz ZIO**'s `IO` use the ones below
-```scala
-import log.effect.zio.ZioLogWriter._
-
-def log4sLogZio(fa: ExIO[l4s.Logger]): ExIO[LogWriter[ExIO]]
-
-def log4sLogZio(c: Class[_]): ExIO[LogWriter[ExIO]]
-
-def log4sLogZio[F[_]](n: String): ExIO[LogWriter[ExIO]]
-
-def julLogZio[F[_]](fa: ExIO[jul.Logger]): ExIO[LogWriter[ExIO]]
-
-def julLogZio[F[_]]: ExIO[LogWriter[ExIO]] // will use jul.Logger.getGlobal
-
-def scribeLogZio(fa: ExIO[scribe.Logger]): ExIO[LogWriter[ExIO]]
-
-def scribeLogZio(c: Class[_])(
-  implicit ev: Class[_] <:< scribe.Logger
-): ExIO[LogWriter[ExIO]]
-
-def scribeLogZio(n: String): ExIO[LogWriter[ExIO]]
-
-def consoleLogZio: LogWriter[IO[IOException, ?]]
-
-// for a console logger that will write only up to the specified level 
-// 
-// val log = consoleLogZioUpToLevel(LogLevels.Info)
-// 
-def consoleLogZioUpToLevel: ConsoleLogZioPartial
-
-def noOpLogZio: LogWriter[IO[Nothing, ?]]
-```
-where `ExIO` is defined as `IO[Exception, ?]`
+To create instances for **Scalaz Zio**'s `ZIO` the constructors are pretty trivial and self-explanatory and can be found in [here](https://github.com/laserdisc-io/log-effect/blob/master/zio/src/main/scala/log/effect/zio/ZioLogWriter.scala).
 
 
 ### Submit Logs

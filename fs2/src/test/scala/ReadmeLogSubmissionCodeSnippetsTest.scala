@@ -1,7 +1,7 @@
 import com.github.ghik.silencer.silent
 import org.scalatest.{ Matchers, WordSpecLike }
 
-@silent final class ReadmeCodeSnippetsTest extends WordSpecLike with Matchers {
+@silent final class ReadmeLogSubmissionCodeSnippetsTest extends WordSpecLike with Matchers {
 
   "`in a monadic sequence of effects` snippet should compile" in {
 

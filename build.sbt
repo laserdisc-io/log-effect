@@ -85,6 +85,11 @@ lazy val testDependencies = Seq(
   "io.laserdisc"   %% "laserdisc-fs2" % versionOf.laserdisc  % Test
 )
 
+lazy val dependenciesToExclude = Seq(
+  "io.laserdisc" %% "log-effect-core",
+  "io.laserdisc" %% "log-effect-fs2"
+)
+
 lazy val compilerPluginsDependencies = Seq(
   compilerPlugin(
     "org.spire-math" %% "kind-projector" % versionOf.kindProjector cross CrossVersion.binary
@@ -100,6 +105,7 @@ lazy val crossBuildSettings = Seq(
   crossScalaVersions  := Seq(`scala 211`, `scala 212`),
   scalacOptions       ++= crossBuildOptions,
   libraryDependencies ++= testDependencies ++ compilerPluginsDependencies,
+  excludeDependencies ++= dependenciesToExclude,
   organization        := "io.laserdisc",
   parallelExecution   in Test := false,
   scalacOptions ++=
