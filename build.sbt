@@ -55,6 +55,7 @@ lazy val versionOf = new {
   val scalaTest     = "3.0.7"
   val kindProjector = "0.9.10"
   val silencer      = "1.3.3"
+  val laserdisc     = "0.2.3"
 }
 
 lazy val coreDependencies = Seq(
@@ -80,7 +81,8 @@ lazy val zioDependencies = Seq(
 lazy val testDependencies = Seq(
   "org.scalacheck" %% "scalacheck"    % versionOf.scalaCheck % Test,
   "org.scalatest"  %% "scalatest"     % versionOf.scalaTest  % Test,
-  "org.log4s"      %% "log4s-testing" % versionOf.log4s      % Test
+  "org.log4s"      %% "log4s-testing" % versionOf.log4s      % Test,
+  "io.laserdisc"   %% "laserdisc-fs2" % versionOf.laserdisc  % Test
 )
 
 lazy val compilerPluginsDependencies = Seq(

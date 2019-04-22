@@ -51,14 +51,14 @@ Currently Log Effect supports the following backends
 
 |                          | Scalaz ZIO | Log Effect Core   |
 | ------------------------:| ----------:| -----------------:|
-| [![Maven Central](https://img.shields.io/maven-central/v/io.laserdisc/log-effect-zio_2.12.svg?label=log-effect-zio&colorB=fb0005)](https://maven-badges.herokuapp.com/maven-central/io.laserdisc/log-effect-zio_2.12) | 0.6.3 | [![Maven Central](https://img.shields.io/maven-central/v/io.laserdisc/log-effect-core_2.12.svg?label=%20&colorB=9311fc)](https://maven-badges.herokuapp.com/maven-central/io.laserdisc/log-effect-core_2.12)
+| [![Maven Central](https://img.shields.io/maven-central/v/io.laserdisc/log-effect-zio_2.12.svg?label=log-effect-zio&colorB=fb0005)](https://maven-badges.herokuapp.com/maven-central/io.laserdisc/log-effect-zio_2.12) | 1.0-RC4 | [![Maven Central](https://img.shields.io/maven-central/v/io.laserdisc/log-effect-core_2.12.svg?label=%20&colorB=9311fc)](https://maven-badges.herokuapp.com/maven-central/io.laserdisc/log-effect-core_2.12)
 | v0.3.5  | 0.2.7 | v0.3.5  | 
 
 <br>
 
 |                          | Cats  | Cats Effect | Log4s  | Scribe |
 | ------------------------:| -----:| -----------:| ------:| ------:|
-| [![Maven Central](https://img.shields.io/maven-central/v/io.laserdisc/log-effect-core_2.12.svg?label=log-effect-core&colorB=9311fc)](https://maven-badges.herokuapp.com/maven-central/io.laserdisc/log-effect-core_2.12) |  |  | 1.7.1 | 2.7.2 |
+| [![Maven Central](https://img.shields.io/maven-central/v/io.laserdisc/log-effect-core_2.12.svg?label=log-effect-core&colorB=9311fc)](https://maven-badges.herokuapp.com/maven-central/io.laserdisc/log-effect-core_2.12) |  |  | 1.7.0 | 2.7.3 |
 | v0.3.5  |       |             | 1.6.1  |        |
 | v0.2.2  | 1.2.0 |             | 1.6.1  |        |
 | v0.1.14 | 1.2.0 | 0.10.1      | 1.6.1  |        |
@@ -173,8 +173,12 @@ where `ExIO` is defined as `IO[Exception, ?]`
 
 ### Submit Logs
 
-In a monadic sequence of computations
+The following ways of submitting logs are supported:
+
+- _in a monadic sequence of effects_
 ```scala
+import cats.effect.Sync
+import log.effect.LogWriter
 import cats.syntax.functor._
 import cats.syntax.flatMap._
 
@@ -189,120 +193,159 @@ def process[F[_]](implicit F: Sync[F], log: LogWriter[F]): F[(Int, Int)] =
   } yield (a, b)
 ```
 
-or in a streaming environment using the `LogWriter`'s or the `fs2` streams' syntaxes
+ - _in a streaming environment using `LogWriter`'s syntax_
 ```scala
+import java.nio.channels.AsynchronousChannelGroup
+
+import cats.effect.{ ConcurrentEffect, ContextShift, Timer }
 import cats.syntax.apply._
-import laserdisc.fs2.{RedisAddress, RedisClient}
+import laserdisc.fs2.{ RedisAddress, RedisClient }
+import log.effect.LogWriter
 
-implicit final val SC: Scheduler = ???
-implicit final val EC: ExecutionContext = ???
-implicit final val CG: AsynchronousChannelGroup = ???
+import scala.concurrent.ExecutionContext
 
-def redisClient[F[_]: Effect](address: RedisAddress)(implicit log: LogWriter[F]): Stream[F, RedisClient[F]] =
-  RedisClient[F](Set(address)) evalMap (
-    client => log.info(s"Laserdisc Redis client for $address") *> Effect[F].pure(client)
-  )
+implicit def EC: ExecutionContext         = ???
+implicit def CG: AsynchronousChannelGroup = ???
+
+def redisClient[F[_]: ConcurrentEffect: ContextShift: Timer](
+  address: RedisAddress
+)(implicit log: LogWriter[F]): fs2.Stream[F, RedisClient[F]] =
+  RedisClient[F](Set(address)) evalMap { client =>
+    log.info(s"Laserdisc Redis client for $address") *> ConcurrentEffect[F].pure(client)
+  }
 ```
+
+- _in a streaming environment using `fs2` streams' syntax_
 ```scala
-import laserdisc.fs2.{RedisAddress, RedisClient}
+import java.nio.channels.AsynchronousChannelGroup
 
-implicit final val SC: Scheduler = ???
-implicit final val EC: ExecutionContext = ???
-implicit final val CG: AsynchronousChannelGroup = ???
+import cats.effect.{ ConcurrentEffect, ContextShift, Timer }
+import laserdisc.fs2.{ RedisAddress, RedisClient }
+import log.effect.LogWriter
+import log.effect.fs2.syntax._
 
-def redisCache[F[_]: Effect](address: RedisAddress)(implicit log: LogWriter[F]): Stream[F, RedisClient[F]] =
+import scala.concurrent.ExecutionContext
+
+implicit def EC: ExecutionContext         = ???
+implicit def CG: AsynchronousChannelGroup = ???
+
+def redisCache[F[_]: ConcurrentEffect: ContextShift: Timer](
+  address: RedisAddress
+)(implicit log: LogWriter[F]): fs2.Stream[F, RedisClient[F]] =
   for {
-    _      <- log.infoS(s"About to connect a Laserdisc Redis client to $address")
+    _      <- log.infoS(s"About to connect a Laserdisc Redis client for $address")
     client <- RedisClient[F](Set(address))
     _      <- log.infoS("The connection went fine. Talking to the server")
   } yield client
 ```
 
-or through the mtl style syntax for the singleton type of the companion (notice the syntax or the `write` method called on the `LogWriter`'s companion object)
+- _through the companion's syntax_
 ```scala
 import cats.effect.Sync
 import cats.syntax.apply._
 import log.effect.LogWriter
 
-def double[F[_]: Sync: LogWriter](source: fs2.Stream[F, Int]): fs2.Stream[F, Int] = {
-
-  source evalMap (
-    n =>
-      LogWriter.debug("Processing a number") *>
-        LogWriter.debug(n.toString) *>
-        Sync[F].pure(n * 2) <*
-        LogWriter.debug("Processed")
-  ) handleErrorWith (
-    th =>
-      fs2.Stream.eval(
-        LogWriter.error("Ops, something didn't work", th) *> Sync[F].pure(0)
-      )
-  )
-}
+def double[F[_]: Sync: LogWriter](source: fs2.Stream[F, Int]): fs2.Stream[F, Int] =
+  source evalMap { n =>
+    LogWriter.debug("Processing a number") *>
+      LogWriter.debug(n.toString) *>
+      Sync[F].pure(n * 2) <*
+      LogWriter.debug("Processed")
+  } handleErrorWith { th =>
+    fs2.Stream eval (
+      LogWriter.error("Ops, something didn't work", th) *> Sync[F].pure(0)
+    )
+  }
 ```
+
+- _through the companion's syntax for `fs2` streams_
 ```scala
-import cats.Show
+import cats.effect.Sync
 import cats.syntax.apply._
-import cats.syntax.either._
+import cats.syntax.flatMap._
+import log.effect.LogWriter
+import log.effect.fs2.syntax._
+
+def double[F[_]: Sync: LogWriter](source: fs2.Stream[F, Int]): fs2.Stream[F, Int] =
+  (source >>= { n =>
+    LogWriter.debugS("Processing a number") >>
+      LogWriter.debugS(n.toString) >>
+      fs2.Stream.eval(Sync[F].pure(n * 2)) <*
+      LogWriter.debugS("Processed")
+  }) handleErrorWith { th =>
+    LogWriter.errorS("Ops, something didn't work", th) >> fs2.Stream.eval(Sync[F].pure(0))
+  }
+```
+
+- _through the companion's accessor to the `write` method_
+```scala
+import java.nio.channels.AsynchronousChannelGroup
+
+import cats.Show
+import cats.effect.{ ConcurrentEffect, ContextShift, Timer }
 import cats.instances.string._
-import LogWriter.{Debug, Error, Failure}
-import laserdisc.fs2.{RedisAddress, RedisClient}
+import cats.syntax.either._
+import cats.syntax.flatMap._
+import laserdisc.fs2.{ RedisAddress, RedisClient }
+import log.effect.LogLevels.{ Debug, Error }
+import log.effect.{ Failure, LogWriter }
 import log.effect.fs2.interop.show._
+
+import scala.concurrent.ExecutionContext
 
 type |[A, B] = Either[A, B]
 
-implicit final val SC: Scheduler = ???
-implicit final val EC: ExecutionContext = ???
-implicit final val CG: AsynchronousChannelGroup = ???
+implicit def EC: ExecutionContext         = ???
+implicit def CG: AsynchronousChannelGroup = ???
 
-def redisClient[F[_]: Effect: LogWriter](address: RedisAddress): Stream[F, Throwable | RedisClient[F]] = {
+def redisClient[F[_]: ConcurrentEffect: ContextShift: Timer: LogWriter](
+  address: RedisAddress
+): fs2.Stream[F, Throwable | RedisClient[F]] = {
 
-  // Show instances are needed for every logged type
-  implicit val addressShow: Show[RedisAddress] = ???
+  // Cats Show instances are needed for every logged type
+  implicit val addressShow: Show[RedisAddress]  = ???
   implicit val clientShow: Show[RedisClient[F]] = ???
 
-  RedisClient[F](Set(address)) evalMap (
-    client =>
-      LogWriter.write(Debug, "Connecting") *>
-      LogWriter.write(Debug, address) *>
-      LogWriter.write(Debug, client) *>
-      Effect[F].pure(client.asRight)
-  ) handleErrorWith (
-    th => Stream.eval(
-      LogWriter.write(Error, Failure("Ops, something didn't work", th)) *> Effect[F].pure(th.asLeft)
+  RedisClient[F](Set(address)) evalMap { client =>
+    LogWriter.write(Debug, "Connected client details:") >>
+      LogWriter.write(Debug, address) >>
+      LogWriter.write(Debug, client) >>
+      ConcurrentEffect[F].pure(client.asRight)
+  } handleErrorWith { th =>
+    fs2.Stream eval (
+      LogWriter.write(Error, Failure("Ops, something didn't work", th)) >>
+        ConcurrentEffect[F].pure(th.asLeft)
     )
-  )
+  }
 }
 ```
 ```scala
 import cats.Show
 import cats.effect.Sync
 import cats.syntax.apply._
+import cats.syntax.flatMap._
 import log.effect.LogLevels.{ Debug, Error }
-import log.effect.LogWriter
-import log.effect.LogWriter.Failure
 import log.effect.fs2.interop.show._
+import log.effect.{ Failure, LogWriter }
 
 def double[F[_]: Sync: LogWriter](source: fs2.Stream[F, Int]): fs2.Stream[F, Int] = {
 
-  // Show instances are needed for every logged type
+  // Cats Show instances are needed for every logged type
   implicit def intShow: Show[Int] = ???
 
-  source evalMap (
-    n =>
-      LogWriter.write(Debug, "Processing a number") *>
-        LogWriter.write(Debug, n) *>
-        Sync[F].pure(n * 2) <*
-        LogWriter.write(Debug, "Processed")
-  ) handleErrorWith (
-    th =>
-      fs2.Stream.eval(
-        LogWriter.write(Error, Failure("Ops, something didn't work", th)) *> Sync[F].pure(0)
-      )
-  )
+  source evalMap { n =>
+    LogWriter.write(Debug, "Processing a number") >>
+      LogWriter.write(Debug, n) >>
+      Sync[F].pure(n * 2) <*
+      LogWriter.write(Debug, "Processed")
+  } handleErrorWith { th =>
+    fs2.Stream eval (
+      LogWriter.write(Error, Failure("Ops, something didn't work", th)) >> Sync[F].pure(0)
+    )
+  }
 }
 ```
-**NB:** notice the `LogWriter`'s implicit evidence given as context bound and the `import log.effect.fs2.interop.show._`. The latter is needed to summon an `internal.Show` instance given the `cats.Show`.
+**NB:** notice in the last two examples the `LogWriter`'s implicit evidence given as context bound and the `import log.effect.fs2.interop.show._`. The latter is needed to summon an `internal.Show` instance given the `cats.Show` provided.
 
 <br>
 
