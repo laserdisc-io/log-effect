@@ -334,6 +334,27 @@ def double[F[_]: Sync: LogWriter](source: fs2.Stream[F, Int]): fs2.Stream[F, Int
 ```
 **NB:** notice in the last two examples the `LogWriter`'s implicit evidence given as context bound and the `import log.effect.fs2.interop.show._`. The latter is needed to summon an `internal.Show` instance given the `cats.Show` provided.
 
+In some cases like tests a non logging instance might come useful. In such a case the `noOp` logging version is provided. See below an example taken from the [Laserdisc](https://github.com/laserdisc-io/laserdisc)'s tests
+```scala
+import java.nio.channels.AsynchronousChannelGroup
+
+import cats.effect.{ ConcurrentEffect, ContextShift, Timer }
+import cats.syntax.flatMap._
+import laserdisc.fs2.{ RedisAddress, RedisClient }
+import log.effect.fs2.Fs2LogWriter.noOpLogStreamF
+
+import scala.concurrent.ExecutionContext
+
+implicit def EC: ExecutionContext         = ???
+implicit def CG: AsynchronousChannelGroup = ???
+
+def redisClient[F[_]: ConcurrentEffect: ContextShift: Timer](
+  add: RedisAddress
+): fs2.Stream[F, RedisClient[F]] =
+  noOpLogStreamF >>= { implicit log =>
+    RedisClient[F](Set(add))
+  }
+```
 <br>
 
 ## License

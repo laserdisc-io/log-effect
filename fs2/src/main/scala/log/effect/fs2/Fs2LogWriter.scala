@@ -5,6 +5,7 @@ package fs2
 import java.util.{ logging => jul }
 
 import _root_.fs2.Stream
+import cats.Applicative
 import cats.effect.Sync
 import log.effect.fs2.SyncLogWriter._
 import log.effect.internal.Id
@@ -42,6 +43,9 @@ object Fs2LogWriter {
   def consoleLogStreamUpToLevel[F[_]: Sync, LL <: LogLevel](minLevel: LL): Stream[F, LogWriter[F]] =
     Stream emit consoleLogUpToLevel(minLevel)
 
-  def noOpLogStream[F[_]: Sync]: Stream[F, LogWriter[Id]] =
+  def noOpLogStream[F[_]]: Stream[F, LogWriter[Id]] =
     Stream emit noOpLog
+
+  def noOpLogStreamF[F[_]: Applicative]: Stream[F, LogWriter[F]] =
+    Stream emit noOpLogF
 }

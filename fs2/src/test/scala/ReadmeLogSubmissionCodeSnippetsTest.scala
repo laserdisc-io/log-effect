@@ -176,4 +176,26 @@ import org.scalatest.{ Matchers, WordSpecLike }
       }
     }
   }
+
+  "laserdisc test snippet should compile" in {
+
+    import java.nio.channels.AsynchronousChannelGroup
+
+    import cats.effect.{ ConcurrentEffect, ContextShift, Timer }
+    import cats.syntax.flatMap._
+    import laserdisc.fs2.{ RedisAddress, RedisClient }
+    import log.effect.fs2.Fs2LogWriter.noOpLogStreamF
+
+    import scala.concurrent.ExecutionContext
+
+    implicit def EC: ExecutionContext         = ???
+    implicit def CG: AsynchronousChannelGroup = ???
+
+    def redisClient[F[_]: ConcurrentEffect: ContextShift: Timer](
+      add: RedisAddress
+    ): fs2.Stream[F, RedisClient[F]] =
+      noOpLogStreamF >>= { implicit log =>
+        RedisClient[F](Set(add))
+      }
+  }
 }

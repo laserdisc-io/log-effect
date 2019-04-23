@@ -4,8 +4,9 @@ package fs2
 
 import java.util.{ logging => jul }
 
+import cats.Applicative
 import cats.effect.Sync
-import log.effect.internal.{ EffectSuspension, Id }
+import log.effect.internal.{ EffectSuspension, Id, Show }
 import org.{ log4s => l4s }
 
 object SyncLogWriter {
@@ -44,8 +45,11 @@ object SyncLogWriter {
   def consoleLogUpToLevel[F[_]: Sync, LL <: LogLevel](minLevel: LL): LogWriter[F] =
     LogWriter.from[Id].runningEffect[F](minLevel)
 
-  def noOpLog[F[_]]: LogWriter[Id] =
+  val noOpLog: LogWriter[Id] =
     LogWriter.of[Id](())
+
+  def noOpLogF[F[_]: Applicative]: LogWriter[F] =
+    noOpLog.liftF
 
   private[this] object instances {
 
@@ -60,5 +64,12 @@ object SyncLogWriter {
       new internal.Functor[F] {
         def fmap[A, B](f: A => B): F[A] => F[B] = F lift f
       }
+
+    implicit final class NoOpLogF(private val `_`: LogWriter[Id]) extends AnyVal {
+      def liftF[F[_]: Applicative]: LogWriter[F] =
+        new LogWriter[F] {
+          def write[A: Show, L <: LogLevel: Show](level: L, a: =>A): F[Unit] = Applicative[F].unit
+        }
+    }
   }
 }
