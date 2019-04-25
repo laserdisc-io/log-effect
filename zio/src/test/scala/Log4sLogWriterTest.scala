@@ -3,18 +3,18 @@ import log.effect.zio.ZioLogWriter.log4sFromLogger
 import org.log4s.{ getLogger, LoggedEvent, Logger, TestAppender }
 import org.scalatest.{ Matchers, WordSpecLike }
 import scalaz.zio
-import scalaz.zio.{ Exit, IO, Task, ZIO }
+import scalaz.zio.{ Exit, IO, ZIO }
 
 final class Log4sLogWriterTest extends WordSpecLike with Matchers with zio.App {
 
   private[this] def capturedLog4sOutOf(
-    logWrite: ZIO[Task[Logger], Throwable, Unit]
+    logWrite: ZIO[Logger, Throwable, Unit]
   ): Option[LoggedEvent] = {
 
     @silent val loggingAction =
       ZIO.effect(getLogger("Test Logger")) >>= { logger =>
         TestAppender.withAppender() {
-          logWrite provide ZIO.succeed(logger)
+          logWrite provide logger
         }
       }
 

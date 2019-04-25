@@ -23,7 +23,7 @@ final class LogWriterResolutionTest extends WordSpecLike with Matchers {
         c(IO.effect(l4s.getLogger("test")))
 
       @silent def l2: Task[LogWriter[Task]] =
-        log4sFromLogger.provide(IO.effect(l4s.getLogger("test")))
+        log4sFromLogger.provide(l4s.getLogger("test"))
     }
 
     "correctly infer a valid jul constructor for IO" in {
@@ -45,7 +45,7 @@ final class LogWriterResolutionTest extends WordSpecLike with Matchers {
         c(IO.effect(jul.Logger.getGlobal))
 
       @silent def l2: Task[LogWriter[Task]] =
-        julFromLogger.provide(IO.effect(jul.Logger.getGlobal))
+        julFromLogger.provide(jul.Logger.getGlobal)
     }
   }
 

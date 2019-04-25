@@ -8,6 +8,7 @@ import org.scalatest.{ Matchers, WordSpecLike }
     import java.util.{ logging => jul }
 
     import cats.effect.Sync
+    import cats.syntax.flatMap._
     import log.effect.fs2.SyncLogWriter._
     import log.effect.internal.Id
     import log.effect.{ LogLevels, LogWriter }
@@ -15,7 +16,8 @@ import org.scalatest.{ Matchers, WordSpecLike }
 
     sealed abstract class App[F[_]](implicit F: Sync[F]) {
 
-      val log4s1: F[LogWriter[F]] = log4sLog(F.delay(l4s.getLogger("a logger")))
+      val log4s1: F[LogWriter[F]] =
+        F.delay(l4s.getLogger("test")) >>= log4sLog[F]
 
       val log4s2: F[LogWriter[F]] = log4sLog("a logger")
 
@@ -24,11 +26,13 @@ import org.scalatest.{ Matchers, WordSpecLike }
         log4sLog(classOf[LoggerClass])
       }
 
-      val jul1: F[LogWriter[F]] = julLog(F.delay(jul.Logger.getLogger("a logger")))
+      val jul1: F[LogWriter[F]] =
+        F.delay(jul.Logger.getLogger("a logger")) >>= julLog[F]
 
       val jul2: F[LogWriter[F]] = julLog
 
-      val scribe1: F[LogWriter[F]] = scribeLog(F.delay(scribe.Logger("a logger")))
+      val scribe1: F[LogWriter[F]] =
+        F.delay(scribe.Logger("a logger")) >>= scribeLog[F]
 
       val scribe2: F[LogWriter[F]] = scribeLog("a logger")
 
@@ -50,6 +54,8 @@ import org.scalatest.{ Matchers, WordSpecLike }
     import java.util.{ logging => jul }
 
     import cats.effect.Sync
+    import cats.syntax.flatMap._
+    import fs2.Stream
     import log.effect.fs2.Fs2LogWriter._
     import log.effect.internal.Id
     import log.effect.{ LogLevels, LogWriter }
@@ -57,7 +63,8 @@ import org.scalatest.{ Matchers, WordSpecLike }
 
     sealed abstract class App[F[_]](implicit F: Sync[F]) {
 
-      val log4s1: fs2.Stream[F, LogWriter[F]] = log4sLogStream(F.delay(l4s.getLogger("a logger")))
+      val log4s1: fs2.Stream[F, LogWriter[F]] =
+        Stream.eval(F.delay(l4s.getLogger("test"))) >>= log4sLogStream[F]
 
       val log4s2: fs2.Stream[F, LogWriter[F]] = log4sLogStream("a logger")
 
@@ -67,11 +74,12 @@ import org.scalatest.{ Matchers, WordSpecLike }
       }
 
       val jul1: fs2.Stream[F, LogWriter[F]] =
-        julLogStream(F.delay(jul.Logger.getLogger("a logger")))
+        Stream.eval(F.delay(jul.Logger.getLogger("a logger"))) >>= julLogStream[F]
 
       val jul2: fs2.Stream[F, LogWriter[F]] = julLogStream
 
-      val scribe1: fs2.Stream[F, LogWriter[F]] = scribeLogStream(F.delay(scribe.Logger("a logger")))
+      val scribe1: fs2.Stream[F, LogWriter[F]] =
+        Stream.eval(F.delay(scribe.Logger("a logger"))) >>= scribeLogStream[F]
 
       val scribe2: fs2.Stream[F, LogWriter[F]] = scribeLogStream("a logger")
 

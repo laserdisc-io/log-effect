@@ -13,30 +13,30 @@ object SyncLogWriter {
 
   import instances._
 
-  def log4sLog[F[_]: Sync](fa: F[l4s.Logger]): F[LogWriter[F]] =
-    LogWriter.of[F](fa)
+  def log4sLog[F[_]](l: l4s.Logger)(implicit F: Sync[F]): F[LogWriter[F]] =
+    LogWriter.of(F.pure(l))
 
   def log4sLog[F[_]](c: Class[_])(implicit F: Sync[F]): F[LogWriter[F]] =
-    LogWriter.of[F](F.delay(l4s.getLogger(c)))
+    LogWriter.of(F.delay(l4s.getLogger(c)))
 
   def log4sLog[F[_]](n: String)(implicit F: Sync[F]): F[LogWriter[F]] =
-    LogWriter.of[F](F.delay(l4s.getLogger(n)))
+    LogWriter.of(F.delay(l4s.getLogger(n)))
 
-  def julLog[F[_]: Sync](fa: F[jul.Logger]): F[LogWriter[F]] =
-    LogWriter.of[F](fa)
+  def julLog[F[_]](l: jul.Logger)(implicit F: Sync[F]): F[LogWriter[F]] =
+    LogWriter.of(F.pure(l))
 
   def julLog[F[_]](implicit F: Sync[F]): F[LogWriter[F]] =
-    LogWriter.of[F](F.delay(jul.Logger.getGlobal))
+    LogWriter.of(F.delay(jul.Logger.getGlobal))
 
-  def scribeLog[F[_]: Sync](fa: F[scribe.Logger]): F[LogWriter[F]] =
-    LogWriter.of[F](fa)
+  def scribeLog[F[_]](l: scribe.Logger)(implicit F: Sync[F]): F[LogWriter[F]] =
+    LogWriter.of(F.pure(l))
 
   def scribeLog[F[_]](n: String)(implicit F: Sync[F]): F[LogWriter[F]] =
-    LogWriter.of[F](F.delay(scribe.Logger(n)))
+    LogWriter.of(F.delay(scribe.Logger(n)))
 
   def scribeLog[F[_]](c: Class[_])(implicit F: Sync[F]): F[LogWriter[F]] = {
     import scribe._
-    LogWriter.of[F](F.delay(c.logger))
+    LogWriter.of(F.delay(c.logger))
   }
 
   def consoleLog[F[_]: Sync]: LogWriter[F] =

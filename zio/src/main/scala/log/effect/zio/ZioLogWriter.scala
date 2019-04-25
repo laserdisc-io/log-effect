@@ -6,11 +6,16 @@ import java.util.{ logging => jul }
 
 import log.effect.internal.{ EffectSuspension, Id }
 import org.{ log4s => l4s }
-import scalaz.zio.{ IO, Task, ZIO }
+import scalaz.zio.{ IO, Task, UIO, ZIO }
 
 object ZioLogWriter {
 
   import instances._
+
+  val log4sFromLogger: ZIO[l4s.Logger, Nothing, LogWriter[Task]] =
+    ZIO.accessM { log4sLogger =>
+      LogWriter.from[UIO].runningEffect[Task](ZIO.effectTotal(log4sLogger))
+    }
 
   val log4sFromName: ZIO[String, Throwable, LogWriter[Task]] =
     ZIO.accessM { name =>
@@ -22,14 +27,9 @@ object ZioLogWriter {
       LogWriter.of[Task](ZIO.effect(l4s.getLogger(c)))
     }
 
-  val log4sFromLogger: ZIO[Task[l4s.Logger], Throwable, LogWriter[Task]] =
-    ZIO.accessM { log4sLogger =>
-      LogWriter.of[Task](log4sLogger)
-    }
-
-  val julFromLogger: ZIO[Task[jul.Logger], Throwable, LogWriter[Task]] =
+  val julFromLogger: ZIO[jul.Logger, Nothing, LogWriter[Task]] =
     ZIO.accessM { julLogger =>
-      LogWriter.of[Task](julLogger)
+      LogWriter.from[UIO].runningEffect[Task](ZIO.effectTotal(julLogger))
     }
 
   val julGlobal: ZIO[Any, Throwable, LogWriter[Task]] =
@@ -46,9 +46,9 @@ object ZioLogWriter {
       LogWriter.of[Task](IO.effect(c.logger))
     }
 
-  val scribeFromLogger: ZIO[Task[scribe.Logger], Throwable, LogWriter[Task]] =
+  val scribeFromLogger: ZIO[scribe.Logger, Nothing, LogWriter[Task]] =
     ZIO.accessM { scribeLogger =>
-      LogWriter.of[Task](scribeLogger)
+      LogWriter.from[UIO].runningEffect[Task](ZIO.effectTotal(scribeLogger))
     }
 
   val console: LogWriter[Task] =
@@ -65,6 +65,11 @@ object ZioLogWriter {
     implicit final private[zio] val taskEffectSuspension: EffectSuspension[Task] =
       new EffectSuspension[Task] {
         def suspend[A](a: =>A): Task[A] = IO.effect(a)
+      }
+
+    implicit final private[zio] val uioEffectSuspension: EffectSuspension[UIO] =
+      new EffectSuspension[UIO] {
+        def suspend[A](a: =>A): UIO[A] = IO.effectTotal(a)
       }
 
     implicit final private[zio] def functorInstances[R, E]: internal.Functor[ZIO[R, E, ?]] =

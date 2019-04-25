@@ -13,8 +13,8 @@ import org.{ log4s => l4s }
 
 object Fs2LogWriter {
 
-  def log4sLogStream[F[_]: Sync](fa: F[l4s.Logger]): Stream[F, LogWriter[F]] =
-    Stream eval log4sLog(fa)
+  def log4sLogStream[F[_]: Sync](l: l4s.Logger): Stream[F, LogWriter[F]] =
+    Stream eval log4sLog(l)
 
   def log4sLogStream[F[_]: Sync](c: Class[_]): Stream[F, LogWriter[F]] =
     Stream eval log4sLog(c)
@@ -22,14 +22,14 @@ object Fs2LogWriter {
   def log4sLogStream[F[_]: Sync](n: String): Stream[F, LogWriter[F]] =
     Stream eval log4sLog(n)
 
-  def julLogStream[F[_]: Sync](fa: F[jul.Logger]): Stream[F, LogWriter[F]] =
-    Stream eval julLog(fa)
+  def julLogStream[F[_]: Sync](l: jul.Logger): Stream[F, LogWriter[F]] =
+    Stream eval julLog(l)
 
   def julLogStream[F[_]: Sync]: Stream[F, LogWriter[F]] =
     Stream eval julLog
 
-  def scribeLogStream[F[_]: Sync](fa: F[scribe.Logger]): Stream[F, LogWriter[F]] =
-    Stream eval scribeLog(fa)
+  def scribeLogStream[F[_]: Sync](l: scribe.Logger): Stream[F, LogWriter[F]] =
+    Stream eval scribeLog(l)
 
   def scribeLogStream[F[_]: Sync](c: Class[_]): Stream[F, LogWriter[F]] =
     Stream eval scribeLog(c)

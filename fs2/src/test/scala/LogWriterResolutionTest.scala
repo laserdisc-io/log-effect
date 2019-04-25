@@ -1,3 +1,4 @@
+import cats.syntax.flatMap._
 import com.github.ghik.silencer.silent
 import org.scalatest.{ Matchers, WordSpecLike }
 
@@ -23,7 +24,7 @@ final class LogWriterResolutionTest extends WordSpecLike with Matchers {
         c(F.delay(org.log4s.getLogger("test")))
 
       @silent def l2[F[_]](implicit F: Sync[F]): F[LogWriter[F]] =
-        log4sLog(F.delay(org.log4s.getLogger("test")))
+        F.delay(org.log4s.getLogger("test")) >>= log4sLog[F]
     }
 
     "correctly infer a valid jul constructor for an F[_] given an implicit evidence of Sync[F]" in {
@@ -45,7 +46,7 @@ final class LogWriterResolutionTest extends WordSpecLike with Matchers {
         c(F.delay(java.util.logging.Logger.getGlobal))
 
       @silent def l2[F[_]](implicit F: Sync[F]): F[LogWriter[F]] =
-        julLog(F.delay(java.util.logging.Logger.getGlobal))
+        F.delay(java.util.logging.Logger.getGlobal) >>= julLog[F]
     }
 
     "not infer a valid log4s constructor for an F[_] if there is no implicit evidence of EffectSuspension[F]" in {
@@ -119,7 +120,7 @@ final class LogWriterResolutionTest extends WordSpecLike with Matchers {
         c(IO.delay(org.log4s.getLogger("test")))
 
       @silent def l2: IO[LogWriter[IO]] =
-        log4sLog(IO.delay(org.log4s.getLogger("test")))
+        IO.delay(org.log4s.getLogger("test")) >>= log4sLog[IO]
     }
 
     "correctly infer a valid jul constructor for IO" in {
@@ -141,7 +142,7 @@ final class LogWriterResolutionTest extends WordSpecLike with Matchers {
         c(IO.delay(java.util.logging.Logger.getGlobal))
 
       @silent def l2: IO[LogWriter[IO]] =
-        julLog(IO.delay(java.util.logging.Logger.getGlobal))
+        IO.delay(java.util.logging.Logger.getGlobal) >>= julLog[IO]
     }
   }
 
