@@ -3,9 +3,9 @@ import log.effect.zio.ZioLogWriter.log4sFromLogger
 import org.log4s.{ getLogger, LoggedEvent, Logger, TestAppender }
 import org.scalatest.{ Matchers, WordSpecLike }
 import scalaz.zio
-import scalaz.zio.{ Exit, IO, ZIO }
+import scalaz.zio.ZIO
 
-final class Log4sLogWriterTest extends WordSpecLike with Matchers with zio.App {
+final class Log4sLogWriterTest extends WordSpecLike with Matchers with zio.DefaultRuntime {
 
   private[this] def capturedLog4sOutOf(
     logWrite: ZIO[Logger, Throwable, Unit]
@@ -93,6 +93,4 @@ final class Log4sLogWriterTest extends WordSpecLike with Matchers with zio.App {
       )
     }
   }
-
-  override def run(args: List[String]): ZIO[Environment, Nothing, Int] = IO.done(Exit.succeed(0))
 }
