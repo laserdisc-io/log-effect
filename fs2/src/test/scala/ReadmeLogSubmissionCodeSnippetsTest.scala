@@ -1,5 +1,5 @@
 import com.github.ghik.silencer.silent
-import org.scalatest.{Matchers, WordSpecLike}
+import org.scalatest.{ Matchers, WordSpecLike }
 
 @silent final class ReadmeLogSubmissionCodeSnippetsTest extends WordSpecLike with Matchers {
 
