@@ -81,13 +81,7 @@ lazy val zioDependencies = Seq(
 lazy val testDependencies = Seq(
   "org.scalacheck" %% "scalacheck"    % versionOf.scalaCheck % Test,
   "org.scalatest"  %% "scalatest"     % versionOf.scalaTest  % Test,
-  "org.log4s"      %% "log4s-testing" % versionOf.log4s      % Test,
-  "io.laserdisc"   %% "laserdisc-fs2" % versionOf.laserdisc  % Test
-)
-
-lazy val dependenciesToExclude = Seq(
-  "io.laserdisc" %% "log-effect-core",
-  "io.laserdisc" %% "log-effect-fs2"
+  "org.log4s"      %% "log4s-testing" % versionOf.log4s      % Test
 )
 
 lazy val compilerPluginsDependencies = Seq(
@@ -105,7 +99,6 @@ lazy val crossBuildSettings = Seq(
   crossScalaVersions  := Seq(`scala 211`, `scala 212`),
   scalacOptions       ++= crossBuildOptions,
   libraryDependencies ++= testDependencies ++ compilerPluginsDependencies,
-  excludeDependencies ++= dependenciesToExclude,
   organization        := "io.laserdisc",
   parallelExecution   in Test := false,
   scalacOptions ++=

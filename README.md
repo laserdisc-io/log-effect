@@ -193,20 +193,27 @@ def process[F[_]](implicit F: Sync[F], log: LogWriter[F]): F[(Int, Int)] =
 import java.nio.channels.AsynchronousChannelGroup
 
 import cats.effect.{ ConcurrentEffect, ContextShift, Timer }
-import cats.syntax.apply._
-import laserdisc.fs2.{ RedisAddress, RedisClient }
+import cats.syntax.flatMap._
 import log.effect.LogWriter
 
 import scala.concurrent.ExecutionContext
+
+sealed trait RedisClient[F[_]] {
+  def address: String
+}
+object RedisClient {
+  def apply[F[_]](addr: String): fs2.Stream[F, RedisClient[F]] =
+    fs2.Stream.emit(new RedisClient[F] { val address = addr })
+}
 
 implicit def EC: ExecutionContext         = ???
 implicit def CG: AsynchronousChannelGroup = ???
 
 def redisClient[F[_]: ConcurrentEffect: ContextShift: Timer](
-  address: RedisAddress
+  address: String
 )(implicit log: LogWriter[F]): fs2.Stream[F, RedisClient[F]] =
-  RedisClient[F](Set(address)) evalMap { client =>
-    log.info(s"Laserdisc Redis client for $address") *> ConcurrentEffect[F].pure(client)
+  RedisClient[F](address) evalMap { client =>
+    log.info(s"Laserdisc Redis client for $address") >> ConcurrentEffect[F].pure(client)
   }
 ```
 
@@ -215,21 +222,28 @@ def redisClient[F[_]: ConcurrentEffect: ContextShift: Timer](
 import java.nio.channels.AsynchronousChannelGroup
 
 import cats.effect.{ ConcurrentEffect, ContextShift, Timer }
-import laserdisc.fs2.{ RedisAddress, RedisClient }
 import log.effect.LogWriter
 import log.effect.fs2.syntax._
 
 import scala.concurrent.ExecutionContext
 
+sealed trait RedisClient[F[_]] {
+  def address: String
+}
+object RedisClient {
+  def apply[F[_]](addr: String): fs2.Stream[F, RedisClient[F]] =
+    fs2.Stream.emit(new RedisClient[F] { val address = addr })
+}
+
 implicit def EC: ExecutionContext         = ???
 implicit def CG: AsynchronousChannelGroup = ???
 
 def redisCache[F[_]: ConcurrentEffect: ContextShift: Timer](
-  address: RedisAddress
+  address: String
 )(implicit log: LogWriter[F]): fs2.Stream[F, RedisClient[F]] =
   for {
     _      <- log.infoS(s"About to connect a Laserdisc Redis client for $address")
-    client <- RedisClient[F](Set(address))
+    client <- RedisClient[F](address)
     _      <- log.infoS("The connection went fine. Talking to the server")
   } yield client
 ```
@@ -281,12 +295,19 @@ import cats.effect.{ ConcurrentEffect, ContextShift, Timer }
 import cats.instances.string._
 import cats.syntax.either._
 import cats.syntax.flatMap._
-import laserdisc.fs2.{ RedisAddress, RedisClient }
 import log.effect.LogLevels.{ Debug, Error }
-import log.effect.{ Failure, LogWriter }
 import log.effect.fs2.interop.show._
+import log.effect.{ Failure, LogWriter }
 
 import scala.concurrent.ExecutionContext
+
+sealed trait RedisClient[F[_]] {
+  def address: String
+}
+object RedisClient {
+  def apply[F[_]](addr: String): fs2.Stream[F, RedisClient[F]] =
+    fs2.Stream.emit(new RedisClient[F] { val address = addr })
+}
 
 type |[A, B] = Either[A, B]
 
@@ -294,14 +315,13 @@ implicit def EC: ExecutionContext         = ???
 implicit def CG: AsynchronousChannelGroup = ???
 
 def redisClient[F[_]: ConcurrentEffect: ContextShift: Timer: LogWriter](
-  address: RedisAddress
+  address: String
 ): fs2.Stream[F, Throwable | RedisClient[F]] = {
 
   // Cats Show instances are needed for every logged type
-  implicit val addressShow: Show[RedisAddress]  = ???
   implicit val clientShow: Show[RedisClient[F]] = ???
 
-  RedisClient[F](Set(address)) evalMap { client =>
+  RedisClient[F](address) evalMap { client =>
     LogWriter.write(Debug, "Connected client details:") >>
       LogWriter.write(Debug, address) >>
       LogWriter.write(Debug, client) >>
@@ -348,19 +368,26 @@ import java.nio.channels.AsynchronousChannelGroup
 
 import cats.effect.{ ConcurrentEffect, ContextShift, Timer }
 import cats.syntax.flatMap._
-import laserdisc.fs2.{ RedisAddress, RedisClient }
 import log.effect.fs2.Fs2LogWriter.noOpLogStreamF
 
 import scala.concurrent.ExecutionContext
+
+sealed trait RedisClient[F[_]] {
+  def address: String
+}
+object RedisClient {
+  def apply[F[_]](addr: String): fs2.Stream[F, RedisClient[F]] =
+    fs2.Stream.emit(new RedisClient[F] { val address = addr })
+}
 
 implicit def EC: ExecutionContext         = ???
 implicit def CG: AsynchronousChannelGroup = ???
 
 def redisClient[F[_]: ConcurrentEffect: ContextShift: Timer](
-  add: RedisAddress
+  address: String
 ): fs2.Stream[F, RedisClient[F]] =
   noOpLogStreamF >>= { implicit log =>
-    RedisClient[F](Set(add))
+    RedisClient[F](address)
   }
 ```
 <br>
