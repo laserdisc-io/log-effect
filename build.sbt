@@ -45,7 +45,7 @@ lazy val scala212Options = Seq(
   * Dependencies
   */
 lazy val versionOf = new {
-  val cats          = "1.6.0"
+  val cats          = "1.6.1"
   val catsEffect    = "1.3.1"
   val log4s         = "1.8.0"
   val scribe        = "2.7.7"
