@@ -2,8 +2,7 @@ import com.github.ghik.silencer.silent
 import log.effect.zio.ZioLogWriter.log4sFromLogger
 import org.log4s.{ getLogger, LoggedEvent, Logger, TestAppender }
 import org.scalatest.{ Matchers, WordSpecLike }
-import scalaz.zio
-import scalaz.zio.ZIO
+import _root_.zio.ZIO
 
 final class Log4sLogWriterTest extends WordSpecLike with Matchers with zio.DefaultRuntime {
 

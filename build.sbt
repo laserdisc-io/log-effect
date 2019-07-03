@@ -3,9 +3,6 @@ import sbtrelease.ReleasePlugin.autoImport.ReleaseTransformations._
 lazy val `scala 211` = "2.11.12"
 lazy val `scala 212` = "2.12.8"
 
-/**
-  * Scalac options
-  */
 lazy val crossBuildOptions = Seq(
   "-deprecation",
   "-encoding",
@@ -47,15 +44,14 @@ lazy val scala212Options = Seq(
 lazy val versionOf = new {
   val cats          = "1.6.1"
   val catsEffect    = "1.3.1"
-  val log4s         = "1.8.2"
-  val scribe        = "2.7.8"
   val fs2           = "1.0.5"
-  val scalazZio     = "1.0-RC5"
+  val kindProjector = "0.10.3"
+  val log4s         = "1.8.2"
   val scalaCheck    = "1.14.0"
   val scalaTest     = "3.0.8"
-  val kindProjector = "0.9.10"
+  val zio           = "1.0.0-RC9"
+  val scribe        = "2.7.8"
   val silencer      = "1.4.1"
-  val laserdisc     = "0.2.3"
 }
 
 lazy val coreDependencies = Seq(
@@ -73,9 +69,9 @@ lazy val fs2Dependencies = Seq(
 ) map (_.withSources)
 
 lazy val zioDependencies = Seq(
-  "org.log4s"  %% "log4s"      % versionOf.log4s,
-  "com.outr"   %% "scribe"     % versionOf.scribe,
-  "org.scalaz" %% "scalaz-zio" % versionOf.scalazZio
+  "org.log4s" %% "log4s"  % versionOf.log4s,
+  "com.outr"  %% "scribe" % versionOf.scribe,
+  "dev.zio"   %% "zio"    % versionOf.zio
 ) map (_.withSources)
 
 lazy val testDependencies = Seq(
@@ -86,7 +82,7 @@ lazy val testDependencies = Seq(
 
 lazy val compilerPluginsDependencies = Seq(
   compilerPlugin(
-    "org.spire-math" %% "kind-projector" % versionOf.kindProjector cross CrossVersion.binary
+    "org.typelevel" %% "kind-projector" % versionOf.kindProjector cross CrossVersion.binary
   ),
   compilerPlugin("com.github.ghik" %% "silencer-plugin" % versionOf.silencer),
 )

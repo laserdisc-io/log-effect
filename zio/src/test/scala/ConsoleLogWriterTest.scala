@@ -3,8 +3,7 @@ import java.io.{ ByteArrayOutputStream, PrintStream }
 import log.effect.LogLevels._
 import log.effect.zio.ZioLogWriter.{ console, consoleUpToLevel }
 import org.scalatest.{ Matchers, WordSpecLike }
-import scalaz.zio
-import scalaz.zio.{ Exit, IO, Task, ZIO }
+import _root_.zio.{ Exit, IO, Task, ZIO }
 
 final class ConsoleLogWriterTest extends WordSpecLike with Matchers with zio.App {
 

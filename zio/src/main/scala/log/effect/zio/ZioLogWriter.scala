@@ -6,7 +6,7 @@ import java.util.{ logging => jul }
 
 import log.effect.internal.{ EffectSuspension, Id }
 import org.{ log4s => l4s }
-import scalaz.zio.{ IO, Task, UIO, ZIO }
+import _root_.zio.{ IO, Task, UIO, ZIO }
 
 object ZioLogWriter {
 
