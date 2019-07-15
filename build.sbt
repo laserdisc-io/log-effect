@@ -107,7 +107,6 @@ lazy val crossBuildSettings = Seq(
   libraryDependencies ++= testDependencies ++ compilerPluginsDependencies,
   organization        := "io.laserdisc",
   parallelExecution   in Test := false,
-  resolvers           += Resolver.sonatypeRepo("snapshots"),
   scalacOptions ++=
     (scalaVersion.value match {
       case `scala 212` => scala212Options
