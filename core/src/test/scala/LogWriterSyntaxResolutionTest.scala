@@ -1,7 +1,8 @@
 import com.github.ghik.silencer.silent
-import org.scalatest.{ Matchers, WordSpecLike }
+import org.scalatest.Matchers
+import org.scalatest.wordspec.AnyWordSpecLike
 
-final class LogWriterSyntaxResolutionTest extends WordSpecLike with Matchers {
+final class LogWriterSyntaxResolutionTest extends AnyWordSpecLike with Matchers {
 
   "the LogWriter's syntax" should {
 
@@ -42,8 +43,7 @@ final class LogWriterSyntaxResolutionTest extends WordSpecLike with Matchers {
     "be inferred allowing a boilerplate free mtl-style syntax for errors" in {
 
       import log.effect.LogLevels.Error
-      import log.effect.LogWriter
-      import log.effect.Failure
+      import log.effect.{ Failure, LogWriter }
 
       @silent def f[F[_]: LogWriter] =
         LogWriter.write(Error, Failure("test", new Exception("test exception")))

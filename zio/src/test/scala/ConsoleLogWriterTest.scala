@@ -1,11 +1,12 @@
 import java.io.{ ByteArrayOutputStream, PrintStream }
 
+import _root_.zio.{ Exit, IO, Task, ZIO }
 import log.effect.LogLevels._
 import log.effect.zio.ZioLogWriter.{ console, consoleUpToLevel }
-import org.scalatest.{ Matchers, WordSpecLike }
-import _root_.zio.{ Exit, IO, Task, ZIO }
+import org.scalatest.Matchers
+import org.scalatest.wordspec.AnyWordSpecLike
 
-final class ConsoleLogWriterTest extends WordSpecLike with Matchers with zio.App {
+final class ConsoleLogWriterTest extends AnyWordSpecLike with Matchers with zio.App {
 
   private[this] def capturedConsoleOutOf(aWrite: Task[Unit]): String = {
     val lowerStream = new ByteArrayOutputStream()

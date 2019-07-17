@@ -1,8 +1,9 @@
 import cats.syntax.flatMap._
 import com.github.ghik.silencer.silent
-import org.scalatest.{ Matchers, WordSpecLike }
+import org.scalatest.Matchers
+import org.scalatest.wordspec.AnyWordSpecLike
 
-final class LogWriterResolutionTest extends WordSpecLike with Matchers {
+final class LogWriterResolutionTest extends AnyWordSpecLike with Matchers {
 
   "the construction" should {
 

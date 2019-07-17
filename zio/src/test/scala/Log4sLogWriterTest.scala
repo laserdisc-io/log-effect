@@ -1,10 +1,11 @@
+import _root_.zio.ZIO
 import com.github.ghik.silencer.silent
 import log.effect.zio.ZioLogWriter.log4sFromLogger
 import org.log4s.{ getLogger, LoggedEvent, Logger, TestAppender }
-import org.scalatest.{ Matchers, WordSpecLike }
-import _root_.zio.ZIO
+import org.scalatest.Matchers
+import org.scalatest.wordspec.AnyWordSpecLike
 
-final class Log4sLogWriterTest extends WordSpecLike with Matchers with zio.DefaultRuntime {
+final class Log4sLogWriterTest extends AnyWordSpecLike with Matchers with zio.DefaultRuntime {
 
   private[this] def capturedLog4sOutOf(
     logWrite: ZIO[Logger, Throwable, Unit]
@@ -26,6 +27,7 @@ final class Log4sLogWriterTest extends WordSpecLike with Matchers with zio.Defau
 
     "print the expected trace log" in {
 
+      @silent
       val Some(logged) = capturedLog4sOutOf(
         log4sFromLogger >>= (_.trace("test trace message"))
       )
@@ -37,6 +39,7 @@ final class Log4sLogWriterTest extends WordSpecLike with Matchers with zio.Defau
 
     "print the expected debug log" in {
 
+      @silent
       val Some(logged) = capturedLog4sOutOf(
         log4sFromLogger >>= (_.debug("test debug message"))
       )
@@ -48,6 +51,7 @@ final class Log4sLogWriterTest extends WordSpecLike with Matchers with zio.Defau
 
     "print the expected info log" in {
 
+      @silent
       val Some(logged) = capturedLog4sOutOf(
         log4sFromLogger >>= (_.info("test info message"))
       )
@@ -59,6 +63,7 @@ final class Log4sLogWriterTest extends WordSpecLike with Matchers with zio.Defau
 
     "print the expected warn log" in {
 
+      @silent
       val Some(logged) = capturedLog4sOutOf(
         log4sFromLogger >>= (_.warn("test warn message"))
       )
@@ -70,6 +75,7 @@ final class Log4sLogWriterTest extends WordSpecLike with Matchers with zio.Defau
 
     "print the expected error log" in {
 
+      @silent
       val Some(logged) = capturedLog4sOutOf(
         log4sFromLogger >>= (_.error("test error message"))
       )
@@ -81,6 +87,7 @@ final class Log4sLogWriterTest extends WordSpecLike with Matchers with zio.Defau
 
     "print the expected exception log" in {
 
+      @silent
       val Some(logged) = capturedLog4sOutOf(
         log4sFromLogger >>= (_.error(new Exception("Test Exception")))
       )

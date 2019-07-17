@@ -2,8 +2,9 @@ import sbtrelease.ReleasePlugin.autoImport.ReleaseTransformations._
 
 lazy val `scala 211` = "2.11.12"
 lazy val `scala 212` = "2.12.8"
+lazy val `scala 213` = "2.13.0"
 
-lazy val crossBuildOptions = Seq(
+lazy val commonOptions = Seq(
   "-deprecation",
   "-encoding",
   "UTF-8",
@@ -28,7 +29,7 @@ lazy val crossBuildOptions = Seq(
   "-Xfatal-warnings"
 )
 
-lazy val scala212Options = Seq(
+lazy val scala212Options = commonOptions ++ Seq(
   "-opt:l:inline",
   "-Ywarn-unused:imports",
   "-Ywarn-unused:_,imports",
@@ -38,17 +39,27 @@ lazy val scala212Options = Seq(
   "-opt-inline-from:<source>"
 )
 
+lazy val scala213Options = scala212Options diff Seq(
+  "-Ywarn-nullary-override",
+  "-Ypartial-unification",
+  "-Ywarn-nullary-unit",
+  "-Ywarn-inaccessible",
+  "-Ywarn-infer-any",
+  "-Yno-adapted-args",
+  "-Xfuture"
+)
+
 /**
   * Dependencies
   */
 lazy val versionOf = new {
-  val cats          = "1.6.1"
-  val catsEffect    = "1.3.1"
-  val fs2           = "1.0.5"
+  val cats          = "2.0.0-M4"
+  val catsEffect    = "2.0.0-M4"
+  val fs2           = "1.1.0-M1"
   val kindProjector = "0.10.3"
   val log4s         = "1.8.2"
   val scalaCheck    = "1.14.0"
-  val scalaTest     = "3.0.8"
+  val scalaTest     = "3.1.0-SNAP13"
   val zio           = "1.0.0-RC10-1"
   val scribe        = "2.7.8"
   val silencer      = "1.4.1"
@@ -91,16 +102,16 @@ lazy val compilerPluginsDependencies = Seq(
   * Settings
   */
 lazy val crossBuildSettings = Seq(
-  scalaVersion        := `scala 212`,
-  crossScalaVersions  := Seq(`scala 211`, `scala 212`),
-  scalacOptions       ++= crossBuildOptions,
+  scalaVersion        := `scala 213`,
+  crossScalaVersions  := Seq(`scala 211`, `scala 212`, `scala 213`),
   libraryDependencies ++= testDependencies ++ compilerPluginsDependencies,
   organization        := "io.laserdisc",
   parallelExecution   in Test := false,
   scalacOptions ++=
     (scalaVersion.value match {
       case `scala 212` => scala212Options
-      case _           => Seq()
+      case `scala 213` => scala213Options
+      case _           => commonOptions
     }),
   parallelExecution in Test := false
 )
