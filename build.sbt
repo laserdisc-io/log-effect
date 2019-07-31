@@ -62,7 +62,7 @@ lazy val versionOf = new {
   val scalaTest     = "3.1.0-SNAP13"
   val zio           = "1.0.0-RC10-1"
   val scribe        = "2.7.9"
-  val silencer      = "1.4.1"
+  val silencer      = "1.4.2"
 }
 
 lazy val coreDependencies = Seq(
