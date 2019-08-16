@@ -8,10 +8,13 @@
 
 [![Maven Central](https://img.shields.io/maven-central/v/io.laserdisc/log-effect-core_2.11.svg?label=core%202.11&colorB=9311fc)](https://maven-badges.herokuapp.com/maven-central/io.laserdisc/log-effect-core_2.11)
 [![Maven Central](https://img.shields.io/maven-central/v/io.laserdisc/log-effect-core_2.12.svg?label=core%202.12&colorB=9311fc)](https://maven-badges.herokuapp.com/maven-central/io.laserdisc/log-effect-core_2.12)
+[![Maven Central](https://img.shields.io/maven-central/v/io.laserdisc/log-effect-core_2.13.svg?label=core%202.13&colorB=9311fc)](https://maven-badges.herokuapp.com/maven-central/io.laserdisc/log-effect-core_2.13)
 [![Maven Central](https://img.shields.io/maven-central/v/io.laserdisc/log-effect-fs2_2.11.svg?label=fs2%202.11&colorB=2282c3)](https://maven-badges.herokuapp.com/maven-central/io.laserdisc/log-effect-fs2_2.11)
 [![Maven Central](https://img.shields.io/maven-central/v/io.laserdisc/log-effect-fs2_2.12.svg?label=fs2%202.12&colorB=2282c3)](https://maven-badges.herokuapp.com/maven-central/io.laserdisc/log-effect-fs2_2.12)
+[![Maven Central](https://img.shields.io/maven-central/v/io.laserdisc/log-effect-fs2_2.13.svg?label=fs2%202.13&colorB=2282c3)](https://maven-badges.herokuapp.com/maven-central/io.laserdisc/log-effect-fs2_2.13)
 [![Maven Central](https://img.shields.io/maven-central/v/io.laserdisc/log-effect-zio_2.11.svg?label=zio%202.11&colorB=fb0005)](https://maven-badges.herokuapp.com/maven-central/io.laserdisc/log-effect-zio_2.11)
 [![Maven Central](https://img.shields.io/maven-central/v/io.laserdisc/log-effect-zio_2.12.svg?label=zio%202.12&colorB=fb0005)](https://maven-badges.herokuapp.com/maven-central/io.laserdisc/log-effect-zio_2.12)
+[![Maven Central](https://img.shields.io/maven-central/v/io.laserdisc/log-effect-zio_2.13.svg?label=zio%202.13&colorB=fb0005)](https://maven-badges.herokuapp.com/maven-central/io.laserdisc/log-effect-zio_2.13)
 
 
 ## Start
