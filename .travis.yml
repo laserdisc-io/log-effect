@@ -10,7 +10,7 @@ scala:
 jdk:
   - openjdk8
   - openjdk11
-  ##- openjdk12
+  - openjdk12
 
 script:
    - sbt ++$TRAVIS_SCALA_VERSION fullCiBuild
