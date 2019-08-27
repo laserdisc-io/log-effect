@@ -95,7 +95,7 @@ lazy val compilerPluginsDependencies = Seq(
   compilerPlugin(
     "org.typelevel" %% "kind-projector" % versionOf.kindProjector cross CrossVersion.binary
   ),
-  compilerPlugin("com.github.ghik" %% "silencer-plugin" % versionOf.silencer),
+  compilerPlugin("com.github.ghik" %% "silencer-plugin" % versionOf.silencer)
 )
 
 /**
@@ -175,7 +175,7 @@ lazy val root = project
     addCommandAlias(
       "fullCiBuild",
       ";checkFormat;unusedCompileDependenciesTest;undeclaredCompileDependenciesTest;clean;test"
-    ),
+    )
   )
 
 lazy val core = project

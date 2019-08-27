@@ -125,7 +125,7 @@ object LogWriterConstructor {
                   )
                 )
               else F.unit
-        }
+          }
     }
 
   implicit val noOpConstructor: LogWriterConstructor[Unit, Id, Id] =
@@ -135,6 +135,6 @@ object LogWriterConstructor {
         _ =>
           new LogWriter[Id] {
             def write[A: Show, L <: LogLevel: Show](level: L, a: =>A): Unit = ()
-        }
+          }
     }
 }
