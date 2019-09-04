@@ -1,7 +1,7 @@
 import sbtrelease.ReleasePlugin.autoImport.ReleaseTransformations._
 
 lazy val `scala 211` = "2.11.12"
-lazy val `scala 212` = "2.12.8"
+lazy val `scala 212` = "2.12.9"
 lazy val `scala 213` = "2.13.0"
 
 lazy val commonOptions = Seq(
