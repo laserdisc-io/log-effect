@@ -1,6 +1,6 @@
 addSbtPlugin("net.virtual-void"  % "sbt-dependency-graph"      % "0.9.2")
 addSbtPlugin("com.github.gseitz" % "sbt-release"               % "1.0.11")
-addSbtPlugin("org.xerial.sbt"    % "sbt-sonatype"              % "2.5")
+addSbtPlugin("org.xerial.sbt"    % "sbt-sonatype"              % "2.6")
 addSbtPlugin("com.jsuereth"      % "sbt-pgp"                   % "1.1.2")
 addSbtPlugin("org.scalameta"     % "sbt-scalafmt"              % "2.0.4")
 addSbtPlugin("com.github.cb372"  % "sbt-explicit-dependencies" % "0.2.10")
