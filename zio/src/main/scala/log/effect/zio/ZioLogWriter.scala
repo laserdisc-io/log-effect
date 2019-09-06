@@ -72,8 +72,8 @@ object ZioLogWriter {
         def suspend[A](a: =>A): UIO[A] = IO.effectTotal(a)
       }
 
-    implicit final private[zio] def functorInstances[R, E]: internal.Functor[ZIO[R, E, ?]] =
-      new internal.Functor[ZIO[R, E, ?]] {
+    implicit final private[zio] def functorInstances[R, E]: internal.Functor[ZIO[R, E, *]] =
+      new internal.Functor[ZIO[R, E, *]] {
         def fmap[A, B](f: A => B): ZIO[R, E, A] => ZIO[R, E, B] = _ map f
       }
   }

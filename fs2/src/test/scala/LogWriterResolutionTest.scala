@@ -242,7 +242,7 @@ final class LogWriterResolutionTest extends AnyWordSpecLike with Matchers {
       import log.effect.fs2.SyncLogWriter._
       import log.effect.fs2.mtl.readerT.readerTLogWriter
 
-      def aLogger[F[_], Env](implicit F: LogWriter[ReaderT[F, Env, ?]]): ReaderT[F, Env, Unit] =
+      def aLogger[F[_], Env](implicit F: LogWriter[ReaderT[F, Env, *]]): ReaderT[F, Env, Unit] =
         F.info("A message")
 
       @silent def anotherLogger[F[_]: Sync, Env](env: Env): F[Unit] =
