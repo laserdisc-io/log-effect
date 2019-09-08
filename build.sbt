@@ -53,8 +53,8 @@ lazy val scala213Options = scala212Options diff Seq(
   * Dependencies
   */
 lazy val versionOf = new {
-  val cats          = "2.0.0-RC2"
-  val catsEffect    = "2.0.0-RC2"
+  val cats          = "2.0.0-RC3"
+  val catsEffect    = "2.0.0-RC3"
   val fs2           = "1.1.0-M2"
   val kindProjector = "0.10.3"
   val log4s         = "1.8.2"
