@@ -56,7 +56,7 @@ final class LogWriterResolutionTest extends AnyWordSpecLike with Matchers {
 
       import _root_.zio.Task
       import log.effect.internal.{ EffectSuspension, Id }
-      import log.effect.zio.ZioLogWriter.{ console, consoleUpToLevel }
+      import log.effect.zio.ZioLogWriter.{ consoleLog, consoleLogUpToLevel }
       import log.effect.{ LogLevel, LogLevels, LogWriter, LogWriterConstructor }
 
       def c[L <: LogLevel]: L => LogWriter[Task] = {
@@ -66,11 +66,11 @@ final class LogWriterResolutionTest extends AnyWordSpecLike with Matchers {
 
       @silent def l1: LogWriter[Task] = c(LogLevels.Trace)
 
-      @silent def l2: LogWriter[Task] = console
+      @silent def l2: LogWriter[Task] = consoleLog
 
       @silent def l3: LogWriter[Task] = c(LogLevels.Info)
 
-      @silent def l4: LogWriter[Task] = consoleUpToLevel(LogLevels.Info)
+      @silent def l4: LogWriter[Task] = consoleLogUpToLevel(LogLevels.Info)
     }
 
     "not be able to infer a no-op constructor for zio Task" in {
