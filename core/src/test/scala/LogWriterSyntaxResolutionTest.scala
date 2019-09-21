@@ -1,6 +1,6 @@
 import com.github.ghik.silencer.silent
-import org.scalatest.Matchers
 import org.scalatest.wordspec.AnyWordSpecLike
+import org.scalatest.matchers.should.Matchers
 
 final class LogWriterSyntaxResolutionTest extends AnyWordSpecLike with Matchers {
 
