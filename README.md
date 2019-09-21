@@ -20,7 +20,7 @@
 
 
 ## Start
-Log Effect is available for Scala 2.11.x and 2.12.x. Helper constructors are provided for **Cats Effect**'s `Sync` `F[_]`, for **Fs2**'s `Stream` and for **Scalaz ZIO**'s `IO`. 
+Log Effect is available for Scala **_2.11_**, **_2.12_** and **_2.13_**. Helper constructors are provided for **Cats Effect**'s `Sync` `F[_]`, for **Fs2**'s `Stream` and for **ZIO**'s `Task`. 
 Add
 ```scala
 libraryDependencies += "io.laserdisc" %% "log-effect-fs2" % <latest-fs2-version>
@@ -29,7 +29,7 @@ for **Fs2** or **Cats Effect**. Add instead
 ```scala
 libraryDependencies += "io.laserdisc" %% "log-effect-zio" % <latest-zio-version>
 ```
-for **Scalaz ZIO**. If the intention is to create your own instance for the typeclass, adding
+for **ZIO**. If the intention is, instead, to create your own implementation of the typeclass, adding this
 ```scala
 libraryDependencies += "io.laserdisc" %% "log-effect-core" % <latest-core-version>
 ```
