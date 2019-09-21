@@ -1,7 +1,8 @@
 import com.github.ghik.silencer.silent
-import org.scalatest.{ Matchers, WordSpecLike }
+import org.scalatest.matchers.should.Matchers
+import org.scalatest.wordspec.AnyWordSpecLike
 
-@silent final class ReadmeConstructionCodeSnippetsTest extends WordSpecLike with Matchers {
+@silent final class ReadmeConstructionCodeSnippetsTest extends AnyWordSpecLike with Matchers {
 
   "Cats effect Sync construction snippets should compile" in {
 

@@ -1,7 +1,7 @@
 import cats.syntax.flatMap._
 import com.github.ghik.silencer.silent
-import org.scalatest.Matchers
 import org.scalatest.wordspec.AnyWordSpecLike
+import org.scalatest.matchers.should.Matchers
 
 final class LogWriterResolutionTest extends AnyWordSpecLike with Matchers {
 
