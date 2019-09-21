@@ -6,47 +6,47 @@ import java.util.{ logging => jul }
 
 import log.effect.internal.{ EffectSuspension, Id }
 import org.{ log4s => l4s }
-import _root_.zio.{ IO, Task, UIO, ZIO }
+import _root_.zio.{ IO, RIO, Task, UIO, URIO, ZIO }
 
 object ZioLogWriter {
 
   import instances._
 
-  val log4sFromLogger: ZIO[l4s.Logger, Nothing, LogWriter[Task]] =
+  val log4sFromLogger: URIO[l4s.Logger, LogWriter[Task]] =
     ZIO.accessM { log4sLogger =>
       LogWriter.from[UIO].runningEffect[Task](ZIO.effectTotal(log4sLogger))
     }
 
-  val log4sFromName: ZIO[String, Throwable, LogWriter[Task]] =
+  val log4sFromName: RIO[String, LogWriter[Task]] =
     ZIO.accessM { name =>
       LogWriter.of[Task](ZIO.effect(l4s.getLogger(name)))
     }
 
-  val log4sFromClass: ZIO[Class[_], Throwable, LogWriter[Task]] =
+  val log4sFromClass: RIO[Class[_], LogWriter[Task]] =
     ZIO.accessM { c =>
       LogWriter.of[Task](ZIO.effect(l4s.getLogger(c)))
     }
 
-  val julFromLogger: ZIO[jul.Logger, Nothing, LogWriter[Task]] =
+  val julFromLogger: URIO[jul.Logger, LogWriter[Task]] =
     ZIO.accessM { julLogger =>
       LogWriter.from[UIO].runningEffect[Task](ZIO.effectTotal(julLogger))
     }
 
-  val julGlobal: ZIO[Any, Throwable, LogWriter[Task]] =
+  val julGlobal: Task[LogWriter[Task]] =
     LogWriter.of[Task](IO.effect(jul.Logger.getGlobal))
 
-  val scribeFromName: ZIO[String, Throwable, LogWriter[Task]] =
+  val scribeFromName: RIO[String, LogWriter[Task]] =
     ZIO.accessM { name =>
       LogWriter.of[Task](IO.effect(scribe.Logger(name)))
     }
 
-  val scribeFromClass: ZIO[Class[_], Throwable, LogWriter[Task]] =
+  val scribeFromClass: RIO[Class[_], LogWriter[Task]] =
     ZIO.accessM { c =>
       import scribe._
       LogWriter.of[Task](IO.effect(c.logger))
     }
 
-  val scribeFromLogger: ZIO[scribe.Logger, Nothing, LogWriter[Task]] =
+  val scribeFromLogger: RIO[scribe.Logger, LogWriter[Task]] =
     ZIO.accessM { scribeLogger =>
       LogWriter.from[UIO].runningEffect[Task](ZIO.effectTotal(scribeLogger))
     }
