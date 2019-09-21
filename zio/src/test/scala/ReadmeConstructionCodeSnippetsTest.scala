@@ -35,7 +35,8 @@ import org.scalatest.wordspec.AnyWordSpecLike
           (julFromLogger >>> someZioProgramUsingLogs) provide logger
         }
 
-      val jul2: Task[LogWriter[Task]] = julGlobal
+      val jul2: Task[Unit] =
+        julGlobal >>> someZioProgramUsingLogs
 
       val scribe1: Task[Unit] =
         Task.effect(scribe.Logger("a logger")) >>= { logger =>
