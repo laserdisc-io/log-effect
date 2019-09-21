@@ -47,7 +47,7 @@ Currently Log Effect supports the following backends
 
 |                          | Cats | Fs2 | Cats Effect | Log Effect Core   |
 | ------------------------:| ----:| ---:| -----------:| -----------------:|
-| [![Maven Central](https://img.shields.io/maven-central/v/io.laserdisc/log-effect-fs2_2.12.svg?label=log-effect-fs2&colorB=2282c3)](https://maven-badges.herokuapp.com/maven-central/io.laserdisc/log-effect-fs2_2.12) | 2.0.0 | 2.0.0 | 2.0.0 | [![Maven Central](https://img.shields.io/maven-central/v/io.laserdisc/log-effect-core_2.12.svg?label=%20&colorB=9311fc)](https://maven-badges.herokuapp.com/maven-central/io.laserdisc/log-effect-core_2.12) |
+| [![Maven Central](https://img.shields.io/maven-central/v/io.laserdisc/log-effect-fs2_2.12.svg?label=log-effect-fs2&colorB=2282c3)](https://maven-badges.herokuapp.com/maven-central/io.laserdisc/log-effect-fs2_2.12) | 2.0.0 | 2.0.1 | 2.0.0 | [![Maven Central](https://img.shields.io/maven-central/v/io.laserdisc/log-effect-core_2.12.svg?label=%20&colorB=9311fc)](https://maven-badges.herokuapp.com/maven-central/io.laserdisc/log-effect-core_2.12) |
 | v0.8.0  | 1.6.1 | 1.0.5    | 1.3.1  | v0.8.0  |
 | v0.3.5  | 1.4.0 | 1.0.0-M5 | 1.0.0  | v0.3.5  |
 | v0.2.2  | 1.2.0 | 0.10.5   | 0.10.1 | v0.2.2  |
@@ -76,8 +76,9 @@ Currently Log Effect supports the following backends
 
 ## Examples
 
-### Get Instances
+### Get Logs
 
+#### Cats Effect Sync
 To get an instance of `LogWriter` for **Cats Effect**'s `Sync` the options below are available
 ```scala
 import java.util.{ logging => jul }
@@ -124,6 +125,7 @@ sealed abstract class App[F[_]](implicit F: Sync[F]) {
 }
 ```
 
+#### Fs2 Stream
 Simirarly, to get instances of `LogWriter` for **Fs2**'s `Stream` the constructors below are available
 ```scala
 import java.util.{ logging => jul }
@@ -172,7 +174,63 @@ sealed abstract class App[F[_]](implicit F: Sync[F]) {
 ```
 *See [here](https://github.com/laserdisc-io/laserdisc#example-usage) for an example whit [Laserdisc](https://github.com/laserdisc-io/laserdisc)*
 
-To create instances for **Scalaz Zio**'s `ZIO` the constructors are pretty trivial and self-explanatory and can be found in [here](https://github.com/laserdisc-io/log-effect/blob/master/zio/src/main/scala/log/effect/zio/ZioLogWriter.scala).
+#### Zio Task
+To create instances for `ZIO` some useful constructors can be found [here](https://github.com/laserdisc-io/log-effect/blob/master/zio/src/main/scala/log/effect/zio/ZioLogWriter.scala). Note as they exploit the power and expressiveness of the RIO pattern as shown below
+```scala
+import java.util.{ logging => jul }
+
+import log.effect.zio.ZioLogWriter._
+import log.effect.{ LogLevels, LogWriter }
+import org.{ log4s => l4s }
+import zio.{ RIO, Task }
+
+sealed abstract class App {
+
+  def someZioProgramUsingLogs: RIO[LogWriter[Task], Unit]
+
+  val log4s1: Task[Unit] =
+    Task.effect(l4s.getLogger("a logger")) >>= { logger =>
+      (log4sFromLogger >>> someZioProgramUsingLogs) provide logger
+    }
+
+  val log4s2: Task[Unit] =
+    (log4sFromName >>> someZioProgramUsingLogs) provide "a logger name"
+
+  val log4s3: Task[Unit] = {
+    case class LoggerClass();
+    (log4sFromClass >>> someZioProgramUsingLogs) provide classOf[LoggerClass]
+  }
+
+  val jul1: Task[Unit] =
+    Task.effect(jul.Logger.getLogger("a logger")) >>= { logger =>
+      (julFromLogger >>> someZioProgramUsingLogs) provide logger
+    }
+
+  val jul2: Task[LogWriter[Task]] = julGlobal
+
+  val scribe1: Task[Unit] =
+    Task.effect(scribe.Logger("a logger")) >>= { logger =>
+      (scribeFromLogger >>> someZioProgramUsingLogs) provide logger
+    }
+
+  val scribe2: Task[Unit] =
+    (scribeFromName >>> someZioProgramUsingLogs) provide "a logger name"
+
+  val scribe3: Task[Unit] = {
+    case class LoggerClass();
+    (scribeFromClass >>> someZioProgramUsingLogs) provide classOf[LoggerClass]
+  }
+
+  val console1: Task[Unit] =
+    someZioProgramUsingLogs provide consoleLog
+
+  val console2: Task[Unit] =
+    someZioProgramUsingLogs provide consoleLogUpToLevel(LogLevels.Warn)
+
+  val noOp: Task[Unit] =
+    someZioProgramUsingLogs provide noOpLogF
+}
+```
 
 
 ### Submit Logs

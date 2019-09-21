@@ -4,7 +4,7 @@ package zio
 
 import java.util.{ logging => jul }
 
-import log.effect.internal.{ EffectSuspension, Id }
+import log.effect.internal.{ EffectSuspension, Id, Show }
 import org.{ log4s => l4s }
 import _root_.zio.{ IO, RIO, Task, UIO, URIO, ZIO }
 
@@ -51,14 +51,17 @@ object ZioLogWriter {
       LogWriter.from[UIO].runningEffect[Task](ZIO.effectTotal(scribeLogger))
     }
 
-  val console: LogWriter[Task] =
+  val consoleLog: LogWriter[Task] =
     LogWriter.from[Id].runningEffect[Task](LogLevels.Trace)
 
-  def consoleUpToLevel[LL <: LogLevel](minLevel: LL): LogWriter[Task] =
+  def consoleLogUpToLevel[LL <: LogLevel](minLevel: LL): LogWriter[Task] =
     LogWriter.from[Id].runningEffect[Task](minLevel)
 
-  val noOp: LogWriter[Id] =
+  val noOpLog: LogWriter[Id] =
     LogWriter.of[Id](())
+
+  val noOpLogF: LogWriter[Task] =
+    noOpLog.liftT
 
   private[this] object instances {
 
@@ -76,5 +79,12 @@ object ZioLogWriter {
       new internal.Functor[ZIO[R, E, *]] {
         def fmap[A, B](f: A => B): ZIO[R, E, A] => ZIO[R, E, B] = _ map f
       }
+
+    implicit final class NoOpLogT(private val `_`: LogWriter[Id]) extends AnyVal {
+      def liftT: LogWriter[Task] =
+        new LogWriter[Task] {
+          override def write[A: Show, L <: LogLevel: Show](level: L, a: =>A): Task[Unit] = Task.unit
+        }
+    }
   }
 }
