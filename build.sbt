@@ -133,7 +133,7 @@ lazy val releaseSettings: Seq[Def.Setting[_]] = Seq(
   ),
   releaseCrossBuild             := true,
   publishMavenStyle             := true,
-  credentials                   := Credentials(Path.userHome / ".ivy2" / ".credentials") :: Nil,
+  credentials                   := Credentials(Path.userHome / ".sbt" / "sonatype_credentials") :: Nil,
   releasePublishArtifactsAction := PgpKeys.publishSigned.value,
   publishArtifact               in Test := false,
   pomIncludeRepository := { _ =>
