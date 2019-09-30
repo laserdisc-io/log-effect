@@ -58,9 +58,9 @@ lazy val versionOf = new {
   val fs2           = "2.0.1"
   val kindProjector = "0.10.3"
   val log4s         = "1.8.2"
-  val scalaCheck    = "1.14.1"
+  val scalaCheck    = "1.14.2"
   val scalaTest     = "3.2.0-M1"
-  val zio           = "1.0.0-RC12-1"
+  val zio           = "1.0.0-RC13"
   val scribe        = "2.7.9"
   val silencer      = "1.4.2"
 }
