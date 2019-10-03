@@ -56,19 +56,18 @@ lazy val versionOf = new {
   val cats          = "2.0.0"
   val catsEffect    = "2.0.0"
   val fs2           = "2.0.1"
-  val kindProjector = "0.10.3"
+  val kindProjector = "0.11.0"
   val log4s         = "1.8.2"
   val scalaCheck    = "1.14.2"
   val scalaTest     = "3.2.0-M1"
   val zio           = "1.0.0-RC13"
   val scribe        = "2.7.9"
-  val silencer      = "1.4.2"
+  val silencer      = "1.4.4"
 }
 
 lazy val coreDependencies = Seq(
-  "com.github.ghik" %% "silencer-lib" % versionOf.silencer,
-  "org.log4s"       %% "log4s"        % versionOf.log4s,
-  "com.outr"        %% "scribe"       % versionOf.scribe
+  "org.log4s" %% "log4s"  % versionOf.log4s,
+  "com.outr"  %% "scribe" % versionOf.scribe
 ) map (_.withSources)
 
 lazy val fs2Dependencies = Seq(
@@ -93,9 +92,12 @@ lazy val testDependencies = Seq(
 
 lazy val compilerPluginsDependencies = Seq(
   compilerPlugin(
-    "org.typelevel" %% "kind-projector" % versionOf.kindProjector cross CrossVersion.binary
+    "org.typelevel" %% "kind-projector" % versionOf.kindProjector cross CrossVersion.full
   ),
-  compilerPlugin("com.github.ghik" %% "silencer-plugin" % versionOf.silencer)
+  compilerPlugin(
+    "com.github.ghik" %% "silencer-plugin" % versionOf.silencer cross CrossVersion.full
+  ),
+  "com.github.ghik" %% "silencer-lib" % versionOf.silencer % Provided cross CrossVersion.full
 )
 
 /**
@@ -113,7 +115,8 @@ lazy val crossBuildSettings = Seq(
       case `scala 213` => scala213Options
       case _           => commonOptions
     }),
-  parallelExecution in Test := false
+  parallelExecution in Test := false,
+  unusedCompileDependenciesFilter -= moduleFilter("com.github.ghik", "silencer-lib")
 )
 
 lazy val releaseSettings: Seq[Def.Setting[_]] = Seq(
@@ -174,7 +177,7 @@ lazy val root = project
     ),
     addCommandAlias(
       "fullCiBuild",
-      ";checkFormat;unusedCompileDependenciesTest;undeclaredCompileDependenciesTest;clean;test"
+      ";checkFormat;clean;unusedCompileDependenciesTest;undeclaredCompileDependencies;test"
     )
   )
 
