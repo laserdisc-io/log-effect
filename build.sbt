@@ -62,11 +62,10 @@ lazy val versionOf = new {
   val scalaTest     = "3.2.0-M1"
   val zio           = "1.0.0-RC13"
   val scribe        = "2.7.9"
-  val silencer      = "1.4.2"
+  val silencer      = "1.4.4"
 }
 
 lazy val coreDependencies = Seq(
-  "com.github.ghik" %% "silencer-lib" % versionOf.silencer,
   "org.log4s"       %% "log4s"        % versionOf.log4s,
   "com.outr"        %% "scribe"       % versionOf.scribe
 ) map (_.withSources)
@@ -95,7 +94,8 @@ lazy val compilerPluginsDependencies = Seq(
   compilerPlugin(
     "org.typelevel" %% "kind-projector" % versionOf.kindProjector cross CrossVersion.binary
   ),
-  compilerPlugin("com.github.ghik" %% "silencer-plugin" % versionOf.silencer)
+  compilerPlugin("com.github.ghik" %% "silencer-plugin" % versionOf.silencer cross CrossVersion.full),
+  "com.github.ghik" %% "silencer-lib" % versionOf.silencer % Provided cross CrossVersion.full
 )
 
 /**
