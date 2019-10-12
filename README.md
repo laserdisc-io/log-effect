@@ -354,7 +354,7 @@ def double[F[_]: Sync: LogWriter](source: fs2.Stream[F, Int]): fs2.Stream[F, Int
   }
 ```
 
-- _through the companion's accessor to the `write` method_
+- _through the companion's accessor for the `write` method_
 ```scala
 import java.nio.channels.AsynchronousChannelGroup
 
@@ -402,33 +402,42 @@ def redisClient[F[_]: ConcurrentEffect: ContextShift: Timer: LogWriter](
   }
 }
 ```
+or using the fs2 Stream specific syntax like `writeS` or the level alternatives for types that provide a `cats.Show` instance 
 ```scala
 import cats.Show
 import cats.effect.Sync
-import cats.syntax.apply._
-import cats.syntax.flatMap._
-import log.effect.LogLevels.{ Debug, Error }
-import log.effect.fs2.interop.show._
+import log.effect.LogLevels.Error
 import log.effect.{ Failure, LogWriter }
+import log.effect.fs2.syntax._
 
-def double[F[_]: Sync: LogWriter](source: fs2.Stream[F, Int]): fs2.Stream[F, Int] = {
+trait A
+object A {
+  def empty: A = ???
+  implicit val aShow: Show[A] = new Show[A] {
+    override def show(t: A): String = ???
+  }
+}
+
+def double[F[_]: Sync: LogWriter](source: fs2.Stream[F, Int]): fs2.Stream[F, A] = {
 
   // Cats Show instances are needed for every logged type
   implicit def intShow: Show[Int] = ???
 
-  source evalMap { n =>
-    LogWriter.write(Debug, "Processing a number") >>
-      LogWriter.write(Debug, n) >>
-      Sync[F].pure(n * 2) <*
-      LogWriter.write(Debug, "Processed")
-  } handleErrorWith { th =>
-    fs2.Stream eval (
-      LogWriter.write(Error, Failure("Ops, something didn't work", th)) >> Sync[F].pure(0)
-    )
+  def processAnInt: Int => A = ???
+
+  (for {
+    n <- source
+    _ <- LogWriter.debugS("Processing a number")
+    _ <- LogWriter.debugS(n) // N.B. the syntax requires an `cats.Show` for `Int`
+    r <- (processAnInt andThen fs2.Stream.emit)(n)
+    _ <- LogWriter.debugS("Processed")
+    _ <- LogWriter.debugS(r) // Same here, a `cats.Show` for `A` is needed
+  } yield r) handleErrorWith { th =>
+    LogWriter.writeS(Error, Failure("Ops, something didn't work", th)) >> fs2.Stream.emit(A.empty) // and `write again`
   }
 }
 ```
-**NB:** notice in the last two examples the `LogWriter`'s implicit evidence given as context bound and the `import log.effect.fs2.interop.show._`. The latter is needed to summon an `internal.Show` instance given the `cats.Show` provided.
+**NB:** notice above the `LogWriter`'s implicit evidence given as context bound and the `import log.effect.fs2.interop.show._`. The latter is needed to summon an `internal.Show` given a `cats.Show`.
 
 In some cases like tests a non logging instance might come useful. In such a case the `noOp` logging version is provided. See below an example taken from the [Laserdisc](https://github.com/laserdisc-io/laserdisc)'s tests
 ```scala

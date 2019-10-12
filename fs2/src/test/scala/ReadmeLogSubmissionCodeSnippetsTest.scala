@@ -121,7 +121,7 @@ import org.scalatest.wordspec.AnyWordSpecLike
       }
   }
 
-  "`through the companion's accessor to the `write` method` 1 snippet should compile" in {
+  "`through the companion's accessor for the `write` method` 1 snippet should compile" in {
 
     import java.nio.channels.AsynchronousChannelGroup
 
@@ -157,9 +157,9 @@ import org.scalatest.wordspec.AnyWordSpecLike
       implicit val clientShow: Show[RedisClient[F]] = ???
 
       RedisClient[F](address) evalMap { client =>
-        LogWriter.write(Debug, "Connected client details:") >>
-          LogWriter.write(Debug, address) >>
-          LogWriter.write(Debug, client) >>
+        LogWriter.write(Debug, "Connected client details:") >> // Or
+          LogWriter.debug(address) >> // And
+          LogWriter.debug(client) >>
           ConcurrentEffect[F].pure(client.asRight)
       } handleErrorWith { th =>
         fs2.Stream eval (
@@ -170,30 +170,38 @@ import org.scalatest.wordspec.AnyWordSpecLike
     }
   }
 
-  "`through the companion's accessor to the `write` method` 2 snippet should compile" in {
+  "`or using the fs2 Stream specific syntax like `writeS` or the level alternatives for types that provide a `cats.Show` instance` snippet should compile" in {
 
     import cats.Show
     import cats.effect.Sync
-    import cats.syntax.apply._
-    import cats.syntax.flatMap._
-    import log.effect.LogLevels.{ Debug, Error }
-    import log.effect.fs2.interop.show._
+    import log.effect.LogLevels.Error
     import log.effect.{ Failure, LogWriter }
+    import log.effect.fs2.syntax._
 
-    def double[F[_]: Sync: LogWriter](source: fs2.Stream[F, Int]): fs2.Stream[F, Int] = {
+    trait A
+    object A {
+      def empty: A = ???
+      implicit val aShow: Show[A] = new Show[A] {
+        override def show(t: A): String = ???
+      }
+    }
+
+    def double[F[_]: Sync: LogWriter](source: fs2.Stream[F, Int]): fs2.Stream[F, A] = {
 
       // Cats Show instances are needed for every logged type
       implicit def intShow: Show[Int] = ???
 
-      source evalMap { n =>
-        LogWriter.write(Debug, "Processing a number") >>
-          LogWriter.write(Debug, n) >>
-          Sync[F].pure(n * 2) <*
-          LogWriter.write(Debug, "Processed")
-      } handleErrorWith { th =>
-        fs2.Stream eval (
-          LogWriter.write(Error, Failure("Ops, something didn't work", th)) >> Sync[F].pure(0)
-        )
+      def processAnInt: Int => A = ???
+
+      (for {
+        n <- source
+        _ <- LogWriter.debugS("Processing a number")
+        _ <- LogWriter.debugS(n) // N.B. the syntax requires an `cats.Show` for `Int`
+        r <- (processAnInt andThen fs2.Stream.emit)(n)
+        _ <- LogWriter.debugS("Processed")
+        _ <- LogWriter.debugS(r) // Same here, a `cats.Show` for `A` is needed
+      } yield r) handleErrorWith { th =>
+        LogWriter.writeS(Error, Failure("Ops, something didn't work", th)) >> fs2.Stream.emit(A.empty) // and `write again`
       }
     }
   }

@@ -56,6 +56,9 @@ final private[effect] class LogWriterOps[F[_]](private val aLogger: LogWriter[F]
 
   import LogLevels._
 
+  @inline def trace[A: Show](a: =>A): F[Unit] =
+    aLogger.write(Trace, a)
+
   @inline def trace(msg: =>String): F[Unit] =
     aLogger.write(Trace, msg)
 
@@ -64,6 +67,9 @@ final private[effect] class LogWriterOps[F[_]](private val aLogger: LogWriter[F]
 
   @inline def trace(msg: =>String, th: =>Throwable): F[Unit] =
     aLogger.write(Trace, Failure(msg, th))
+
+  @inline def debug[A: Show](a: =>A): F[Unit] =
+    aLogger.write(Debug, a)
 
   @inline def debug(msg: =>String): F[Unit] =
     aLogger.write(Debug, msg)
@@ -74,6 +80,9 @@ final private[effect] class LogWriterOps[F[_]](private val aLogger: LogWriter[F]
   @inline def debug(msg: =>String, th: =>Throwable): F[Unit] =
     aLogger.write(Debug, Failure(msg, th))
 
+  @inline def info[A: Show](a: =>A): F[Unit] =
+    aLogger.write(Info, a)
+
   @inline def info(msg: =>String): F[Unit] =
     aLogger.write(Info, msg)
 
@@ -83,6 +92,9 @@ final private[effect] class LogWriterOps[F[_]](private val aLogger: LogWriter[F]
   @inline def info(msg: =>String, th: =>Throwable): F[Unit] =
     aLogger.write(Info, Failure(msg, th))
 
+  @inline def error[A: Show](a: =>A): F[Unit] =
+    aLogger.write(Error, a)
+
   @inline def error(msg: =>String): F[Unit] =
     aLogger.write(Error, msg)
 
@@ -91,6 +103,9 @@ final private[effect] class LogWriterOps[F[_]](private val aLogger: LogWriter[F]
 
   @inline def error(msg: =>String, th: =>Throwable): F[Unit] =
     aLogger.write(Error, Failure(msg, th))
+
+  @inline def warn[A: Show](a: =>A): F[Unit] =
+    aLogger.write(Warn, a)
 
   @inline def warn(msg: =>String): F[Unit] =
     aLogger.write(Warn, msg)

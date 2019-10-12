@@ -13,7 +13,7 @@ object Failure {
   def unapply(arg: Failure): Option[(String, Throwable)] =
     Some((arg.msg, arg.th))
 
-  implicit def failureShow(implicit ev: Show[Throwable]): Show[Failure] =
+  implicit def failureShow(implicit ev: Show[Throwable]): internal.Show[Failure] =
     new Show[Failure] {
       def show(t: Failure): String =
         s"""${t.msg}
