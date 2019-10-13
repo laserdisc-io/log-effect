@@ -196,7 +196,7 @@ import org.scalatest.wordspec.AnyWordSpecLike
       (for {
         n <- source
         _ <- LogWriter.debugS("Processing a number")
-        _ <- LogWriter.debugS(n) // N.B. the syntax requires an `cats.Show` for `Int`
+        _ <- LogWriter.debugS(n) // N.B. the syntax requires a `cats.Show` for `Int`
         r <- (processAnInt andThen fs2.Stream.emit)(n)
         _ <- LogWriter.debugS("Processed")
         _ <- LogWriter.debugS(r) // Same here, a `cats.Show` for `A` is needed
