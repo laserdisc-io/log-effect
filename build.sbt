@@ -119,11 +119,34 @@ lazy val crossBuildSettings = Seq(
   unusedCompileDependenciesFilter -= moduleFilter("com.github.ghik", "silencer-lib")
 )
 
+lazy val format = Command.command("format") { state =>
+  "scalafmt" :: "test:scalafmt" :: "scalafmtSbt" :: state
+}
+
+lazy val checkFormat = Command.command("checkFormat") { state =>
+  "scalafmtCheck" :: "test:scalafmtCheck" :: "scalafmtSbtCheck" :: state
+}
+
+lazy val fullCiBuild = Command.command("fullCiBuild") { state =>
+  "checkFormat" :: "clean" :: "unusedCompileDependenciesTest" :: "undeclaredCompileDependencies" :: "test" :: state
+}
+
+lazy val customCommands: Seq[Def.Setting[_]] = Seq(
+  commands ++= Seq(format, checkFormat, fullCiBuild)
+)
+
+lazy val fullCiBuildStep: ReleaseStep = ReleaseStep(
+  action = { st: State =>
+    Command.process("fullCiBuild", st)
+  },
+  enableCrossBuild = true
+)
+
 lazy val releaseSettings: Seq[Def.Setting[_]] = Seq(
   releaseProcess := Seq[ReleaseStep](
     checkSnapshotDependencies,
     inquireVersions,
-    releaseStepCommand("fullCiBuild"),
+    fullCiBuildStep,
     setReleaseVersion,
     commitReleaseVersion,
     tagRelease,
@@ -165,24 +188,17 @@ lazy val root = project
   .in(file("."))
   .aggregate(core, fs2, zio)
   .settings(crossBuildSettings)
+  .settings(customCommands)
   .settings(releaseSettings)
   .settings(
     name            := "log-effect",
-    publishArtifact := false,
-    addCommandAlias("format", ";scalafmt;test:scalafmt;scalafmtSbt"),
-    addCommandAlias(
-      "checkFormat",
-      ";scalafmtCheck;test:scalafmtCheck;scalafmtSbtCheck"
-    ),
-    addCommandAlias(
-      "fullCiBuild",
-      ";checkFormat;clean;unusedCompileDependenciesTest;undeclaredCompileDependencies;test"
-    )
+    publishArtifact := false
   )
 
 lazy val core = project
   .in(file("core"))
   .settings(crossBuildSettings)
+  .settings(customCommands)
   .settings(releaseSettings)
   .settings(
     name                := "log-effect-core",
@@ -193,6 +209,7 @@ lazy val fs2 = project
   .in(file("fs2"))
   .dependsOn(core)
   .settings(crossBuildSettings)
+  .settings(customCommands)
   .settings(releaseSettings)
   .settings(
     name                := "log-effect-fs2",
@@ -203,6 +220,7 @@ lazy val zio = project
   .in(file("zio"))
   .dependsOn(core)
   .settings(crossBuildSettings)
+  .settings(customCommands)
   .settings(releaseSettings)
   .settings(
     name                := "log-effect-zio",

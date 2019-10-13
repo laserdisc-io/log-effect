@@ -2,8 +2,8 @@ import _root_.zio.ZIO
 import com.github.ghik.silencer.silent
 import log.effect.zio.ZioLogWriter.log4sFromLogger
 import org.log4s.{ getLogger, LoggedEvent, Logger, TestAppender }
-import org.scalatest.wordspec.AnyWordSpecLike
 import org.scalatest.matchers.should.Matchers
+import org.scalatest.wordspec.AnyWordSpecLike
 
 final class Log4sLogWriterTest extends AnyWordSpecLike with Matchers with zio.DefaultRuntime {
 
