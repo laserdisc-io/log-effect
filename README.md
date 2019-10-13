@@ -390,14 +390,16 @@ def redisClient[F[_]: ConcurrentEffect: ContextShift: Timer: LogWriter](
   implicit val clientShow: Show[RedisClient[F]] = ???
 
   RedisClient[F](address) evalMap { client =>
-    LogWriter.write(Debug, "Connected client details:") >>
-      LogWriter.write(Debug, address) >>
-      LogWriter.write(Debug, client) >>
+    LogWriter.write(Debug, "Connected client details:") >> // Or
+      LogWriter.debug(address) >>                          // And
+      LogWriter.debug(client) >>
       ConcurrentEffect[F].pure(client.asRight)
   } handleErrorWith { th =>
     fs2.Stream eval (
-      LogWriter.write(Error, Failure("Ops, something didn't work", th)) >>
-        ConcurrentEffect[F].pure(th.asLeft)
+      LogWriter.write(
+        Error,
+        Failure("Ops, something didn't work", th)
+      ) >> ConcurrentEffect[F].pure(th.asLeft)
     )
   }
 }
@@ -433,7 +435,10 @@ def double[F[_]: Sync: LogWriter](source: fs2.Stream[F, Int]): fs2.Stream[F, A] 
     _ <- LogWriter.debugS("Processed")
     _ <- LogWriter.debugS(r) // Same here, a `cats.Show` for `A` is needed
   } yield r) handleErrorWith { th =>
-    LogWriter.writeS(Error, Failure("Ops, something didn't work", th)) >> fs2.Stream.emit(A.empty) // and `write again`
+    LogWriter.writeS(
+      Error,
+      Failure("Ops, something didn't work", th)
+    ) >> fs2.Stream.emit(A.empty) // and `write again`
   }
 }
 ```

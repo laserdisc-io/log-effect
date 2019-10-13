@@ -158,13 +158,15 @@ import org.scalatest.wordspec.AnyWordSpecLike
 
       RedisClient[F](address) evalMap { client =>
         LogWriter.write(Debug, "Connected client details:") >> // Or
-          LogWriter.debug(address) >> // And
+          LogWriter.debug(address) >>                          // And
           LogWriter.debug(client) >>
           ConcurrentEffect[F].pure(client.asRight)
       } handleErrorWith { th =>
         fs2.Stream eval (
-          LogWriter.write(Error, Failure("Ops, something didn't work", th)) >>
-            ConcurrentEffect[F].pure(th.asLeft)
+          LogWriter.write(
+            Error,
+            Failure("Ops, something didn't work", th)
+          ) >> ConcurrentEffect[F].pure(th.asLeft)
         )
       }
     }
@@ -201,7 +203,10 @@ import org.scalatest.wordspec.AnyWordSpecLike
         _ <- LogWriter.debugS("Processed")
         _ <- LogWriter.debugS(r) // Same here, a `cats.Show` for `A` is needed
       } yield r) handleErrorWith { th =>
-        LogWriter.writeS(Error, Failure("Ops, something didn't work", th)) >> fs2.Stream.emit(A.empty) // and `write again`
+        LogWriter.writeS(
+          Error,
+          Failure("Ops, something didn't work", th)
+        ) >> fs2.Stream.emit(A.empty) // and `write again`
       }
     }
   }

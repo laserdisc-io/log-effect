@@ -123,8 +123,7 @@ lazy val releaseSettings: Seq[Def.Setting[_]] = Seq(
   releaseProcess := Seq[ReleaseStep](
     checkSnapshotDependencies,
     inquireVersions,
-    runClean,
-    runTest,
+    releaseStepCommand("fullCiBuild"),
     setReleaseVersion,
     commitReleaseVersion,
     tagRelease,
