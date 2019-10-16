@@ -60,7 +60,7 @@ lazy val versionOf = new {
   val log4s         = "1.8.2"
   val scalaCheck    = "1.14.2"
   val scalaTest     = "3.2.0-M1"
-  val zio           = "1.0.0-RC14"
+  val zio           = "1.0.0-RC15"
   val scribe        = "2.7.9"
   val silencer      = "1.4.4"
 }
@@ -115,8 +115,7 @@ lazy val crossBuildSettings = Seq(
       case `scala 213` => scala213Options
       case _           => commonOptions
     }),
-  parallelExecution in Test := false,
-  unusedCompileDependenciesFilter -= moduleFilter("com.github.ghik", "silencer-lib")
+  parallelExecution in Test := false
 )
 
 lazy val format = Command.command("format") { state =>
@@ -128,7 +127,7 @@ lazy val checkFormat = Command.command("checkFormat") { state =>
 }
 
 lazy val fullCiBuild = Command.command("fullCiBuild") { state =>
-  "checkFormat" :: "clean" :: "unusedCompileDependenciesTest" :: "undeclaredCompileDependencies" :: "test" :: state
+  "checkFormat" :: "clean" :: "test" :: state
 }
 
 lazy val customCommands: Seq[Def.Setting[_]] = Seq(

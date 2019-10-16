@@ -1,6 +1,6 @@
 import java.io.{ ByteArrayOutputStream, PrintStream }
 
-import _root_.zio.{ Exit, IO, Task, ZIO }
+import _root_.zio.{ Exit, IO, Task, ZEnv, ZIO }
 import log.effect.LogLevels._
 import log.effect.zio.ZioLogWriter.{ consoleLog, consoleLogUpToLevel }
 import org.scalatest.wordspec.AnyWordSpecLike
@@ -262,5 +262,5 @@ final class ConsoleLogWriterTest extends AnyWordSpecLike with Matchers with zio.
     }
   }
 
-  override def run(args: List[String]): ZIO[Environment, Nothing, Int] = IO.done(Exit.succeed(0))
+  override def run(args: List[String]): ZIO[ZEnv, Nothing, Int] = IO.done(Exit.succeed(0))
 }
