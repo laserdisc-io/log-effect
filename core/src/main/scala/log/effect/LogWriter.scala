@@ -11,13 +11,11 @@ trait LogWriter[F[_]] {
 }
 
 object LogWriter extends LogWriterSyntax {
-
   @inline final def from[G[_]]: logWriterFromPartial[G] =
     new logWriterFromPartial()
 
   final private[effect] class logWriterFromPartial[G[_]](private val d: Boolean = true)
       extends AnyVal {
-
     @inline @silent def runningEffect[F[_]]: logWriterInstancePartial[G, F] =
       new logWriterInstancePartial()
   }
@@ -27,7 +25,6 @@ object LogWriter extends LogWriterSyntax {
 
   final private[effect] class logWriterInstancePartial[G[_], F[_]](private val d: Boolean = true)
       extends AnyVal {
-
     @inline @silent def apply[R](read: R)(
       implicit instance: LogWriterConstructor[R, G, F]
     ): G[LogWriter[F]] =
@@ -36,13 +33,11 @@ object LogWriter extends LogWriterSyntax {
 }
 
 sealed private[effect] trait LogWriterSyntax extends LogWriterAliasingSyntax {
-
   implicit def loggerSyntax[T, F[_]](l: LogWriter[F]): LogWriterOps[F] =
     new LogWriterOps(l)
 }
 
 sealed private[effect] trait LogWriterAliasingSyntax {
-
   @silent implicit def logWriterSingleton[F[_]](co: LogWriter.type)(
     implicit LW: LogWriter[F]
   ): LogWriter[F] = LW
@@ -53,7 +48,6 @@ sealed private[effect] trait LogWriterAliasingSyntax {
 }
 
 final private[effect] class LogWriterOps[F[_]](private val aLogger: LogWriter[F]) extends AnyVal {
-
   import LogLevels._
 
   @inline def trace[A: Show](a: =>A): F[Unit] =

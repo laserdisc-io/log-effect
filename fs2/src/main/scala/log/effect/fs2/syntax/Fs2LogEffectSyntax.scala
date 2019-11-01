@@ -8,13 +8,11 @@ import _root_.fs2.Stream
 import scala.language.implicitConversions
 
 private[syntax] trait Fs2LogEffectSyntax extends Fs2LogEffectCompanionSyntax {
-
   implicit def fs2LogEffectSyntax[F[_]](aLogWriter: LogWriter[F]): Fs2LogEffectOps[F] =
     new Fs2LogEffectOps(aLogWriter)
 }
 
 sealed private[syntax] trait Fs2LogEffectCompanionSyntax {
-
   implicit def fs2LogEffectSyntaxSingleton[F[_]](`_`: LogWriter.type)(
     implicit LW: LogWriter[F]
   ): Fs2LogEffectOps[F] =
@@ -23,7 +21,6 @@ sealed private[syntax] trait Fs2LogEffectCompanionSyntax {
 
 final private[syntax] class Fs2LogEffectOps[F[_]](private val aLogWriter: LogWriter[F])
     extends AnyVal {
-
   @inline
   def writeS[A: cats.Show, L <: LogLevel: internal.Show](level: L, a: =>A): Stream[F, Unit] =
     Stream eval aLogWriter.write(level, a)

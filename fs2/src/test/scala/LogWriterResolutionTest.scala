@@ -4,11 +4,8 @@ import org.scalatest.wordspec.AnyWordSpecLike
 import org.scalatest.matchers.should.Matchers
 
 final class LogWriterResolutionTest extends AnyWordSpecLike with Matchers {
-
   "the construction" should {
-
     "correctly infer a valid log4s constructor for an F[_] given an implicit evidence of Sync[F]" in {
-
       import cats.effect.Sync
       import log.effect.fs2.SyncLogWriter.log4sLog
       import log.effect.internal.{ EffectSuspension, Functor }
@@ -29,7 +26,6 @@ final class LogWriterResolutionTest extends AnyWordSpecLike with Matchers {
     }
 
     "correctly infer a valid jul constructor for an F[_] given an implicit evidence of Sync[F]" in {
-
       import java.util.{ logging => jul }
 
       import cats.effect.Sync
@@ -51,7 +47,6 @@ final class LogWriterResolutionTest extends AnyWordSpecLike with Matchers {
     }
 
     "not infer a valid log4s constructor for an F[_] if there is no implicit evidence of EffectSuspension[F]" in {
-
       """
         |import log.effect.{LogWriter, LogWriterConstructor}
         |import log.effect.internal.Functor
@@ -65,7 +60,6 @@ final class LogWriterResolutionTest extends AnyWordSpecLike with Matchers {
     }
 
     "correctly infer a valid console constructor for an F[_] given an implicit evidence of Sync[F]" in {
-
       import cats.effect.Sync
       import log.effect.fs2.SyncLogWriter.{ consoleLog, consoleLogUpToLevel }
       import log.effect.internal.{ EffectSuspension, Id }
@@ -90,7 +84,6 @@ final class LogWriterResolutionTest extends AnyWordSpecLike with Matchers {
     }
 
     "correctly infer a valid no-op constructor for an F[_] given an implicit evidence" in {
-
       import log.effect.fs2.SyncLogWriter.noOpLog
       import log.effect.internal.Id
       import log.effect.{ LogWriter, LogWriterConstructor }
@@ -104,7 +97,6 @@ final class LogWriterResolutionTest extends AnyWordSpecLike with Matchers {
     }
 
     "correctly infer a valid log4s constructor for IO" in {
-
       import cats.effect.IO
       import log.effect.fs2.SyncLogWriter.log4sLog
       import log.effect.internal.{ EffectSuspension, Functor }
@@ -125,7 +117,6 @@ final class LogWriterResolutionTest extends AnyWordSpecLike with Matchers {
     }
 
     "correctly infer a valid jul constructor for IO" in {
-
       import java.util.{ logging => jul }
 
       import cats.effect.IO
@@ -148,9 +139,7 @@ final class LogWriterResolutionTest extends AnyWordSpecLike with Matchers {
   }
 
   "the LogWriterConstructor0 of IO" should {
-
     "correctly infer a valid console constructor for IO" in {
-
       import cats.effect.IO
       import log.effect.fs2.SyncLogWriter.{ consoleLog, consoleLogUpToLevel }
       import log.effect.internal.{ EffectSuspension, Id }
@@ -171,7 +160,6 @@ final class LogWriterResolutionTest extends AnyWordSpecLike with Matchers {
     }
 
     "not be able to infer a no-op constructor for IO" in {
-
       """
         |import cats.effect.IO
         |import log.effect.internal.Id
@@ -186,9 +174,7 @@ final class LogWriterResolutionTest extends AnyWordSpecLike with Matchers {
   }
 
   "the LogWriter's mtl style construction" should {
-
     "infer the log when a cats.Show is present and the companion object syntax is used" in {
-
       import cats.effect.Sync
       import cats.syntax.apply._
       import log.effect.LogWriter
@@ -207,7 +193,6 @@ final class LogWriterResolutionTest extends AnyWordSpecLike with Matchers {
     }
 
     "be able to infer the log when a cats.Show is present and the `write` construction is used" in {
-
       import cats.Show
       import cats.effect.Sync
       import cats.syntax.apply._
@@ -216,7 +201,6 @@ final class LogWriterResolutionTest extends AnyWordSpecLike with Matchers {
       import log.effect.{ Failure, LogWriter }
 
       @silent def double[F[_]: Sync: LogWriter](source: fs2.Stream[F, Int]): fs2.Stream[F, Int] = {
-
         // Show instances are needed for every logged type
         implicit def addressShow: Show[Int] = ???
 
@@ -234,7 +218,6 @@ final class LogWriterResolutionTest extends AnyWordSpecLike with Matchers {
     }
 
     "be able to summon the LogWriter for ReaderT when LogWriter for `F` is in scope and `mtl.readerT.readerTLogWriter` is imported" in {
-
       import cats.data.ReaderT
       import cats.effect.Sync
       import cats.syntax.flatMap._

@@ -12,7 +12,6 @@ import log.effect.internal.Id
 import org.{ log4s => l4s }
 
 object Fs2LogWriter {
-
   def log4sLogStream[F[_]: Sync](l: l4s.Logger): Stream[F, LogWriter[F]] =
     Stream eval log4sLog(l)
 

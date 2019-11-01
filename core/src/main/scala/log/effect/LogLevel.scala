@@ -8,7 +8,6 @@ import scala.language.implicitConversions
 
 sealed trait LogLevel extends Product with Serializable
 object LogLevel extends LogLevelSyntax {
-
   import LogLevels._
 
   implicit val logLevelShow: Show[LogLevel] =
@@ -27,7 +26,6 @@ object LogLevel extends LogLevelSyntax {
     new Ordering[LogLevel] {
       def compare(x: LogLevel, y: LogLevel): Int =
         x match {
-
           case Trace =>
             y match {
               case Trace                       => 0
@@ -71,7 +69,6 @@ sealed trait LogLevelSyntax {
 }
 
 final private[effect] class LogLevelOps[L <: LogLevel](private val l: L) extends AnyVal {
-
   def show(implicit ev: Show[LogLevel]): String = ev.show(l)
 
   def >=[LL <: LogLevel](other: LL)(implicit ord: Ordering[LogLevel]): Boolean =
@@ -79,7 +76,6 @@ final private[effect] class LogLevelOps[L <: LogLevel](private val l: L) extends
 }
 
 object LogLevels {
-
   type Trace = Trace.type
   type Debug = Debug.type
   type Info  = Info.type

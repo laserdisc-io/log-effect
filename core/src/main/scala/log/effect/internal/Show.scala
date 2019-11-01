@@ -7,7 +7,6 @@ trait Show[A] {
 }
 
 object Show {
-
   implicit val stringShow: Show[String] =
     new Show[String] {
       def show(x: String): String = x

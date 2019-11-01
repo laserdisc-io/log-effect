@@ -6,7 +6,6 @@ import log.effect.internal.Show
 final class Failure(val msg: String, val th: Throwable)
 
 object Failure {
-
   def apply(msg: String, th: Throwable): Failure =
     new Failure(msg, th)
 

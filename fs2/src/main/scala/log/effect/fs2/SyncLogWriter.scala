@@ -10,7 +10,6 @@ import log.effect.internal.{ EffectSuspension, Id, Show }
 import org.{ log4s => l4s }
 
 object SyncLogWriter {
-
   import instances._
 
   def log4sLog[F[_]](l: l4s.Logger)(implicit F: Sync[F]): F[LogWriter[F]] =
@@ -52,7 +51,6 @@ object SyncLogWriter {
     noOpLog.liftF
 
   private[this] object instances {
-
     implicit final private[fs2] def syncInstances[F[_]](implicit F: Sync[F]): EffectSuspension[F] =
       new EffectSuspension[F] {
         def suspend[A](a: =>A): F[A] = F delay a

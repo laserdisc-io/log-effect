@@ -4,7 +4,6 @@ import org.scalatest.wordspec.AnyWordSpecLike
 import org.scalatest.matchers.should.Matchers
 
 final class LogWriterSyntaxResolutionTest extends AnyWordSpecLike with Matchers {
-
   case class A()
   object A {
     implicit val aShow: Show[A] = new Show[A] {
@@ -13,13 +12,10 @@ final class LogWriterSyntaxResolutionTest extends AnyWordSpecLike with Matchers 
   }
 
   "the LogWriter's syntax" should {
-
     "be inferred without extra import" in {
-
       import log.effect.LogWriter
 
       @silent def test[F[_]](l: LogWriter[F]) = {
-
         l.trace(A())
         l.trace("test")
         l.trace(new Throwable("test"))
@@ -49,9 +45,7 @@ final class LogWriterSyntaxResolutionTest extends AnyWordSpecLike with Matchers 
   }
 
   "the LogWriter's alias for the singleton companion" should {
-
     "be inferred allowing a boilerplate free mtl-style syntax" in {
-
       import log.effect.LogLevels.Trace
       import log.effect.LogWriter
 
@@ -75,7 +69,6 @@ final class LogWriterSyntaxResolutionTest extends AnyWordSpecLike with Matchers 
     }
 
     "be inferred allowing a boilerplate free mtl-style syntax for errors" in {
-
       import log.effect.LogLevels.Error
       import log.effect.{ Failure, LogWriter }
 

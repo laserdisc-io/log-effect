@@ -3,9 +3,7 @@ import org.scalatest.matchers.should.Matchers
 import org.scalatest.wordspec.AnyWordSpecLike
 
 @silent final class ReadmeConstructionCodeSnippetsTest extends AnyWordSpecLike with Matchers {
-
   "Cats effect Sync construction snippets should compile" in {
-
     import java.util.{ logging => jul }
 
     import cats.effect.Sync
@@ -16,7 +14,6 @@ import org.scalatest.wordspec.AnyWordSpecLike
     import org.{ log4s => l4s }
 
     sealed abstract class App[F[_]](implicit F: Sync[F]) {
-
       val log4s1: F[LogWriter[F]] =
         F.delay(l4s.getLogger("test")) >>= log4sLog[F]
 
@@ -51,7 +48,6 @@ import org.scalatest.wordspec.AnyWordSpecLike
   }
 
   "Fs2 streams construction snippets should compile" in {
-
     import java.util.{ logging => jul }
 
     import cats.effect.Sync
@@ -63,7 +59,6 @@ import org.scalatest.wordspec.AnyWordSpecLike
     import org.{ log4s => l4s }
 
     sealed abstract class App[F[_]](implicit F: Sync[F]) {
-
       val log4s1: fs2.Stream[F, LogWriter[F]] =
         Stream.eval(F.delay(l4s.getLogger("test"))) >>= log4sLogStream[F]
 

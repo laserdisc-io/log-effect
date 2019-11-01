@@ -3,9 +3,7 @@ import org.scalatest.matchers.should.Matchers
 import org.scalatest.wordspec.AnyWordSpecLike
 
 @silent final class ReadmeConstructionCodeSnippetsTest extends AnyWordSpecLike with Matchers {
-
   "Zio construction snippets should compile" in {
-
     import java.util.{ logging => jul }
 
     import log.effect.zio.ZioLogWriter._
@@ -14,7 +12,6 @@ import org.scalatest.wordspec.AnyWordSpecLike
     import zio.{ RIO, Task }
 
     sealed abstract class App {
-
       def someZioProgramUsingLogs: RIO[LogWriter[Task], Unit]
 
       val log4s1: Task[Unit] =

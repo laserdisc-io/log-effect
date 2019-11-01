@@ -3,9 +3,7 @@ import org.scalatest.matchers.should.Matchers
 import org.scalatest.wordspec.AnyWordSpecLike
 
 @silent final class ReadmeLogSubmissionCodeSnippetsTest extends AnyWordSpecLike with Matchers {
-
   "`in a monadic sequence of effects` snippet should compile" in {
-
     import cats.effect.Sync
     import cats.syntax.flatMap._
     import cats.syntax.functor._
@@ -23,7 +21,6 @@ import org.scalatest.wordspec.AnyWordSpecLike
   }
 
   "`in a streaming environment using `LogWriter`'s syntax` snippet should compile" in {
-
     import java.nio.channels.AsynchronousChannelGroup
 
     import cats.effect.{ ConcurrentEffect, ContextShift, Timer }
@@ -52,7 +49,6 @@ import org.scalatest.wordspec.AnyWordSpecLike
   }
 
   "`in a streaming environment using `fs2` streams' syntax` snippet should compile" in {
-
     import java.nio.channels.AsynchronousChannelGroup
 
     import cats.effect.{ ConcurrentEffect, ContextShift, Timer }
@@ -83,7 +79,6 @@ import org.scalatest.wordspec.AnyWordSpecLike
   }
 
   "`through the companion's syntax` snippet should compile" in {
-
     import cats.effect.Sync
     import cats.syntax.apply._
     import cats.syntax.flatMap._
@@ -103,7 +98,6 @@ import org.scalatest.wordspec.AnyWordSpecLike
   }
 
   "`through the companion's syntax for `fs2` streams` snippet should compile" in {
-
     import cats.effect.Sync
     import cats.syntax.apply._
     import cats.syntax.flatMap._
@@ -122,7 +116,6 @@ import org.scalatest.wordspec.AnyWordSpecLike
   }
 
   "`through the companion's accessor for the `write` method` 1 snippet should compile" in {
-
     import java.nio.channels.AsynchronousChannelGroup
 
     import cats.Show
@@ -152,7 +145,6 @@ import org.scalatest.wordspec.AnyWordSpecLike
     def redisClient[F[_]: ConcurrentEffect: ContextShift: Timer: LogWriter](
       address: String
     ): fs2.Stream[F, Throwable | RedisClient[F]] = {
-
       // Cats Show instances are needed for every logged type
       implicit val clientShow: Show[RedisClient[F]] = ???
 
@@ -173,7 +165,6 @@ import org.scalatest.wordspec.AnyWordSpecLike
   }
 
   "`or using the fs2 Stream specific syntax like `writeS` or the level alternatives for types that provide a `cats.Show` instance` snippet should compile" in {
-
     import cats.Show
     import cats.effect.Sync
     import log.effect.LogLevels.Error
@@ -189,7 +180,6 @@ import org.scalatest.wordspec.AnyWordSpecLike
     }
 
     def double[F[_]: Sync: LogWriter](source: fs2.Stream[F, Int]): fs2.Stream[F, A] = {
-
       // Cats Show instances are needed for every logged type
       implicit def intShow: Show[Int] = ???
 
@@ -212,7 +202,6 @@ import org.scalatest.wordspec.AnyWordSpecLike
   }
 
   "laserdisc test snippet should compile" in {
-
     import java.nio.channels.AsynchronousChannelGroup
 
     import cats.effect.{ ConcurrentEffect, ContextShift, Timer }

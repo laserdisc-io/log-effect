@@ -9,7 +9,6 @@ import org.{ log4s => l4s }
 import _root_.zio.{ IO, RIO, Task, UIO, URIO, ZIO }
 
 object ZioLogWriter {
-
   import instances._
 
   val log4sFromLogger: URIO[l4s.Logger, LogWriter[Task]] =
@@ -64,7 +63,6 @@ object ZioLogWriter {
     noOpLog.liftT
 
   private[this] object instances {
-
     implicit final private[zio] val taskEffectSuspension: EffectSuspension[Task] =
       new EffectSuspension[Task] {
         def suspend[A](a: =>A): Task[A] = IO.effect(a)

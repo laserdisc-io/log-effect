@@ -12,17 +12,14 @@ sealed trait LogWriterConstructor[R, G[_], F[_]] {
 }
 
 object LogWriterConstructor {
-
   implicit def log4sConstructor[G[_]: Functor, F[_]](
     implicit F: EffectSuspension[F]
   ): LogWriterConstructor[G[l4s.Logger], G, F] =
     new LogWriterConstructor[G[l4s.Logger], G, F] {
-
       val construction: G[l4s.Logger] => G[LogWriter[F]] =
         _ map { l4sLogger =>
           new LogWriter[F] {
             def write[A: Show, L <: LogLevel: Show](level: L, a: =>A): F[Unit] = {
-
               val beLevel = level match {
                 case LogLevels.Trace => l4s.Trace
                 case LogLevels.Debug => l4s.Debug
@@ -46,12 +43,10 @@ object LogWriterConstructor {
     implicit F: EffectSuspension[F]
   ): LogWriterConstructor[G[jul.Logger], G, F] =
     new LogWriterConstructor[G[jul.Logger], G, F] {
-
       val construction: G[jul.Logger] => G[LogWriter[F]] =
         _ map { julLogger =>
           new LogWriter[F] {
             def write[A: Show, L <: LogLevel: Show](level: L, a: =>A): F[Unit] = {
-
               val beLevel = level match {
                 case LogLevels.Trace => jul.Level.FINEST
                 case LogLevels.Debug => jul.Level.FINE
@@ -82,12 +77,10 @@ object LogWriterConstructor {
     implicit F: EffectSuspension[F]
   ): LogWriterConstructor[G[scribe.Logger], G, F] =
     new LogWriterConstructor[G[scribe.Logger], G, F] {
-
       val construction: G[scribe.Logger] => G[LogWriter[F]] =
         _ map { scribeLogger =>
           new LogWriter[F] {
             def write[A: Show, L <: LogLevel: Show](level: L, a: =>A): F[Unit] = {
-
               val beLevel = level match {
                 case LogLevels.Trace => scribe.Level.Trace
                 case LogLevels.Debug => scribe.Level.Debug
@@ -111,7 +104,6 @@ object LogWriterConstructor {
     implicit F: EffectSuspension[F]
   ): LogWriterConstructor[LL, Id, F] =
     new LogWriterConstructor[LL, Id, F] {
-
       val construction: LL => Id[LogWriter[F]] =
         ll =>
           new LogWriter[F] {
@@ -130,7 +122,6 @@ object LogWriterConstructor {
 
   implicit val noOpConstructor: LogWriterConstructor[Unit, Id, Id] =
     new LogWriterConstructor[Unit, Id, Id] {
-
       val construction: Unit => Id[LogWriter[Id]] =
         _ =>
           new LogWriter[Id] {

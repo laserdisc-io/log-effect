@@ -3,11 +3,8 @@ import org.scalatest.wordspec.AnyWordSpecLike
 import org.scalatest.matchers.should.Matchers
 
 final class LogWriterResolutionTest extends AnyWordSpecLike with Matchers {
-
   "the construction" should {
-
     "correctly infer a valid log4s constructor for ZIO" in {
-
       import _root_.zio.{ IO, Task }
       import log.effect.internal.{ EffectSuspension, Functor }
       import log.effect.zio.ZioLogWriter.log4sFromLogger
@@ -28,7 +25,6 @@ final class LogWriterResolutionTest extends AnyWordSpecLike with Matchers {
     }
 
     "correctly infer a valid jul constructor for IO" in {
-
       import java.util.{ logging => jul }
 
       import _root_.zio.{ IO, Task }
@@ -51,9 +47,7 @@ final class LogWriterResolutionTest extends AnyWordSpecLike with Matchers {
   }
 
   "the LogWriterConstructor0 of IO" should {
-
     "correctly infer a valid console constructor for IO" in {
-
       import _root_.zio.Task
       import log.effect.internal.{ EffectSuspension, Id }
       import log.effect.zio.ZioLogWriter.{ consoleLog, consoleLogUpToLevel }
@@ -74,7 +68,6 @@ final class LogWriterResolutionTest extends AnyWordSpecLike with Matchers {
     }
 
     "not be able to infer a no-op constructor for zio Task" in {
-
       """
         |import log.effect.internal.Id
         |import log.effect.{LogWriter, LogWriterConstructor}
