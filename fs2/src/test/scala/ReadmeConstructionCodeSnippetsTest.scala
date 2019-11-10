@@ -9,7 +9,6 @@ import org.scalatest.wordspec.AnyWordSpecLike
     import cats.effect.Sync
     import cats.syntax.functor._
     import log.effect.fs2.SyncLogWriter._
-    import log.effect.internal.Id
     import log.effect.{ LogLevels, LogWriter }
     import org.{ log4s => l4s }
 
@@ -43,7 +42,7 @@ import org.scalatest.wordspec.AnyWordSpecLike
 
       val console2: LogWriter[F] = consoleLogUpToLevel(LogLevels.Warn)
 
-      val noOp: LogWriter[Id] = noOpLog
+      val noOp: LogWriter[F] = noOpLog[F]
     }
   }
 
@@ -54,7 +53,6 @@ import org.scalatest.wordspec.AnyWordSpecLike
     import cats.syntax.flatMap._
     import fs2.Stream
     import log.effect.fs2.Fs2LogWriter._
-    import log.effect.internal.Id
     import log.effect.{ LogLevels, LogWriter }
     import org.{ log4s => l4s }
 
