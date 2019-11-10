@@ -134,25 +134,49 @@ lazy val customCommands: Seq[Def.Setting[_]] = Seq(
   commands ++= Seq(format, checkFormat, fullCiBuild)
 )
 
-lazy val fullCiBuildStep: ReleaseStep = ReleaseStep(
-  action = { st: State =>
-    Command.process("fullCiBuild", st)
+val scalafmtCheckStep = ReleaseStep(
+  action = st => {
+    val extracted = Project.extract(st)
+    val ref       = extracted.get(thisProjectRef)
+    extracted.runAggregated(scalafmtCheck in Compile in ref, st)
   },
-  enableCrossBuild = true
+  enableCrossBuild = false
+)
+
+val scalafmtCheckTestStep = ReleaseStep(
+  action = st => {
+    val extracted = Project.extract(st)
+    val ref       = extracted.get(thisProjectRef)
+    extracted.runAggregated(scalafmtCheck in Test in ref, st)
+  },
+  enableCrossBuild = false
+)
+
+val scalafmtCheckSbtStep = ReleaseStep(
+  action = st => {
+    val extracted = Project.extract(st)
+    val ref       = extracted.get(thisProjectRef)
+    extracted.runAggregated(scalafmtSbtCheck in Test in ref, st)
+  },
+  enableCrossBuild = false
 )
 
 lazy val releaseSettings: Seq[Def.Setting[_]] = Seq(
   releaseProcess := Seq[ReleaseStep](
     checkSnapshotDependencies,
+    runClean,
+    scalafmtCheckStep,
+    scalafmtCheckTestStep,
+    scalafmtCheckSbtStep,
     inquireVersions,
-    fullCiBuildStep,
+    runTest,
     setReleaseVersion,
     commitReleaseVersion,
     tagRelease,
     publishArtifacts,
     setNextVersion,
-    commitNextVersion,
     releaseStepCommand("sonatypeRelease"),
+    commitNextVersion,
     pushChanges
   ),
   releaseCrossBuild             := true,
