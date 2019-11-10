@@ -8,14 +8,14 @@ import log.effect.internal.syntax._
 import org.{ log4s => l4s }
 
 sealed trait LogWriterConstructor[R, G[_], F[_]] {
-  def construction: R => G[LogWriter[F]]
+  def construction: G[R] => G[LogWriter[F]]
 }
 
 object LogWriterConstructor {
   implicit def log4sConstructor[G[_]: Functor, F[_]](
     implicit F: EffectSuspension[F]
-  ): LogWriterConstructor[G[l4s.Logger], G, F] =
-    new LogWriterConstructor[G[l4s.Logger], G, F] {
+  ): LogWriterConstructor[l4s.Logger, G, F] =
+    new LogWriterConstructor[l4s.Logger, G, F] {
       val construction: G[l4s.Logger] => G[LogWriter[F]] =
         _ map { l4sLogger =>
           new LogWriter[F] {
@@ -41,8 +41,8 @@ object LogWriterConstructor {
 
   implicit def julConstructor[G[_]: Functor, F[_]](
     implicit F: EffectSuspension[F]
-  ): LogWriterConstructor[G[jul.Logger], G, F] =
-    new LogWriterConstructor[G[jul.Logger], G, F] {
+  ): LogWriterConstructor[jul.Logger, G, F] =
+    new LogWriterConstructor[jul.Logger, G, F] {
       val construction: G[jul.Logger] => G[LogWriter[F]] =
         _ map { julLogger =>
           new LogWriter[F] {
@@ -75,8 +75,8 @@ object LogWriterConstructor {
 
   implicit def scribeConstructor[G[_]: Functor, F[_]](
     implicit F: EffectSuspension[F]
-  ): LogWriterConstructor[G[scribe.Logger], G, F] =
-    new LogWriterConstructor[G[scribe.Logger], G, F] {
+  ): LogWriterConstructor[scribe.Logger, G, F] =
+    new LogWriterConstructor[scribe.Logger, G, F] {
       val construction: G[scribe.Logger] => G[LogWriter[F]] =
         _ map { scribeLogger =>
           new LogWriter[F] {

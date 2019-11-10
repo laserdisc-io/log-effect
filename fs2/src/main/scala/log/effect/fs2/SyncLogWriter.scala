@@ -12,8 +12,8 @@ import org.{ log4s => l4s }
 object SyncLogWriter {
   import instances._
 
-  def log4sLog[F[_]](l: l4s.Logger)(implicit F: Sync[F]): F[LogWriter[F]] =
-    LogWriter.of(F.pure(l))
+  def log4sLog[F[_]: Sync](l: l4s.Logger): LogWriter[F] =
+    LogWriter.pureOf[F](l)
 
   def log4sLog[F[_]](c: Class[_])(implicit F: Sync[F]): F[LogWriter[F]] =
     LogWriter.of(F.delay(l4s.getLogger(c)))
@@ -21,14 +21,14 @@ object SyncLogWriter {
   def log4sLog[F[_]](n: String)(implicit F: Sync[F]): F[LogWriter[F]] =
     LogWriter.of(F.delay(l4s.getLogger(n)))
 
-  def julLog[F[_]](l: jul.Logger)(implicit F: Sync[F]): F[LogWriter[F]] =
-    LogWriter.of(F.pure(l))
+  def julLog[F[_]: Sync](l: jul.Logger): LogWriter[F] =
+    LogWriter.pureOf[F](l)
 
   def julLog[F[_]](implicit F: Sync[F]): F[LogWriter[F]] =
     LogWriter.of(F.delay(jul.Logger.getGlobal))
 
-  def scribeLog[F[_]](l: scribe.Logger)(implicit F: Sync[F]): F[LogWriter[F]] =
-    LogWriter.of(F.pure(l))
+  def scribeLog[F[_]: Sync](l: scribe.Logger): LogWriter[F] =
+    LogWriter.pureOf[F](l)
 
   def scribeLog[F[_]](n: String)(implicit F: Sync[F]): F[LogWriter[F]] =
     LogWriter.of(F.delay(scribe.Logger(n)))
@@ -39,16 +39,13 @@ object SyncLogWriter {
   }
 
   def consoleLog[F[_]: Sync]: LogWriter[F] =
-    LogWriter.from[Id].runningEffect[F](LogLevels.Trace)
+    LogWriter.pureOf[F](LogLevels.Trace)
 
   def consoleLogUpToLevel[F[_]: Sync, LL <: LogLevel](minLevel: LL): LogWriter[F] =
-    LogWriter.from[Id].runningEffect[F](minLevel)
+    LogWriter.pureOf[F](minLevel)
 
-  val noOpLog: LogWriter[Id] =
-    LogWriter.of[Id](())
-
-  def noOpLogF[F[_]: Applicative]: LogWriter[F] =
-    noOpLog.liftF
+  def noOpLog[F[_]: Applicative]: LogWriter[F] =
+    LogWriter.of[Id](()).liftF
 
   private[this] object instances {
     implicit final private[fs2] def syncInstances[F[_]](implicit F: Sync[F]): EffectSuspension[F] =

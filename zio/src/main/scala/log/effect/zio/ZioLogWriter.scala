@@ -4,16 +4,16 @@ package zio
 
 import java.util.{ logging => jul }
 
+import _root_.zio.{ IO, RIO, Task, UIO, URIO, ZIO }
 import log.effect.internal.{ EffectSuspension, Id, Show }
 import org.{ log4s => l4s }
-import _root_.zio.{ IO, RIO, Task, UIO, URIO, ZIO }
 
 object ZioLogWriter {
   import instances._
 
   val log4sFromLogger: URIO[l4s.Logger, LogWriter[Task]] =
-    ZIO.accessM { log4sLogger =>
-      LogWriter.from[UIO].runningEffect[Task](ZIO.effectTotal(log4sLogger))
+    ZIO.access { log4sLogger =>
+      LogWriter.pureOf[Task](log4sLogger)
     }
 
   val log4sFromName: RIO[String, LogWriter[Task]] =
@@ -27,8 +27,8 @@ object ZioLogWriter {
     }
 
   val julFromLogger: URIO[jul.Logger, LogWriter[Task]] =
-    ZIO.accessM { julLogger =>
-      LogWriter.from[UIO].runningEffect[Task](ZIO.effectTotal(julLogger))
+    ZIO.access { julLogger =>
+      LogWriter.pureOf[Task](julLogger)
     }
 
   val julGlobal: Task[LogWriter[Task]] =
@@ -46,21 +46,18 @@ object ZioLogWriter {
     }
 
   val scribeFromLogger: RIO[scribe.Logger, LogWriter[Task]] =
-    ZIO.accessM { scribeLogger =>
-      LogWriter.from[UIO].runningEffect[Task](ZIO.effectTotal(scribeLogger))
+    ZIO.access { scribeLogger =>
+      LogWriter.pureOf(scribeLogger)
     }
 
   val consoleLog: LogWriter[Task] =
-    LogWriter.from[Id].runningEffect[Task](LogLevels.Trace)
+    LogWriter.pureOf[Task](LogLevels.Trace)
 
   def consoleLogUpToLevel[LL <: LogLevel](minLevel: LL): LogWriter[Task] =
-    LogWriter.from[Id].runningEffect[Task](minLevel)
+    LogWriter.pureOf[Task](minLevel)
 
-  val noOpLog: LogWriter[Id] =
-    LogWriter.of[Id](())
-
-  val noOpLogF: LogWriter[Task] =
-    noOpLog.liftT
+  val noOpLog: LogWriter[Task] =
+    LogWriter.of[Id](()).liftT
 
   private[this] object instances {
     implicit final private[zio] val taskEffectSuspension: EffectSuspension[Task] =

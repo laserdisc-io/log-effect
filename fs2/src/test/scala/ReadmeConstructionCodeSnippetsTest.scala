@@ -7,7 +7,7 @@ import org.scalatest.wordspec.AnyWordSpecLike
     import java.util.{ logging => jul }
 
     import cats.effect.Sync
-    import cats.syntax.flatMap._
+    import cats.syntax.functor._
     import log.effect.fs2.SyncLogWriter._
     import log.effect.internal.Id
     import log.effect.{ LogLevels, LogWriter }
@@ -15,7 +15,7 @@ import org.scalatest.wordspec.AnyWordSpecLike
 
     sealed abstract class App[F[_]](implicit F: Sync[F]) {
       val log4s1: F[LogWriter[F]] =
-        F.delay(l4s.getLogger("test")) >>= log4sLog[F]
+        F.delay(l4s.getLogger("test")) map log4sLog[F]
 
       val log4s2: F[LogWriter[F]] = log4sLog("a logger")
 
@@ -25,12 +25,12 @@ import org.scalatest.wordspec.AnyWordSpecLike
       }
 
       val jul1: F[LogWriter[F]] =
-        F.delay(jul.Logger.getLogger("a logger")) >>= julLog[F]
+        F.delay(jul.Logger.getLogger("a logger")) map julLog[F]
 
       val jul2: F[LogWriter[F]] = julLog
 
       val scribe1: F[LogWriter[F]] =
-        F.delay(scribe.Logger("a logger")) >>= scribeLog[F]
+        F.delay(scribe.Logger("a logger")) map scribeLog[F]
 
       val scribe2: F[LogWriter[F]] = scribeLog("a logger")
 
@@ -88,7 +88,7 @@ import org.scalatest.wordspec.AnyWordSpecLike
 
       val console2: fs2.Stream[F, LogWriter[F]] = consoleLogStreamUpToLevel(LogLevels.Warn)
 
-      val noOp: fs2.Stream[F, LogWriter[Id]] = noOpLogStream
+      val noOp: fs2.Stream[F, LogWriter[F]] = noOpLogStream
     }
   }
 }
