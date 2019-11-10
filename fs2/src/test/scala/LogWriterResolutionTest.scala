@@ -1,7 +1,9 @@
-import cats.syntax.flatMap._
+import cats.Applicative
+import cats.syntax.functor._
 import com.github.ghik.silencer.silent
-import org.scalatest.wordspec.AnyWordSpecLike
+import log.effect.internal
 import org.scalatest.matchers.should.Matchers
+import org.scalatest.wordspec.AnyWordSpecLike
 
 final class LogWriterResolutionTest extends AnyWordSpecLike with Matchers {
   "the construction" should {
@@ -15,14 +17,22 @@ final class LogWriterResolutionTest extends AnyWordSpecLike with Matchers {
       def c[F[_]]: F[org.log4s.Logger] => F[LogWriter[F]] = {
         implicit def F: EffectSuspension[F] = ???
         implicit def FF: Functor[F]         = ???
-        implicitly[LogWriterConstructor[F[log4s.Logger], F, F]].construction
+        implicitly[LogWriterConstructor[log4s.Logger, F, F]].construction
+      }
+
+      def cPure[F[_]]: org.log4s.Logger => LogWriter[F] = {
+        implicit def F: EffectSuspension[F] = ???
+        implicitly[LogWriterConstructor[log4s.Logger, internal.Id, F]].construction
       }
 
       @silent def l1[F[_]](implicit F: Sync[F]): F[LogWriter[F]] =
         c(F.delay(org.log4s.getLogger("test")))
 
+      @silent def pureL1[F[_]]: LogWriter[F] =
+        cPure[F](org.log4s.getLogger("test"))
+
       @silent def l2[F[_]](implicit F: Sync[F]): F[LogWriter[F]] =
-        F.delay(org.log4s.getLogger("test")) >>= log4sLog[F]
+        F.delay(org.log4s.getLogger("test")) map log4sLog[F]
     }
 
     "correctly infer a valid jul constructor for an F[_] given an implicit evidence of Sync[F]" in {
@@ -36,14 +46,22 @@ final class LogWriterResolutionTest extends AnyWordSpecLike with Matchers {
       def c[F[_]]: F[java.util.logging.Logger] => F[LogWriter[F]] = {
         implicit def F: EffectSuspension[F] = ???
         implicit def FF: Functor[F]         = ???
-        implicitly[LogWriterConstructor[F[jul.Logger], F, F]].construction
+        implicitly[LogWriterConstructor[jul.Logger, F, F]].construction
+      }
+
+      def cPure[F[_]]: java.util.logging.Logger => LogWriter[F] = {
+        implicit def F: EffectSuspension[F] = ???
+        implicitly[LogWriterConstructor[jul.Logger, internal.Id, F]].construction
       }
 
       @silent def l1[F[_]](implicit F: Sync[F]): F[LogWriter[F]] =
         c(F.delay(java.util.logging.Logger.getGlobal))
 
+      @silent def pureL1[F[_]]: LogWriter[F] =
+        cPure[F](java.util.logging.Logger.getGlobal)
+
       @silent def l2[F[_]](implicit F: Sync[F]): F[LogWriter[F]] =
-        F.delay(java.util.logging.Logger.getGlobal) >>= julLog[F]
+        F.delay(java.util.logging.Logger.getGlobal) map julLog[F]
     }
 
     "not infer a valid log4s constructor for an F[_] if there is no implicit evidence of EffectSuspension[F]" in {
@@ -93,7 +111,7 @@ final class LogWriterResolutionTest extends AnyWordSpecLike with Matchers {
 
       @silent def l1: LogWriter[Id] = c(())
 
-      @silent def l2: LogWriter[Id] = noOpLog
+      @silent def l2[F[_]: Applicative]: LogWriter[F] = noOpLog[F]
     }
 
     "correctly infer a valid log4s constructor for IO" in {
@@ -106,14 +124,22 @@ final class LogWriterResolutionTest extends AnyWordSpecLike with Matchers {
       def c: IO[org.log4s.Logger] => IO[LogWriter[IO]] = {
         implicit def F: EffectSuspension[IO] = ???
         implicit def FF: Functor[IO]         = ???
-        implicitly[LogWriterConstructor[IO[log4s.Logger], IO, IO]].construction
+        implicitly[LogWriterConstructor[log4s.Logger, IO, IO]].construction
+      }
+
+      def cPure: org.log4s.Logger => LogWriter[IO] = {
+        implicit def F: EffectSuspension[IO] = ???
+        implicitly[LogWriterConstructor[log4s.Logger, internal.Id, IO]].construction
       }
 
       @silent def l1: IO[LogWriter[IO]] =
         c(IO.delay(org.log4s.getLogger("test")))
 
+      @silent def pureL1: LogWriter[IO] =
+        cPure(org.log4s.getLogger("test"))
+
       @silent def l2: IO[LogWriter[IO]] =
-        IO.delay(org.log4s.getLogger("test")) >>= log4sLog[IO]
+        IO.delay(org.log4s.getLogger("test")) map log4sLog[IO]
     }
 
     "correctly infer a valid jul constructor for IO" in {
@@ -127,14 +153,22 @@ final class LogWriterResolutionTest extends AnyWordSpecLike with Matchers {
       def c: IO[java.util.logging.Logger] => IO[LogWriter[IO]] = {
         implicit def F: EffectSuspension[IO] = ???
         implicit def FF: Functor[IO]         = ???
-        implicitly[LogWriterConstructor[IO[jul.Logger], IO, IO]].construction
+        implicitly[LogWriterConstructor[jul.Logger, IO, IO]].construction
+      }
+
+      def cPure: java.util.logging.Logger => LogWriter[IO] = {
+        implicit def F: EffectSuspension[IO] = ???
+        implicitly[LogWriterConstructor[jul.Logger, internal.Id, IO]].construction
       }
 
       @silent def l1: IO[LogWriter[IO]] =
         c(IO.delay(java.util.logging.Logger.getGlobal))
 
+      @silent def pureL1: LogWriter[IO] =
+        cPure(java.util.logging.Logger.getGlobal)
+
       @silent def l2: IO[LogWriter[IO]] =
-        IO.delay(java.util.logging.Logger.getGlobal) >>= julLog[IO]
+        IO.delay(java.util.logging.Logger.getGlobal) map julLog[IO]
     }
   }
 
@@ -159,7 +193,7 @@ final class LogWriterResolutionTest extends AnyWordSpecLike with Matchers {
       @silent def l4: LogWriter[IO] = consoleLogUpToLevel(LogLevels.Info)
     }
 
-    "not be able to infer a no-op constructor for IO" in {
+    "not be able to infer a no-op constructor for IO without lifting (see SyncLogWriter.noOpLog)" in {
       """
         |import cats.effect.IO
         |import log.effect.internal.Id

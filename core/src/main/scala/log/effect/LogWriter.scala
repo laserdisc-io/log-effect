@@ -2,7 +2,7 @@ package log
 package effect
 
 import com.github.ghik.silencer.silent
-import log.effect.internal.Show
+import log.effect.internal.{ Id, Show }
 
 import scala.language.implicitConversions
 
@@ -11,21 +11,15 @@ trait LogWriter[F[_]] {
 }
 
 object LogWriter extends LogWriterSyntax {
-  @inline final def from[G[_]]: logWriterFromPartial[G] =
-    new logWriterFromPartial()
-
-  final private[effect] class logWriterFromPartial[G[_]](private val d: Boolean = true)
-      extends AnyVal {
-    @inline @silent def runningEffect[F[_]]: logWriterInstancePartial[G, F] =
-      new logWriterInstancePartial()
-  }
+  @inline final def pureOf[F[_]]: logWriterInstancePartial[Id, F] =
+    new logWriterInstancePartial[Id, F]()
 
   @inline final def of[F[_]]: logWriterInstancePartial[F, F] =
     new logWriterInstancePartial()
 
   final private[effect] class logWriterInstancePartial[G[_], F[_]](private val d: Boolean = true)
       extends AnyVal {
-    @inline @silent def apply[R](read: R)(
+    @inline @silent def apply[R](read: G[R])(
       implicit instance: LogWriterConstructor[R, G, F]
     ): G[LogWriter[F]] =
       instance construction read

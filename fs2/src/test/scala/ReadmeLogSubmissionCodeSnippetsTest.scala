@@ -206,7 +206,7 @@ import org.scalatest.wordspec.AnyWordSpecLike
 
     import cats.effect.{ ConcurrentEffect, ContextShift, Timer }
     import cats.syntax.flatMap._
-    import log.effect.fs2.Fs2LogWriter.noOpLogStreamF
+    import log.effect.fs2.Fs2LogWriter.noOpLogStream
 
     import scala.concurrent.ExecutionContext
 
@@ -224,7 +224,7 @@ import org.scalatest.wordspec.AnyWordSpecLike
     def redisClient[F[_]: ConcurrentEffect: ContextShift: Timer](
       address: String
     ): fs2.Stream[F, RedisClient[F]] =
-      noOpLogStreamF >>= { implicit log =>
+      noOpLogStream >>= { implicit log =>
         RedisClient[F](address)
       }
   }

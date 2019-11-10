@@ -55,7 +55,7 @@ import org.scalatest.wordspec.AnyWordSpecLike
         someZioProgramUsingLogs provide consoleLogUpToLevel(LogLevels.Warn)
 
       val noOp: Task[Unit] =
-        someZioProgramUsingLogs provide noOpLogF
+        someZioProgramUsingLogs provide noOpLog
     }
   }
 }

@@ -84,16 +84,14 @@ To get an instance of `LogWriter` for **Cats Effect**'s `Sync` the options below
 import java.util.{ logging => jul }
 
 import cats.effect.Sync
-import cats.syntax.flatMap._
+import cats.syntax.functor._
 import log.effect.fs2.SyncLogWriter._
-import log.effect.internal.Id
 import log.effect.{ LogLevels, LogWriter }
 import org.{ log4s => l4s }
 
 sealed abstract class App[F[_]](implicit F: Sync[F]) {
-
   val log4s1: F[LogWriter[F]] =
-    F.delay(l4s.getLogger("test")) >>= log4sLog[F]
+    F.delay(l4s.getLogger("test")) map log4sLog[F]
 
   val log4s2: F[LogWriter[F]] = log4sLog("a logger")
 
@@ -103,12 +101,12 @@ sealed abstract class App[F[_]](implicit F: Sync[F]) {
   }
 
   val jul1: F[LogWriter[F]] =
-    F.delay(jul.Logger.getLogger("a logger")) >>= julLog[F]
+    F.delay(jul.Logger.getLogger("a logger")) map julLog[F]
 
   val jul2: F[LogWriter[F]] = julLog
 
   val scribe1: F[LogWriter[F]] =
-    F.delay(scribe.Logger("a logger")) >>= scribeLog[F]
+    F.delay(scribe.Logger("a logger")) map scribeLog[F]
 
   val scribe2: F[LogWriter[F]] = scribeLog("a logger")
 
@@ -121,7 +119,7 @@ sealed abstract class App[F[_]](implicit F: Sync[F]) {
 
   val console2: LogWriter[F] = consoleLogUpToLevel(LogLevels.Warn)
 
-  val noOp: LogWriter[Id] = noOpLog
+  val noOp: LogWriter[F] = noOpLog[F]
 }
 ```
 
@@ -134,12 +132,10 @@ import cats.effect.Sync
 import cats.syntax.flatMap._
 import fs2.Stream
 import log.effect.fs2.Fs2LogWriter._
-import log.effect.internal.Id
 import log.effect.{ LogLevels, LogWriter }
 import org.{ log4s => l4s }
 
 sealed abstract class App[F[_]](implicit F: Sync[F]) {
-
   val log4s1: fs2.Stream[F, LogWriter[F]] =
     Stream.eval(F.delay(l4s.getLogger("test"))) >>= log4sLogStream[F]
 
@@ -169,7 +165,7 @@ sealed abstract class App[F[_]](implicit F: Sync[F]) {
 
   val console2: fs2.Stream[F, LogWriter[F]] = consoleLogStreamUpToLevel(LogLevels.Warn)
 
-  val noOp: fs2.Stream[F, LogWriter[Id]] = noOpLogStream
+  val noOp: fs2.Stream[F, LogWriter[F]] = noOpLogStream
 }
 ```
 *See [here](https://github.com/laserdisc-io/laserdisc#example-usage) for an example whit [Laserdisc](https://github.com/laserdisc-io/laserdisc)*
@@ -185,7 +181,6 @@ import org.{ log4s => l4s }
 import zio.{ RIO, Task }
 
 sealed abstract class App {
-
   def someZioProgramUsingLogs: RIO[LogWriter[Task], Unit]
 
   val log4s1: Task[Unit] =
@@ -229,7 +224,7 @@ sealed abstract class App {
     someZioProgramUsingLogs provide consoleLogUpToLevel(LogLevels.Warn)
 
   val noOp: Task[Unit] =
-    someZioProgramUsingLogs provide noOpLogF
+    someZioProgramUsingLogs provide noOpLog
 }
 ```
 
@@ -241,9 +236,9 @@ The following ways of submitting logs are supported:
 - _in a monadic sequence of effects_
 ```scala
 import cats.effect.Sync
-import log.effect.LogWriter
-import cats.syntax.functor._
 import cats.syntax.flatMap._
+import cats.syntax.functor._
+import log.effect.LogWriter
 
 def process[F[_]](implicit F: Sync[F], log: LogWriter[F]): F[(Int, Int)] =
   for {
@@ -320,17 +315,18 @@ def redisCache[F[_]: ConcurrentEffect: ContextShift: Timer](
 ```scala
 import cats.effect.Sync
 import cats.syntax.apply._
+import cats.syntax.flatMap._
 import log.effect.LogWriter
 
 def double[F[_]: Sync: LogWriter](source: fs2.Stream[F, Int]): fs2.Stream[F, Int] =
   source evalMap { n =>
-    LogWriter.debug("Processing a number") *>
-      LogWriter.debug(n.toString) *>
+    LogWriter.debug("Processing a number") >>
+      LogWriter.debug(n.toString) >>
       Sync[F].pure(n * 2) <*
       LogWriter.debug("Processed")
   } handleErrorWith { th =>
     fs2.Stream eval (
-      LogWriter.error("Ops, something didn't work", th) *> Sync[F].pure(0)
+      LogWriter.error("Ops, something didn't work", th) >> Sync[F].pure(0)
     )
   }
 ```
@@ -385,7 +381,6 @@ implicit def CG: AsynchronousChannelGroup = ???
 def redisClient[F[_]: ConcurrentEffect: ContextShift: Timer: LogWriter](
   address: String
 ): fs2.Stream[F, Throwable | RedisClient[F]] = {
-
   // Cats Show instances are needed for every logged type
   implicit val clientShow: Show[RedisClient[F]] = ???
 
@@ -421,7 +416,6 @@ object A {
 }
 
 def double[F[_]: Sync: LogWriter](source: fs2.Stream[F, Int]): fs2.Stream[F, A] = {
-
   // Cats Show instances are needed for every logged type
   implicit def intShow: Show[Int] = ???
 
@@ -450,7 +444,7 @@ import java.nio.channels.AsynchronousChannelGroup
 
 import cats.effect.{ ConcurrentEffect, ContextShift, Timer }
 import cats.syntax.flatMap._
-import log.effect.fs2.Fs2LogWriter.noOpLogStreamF
+import log.effect.fs2.Fs2LogWriter.noOpLogStream
 
 import scala.concurrent.ExecutionContext
 
@@ -468,7 +462,7 @@ implicit def CG: AsynchronousChannelGroup = ???
 def redisClient[F[_]: ConcurrentEffect: ContextShift: Timer](
   address: String
 ): fs2.Stream[F, RedisClient[F]] =
-  noOpLogStreamF >>= { implicit log =>
+  noOpLogStream >>= { implicit log =>
     RedisClient[F](address)
   }
 ```
