@@ -1,9 +1,5 @@
 import sbtrelease.ReleasePlugin.autoImport.ReleaseTransformations._
 
-lazy val `scala 211` = "2.11.12"
-lazy val `scala 212` = "2.12.10"
-lazy val `scala 213` = "2.13.1"
-
 lazy val commonOptions = Seq(
   "-deprecation",
   "-encoding",
@@ -104,16 +100,14 @@ lazy val compilerPluginsDependencies = Seq(
   * Settings
   */
 lazy val crossBuildSettings = Seq(
-  scalaVersion        := `scala 213`,
-  crossScalaVersions  := Seq(`scala 211`, `scala 212`, `scala 213`),
   libraryDependencies ++= testDependencies ++ compilerPluginsDependencies,
   organization        := "io.laserdisc",
   parallelExecution   in Test := false,
   scalacOptions ++=
-    (scalaVersion.value match {
-      case `scala 212` => scala212Options
-      case `scala 213` => scala213Options
-      case _           => commonOptions
+    (CrossVersion.partialVersion(scalaVersion.value) match {
+      case Some((2, 12)) => scala212Options
+      case Some((2, 13)) => scala213Options
+      case _             => commonOptions
     }),
   parallelExecution in Test := false
 )
