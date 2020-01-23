@@ -1,6 +1,6 @@
 import sbtrelease.ReleasePlugin.autoImport.ReleaseTransformations._
 
-lazy val commonOptions = Seq(
+lazy val scala212Options = Seq(
   "-deprecation",
   "-encoding",
   "UTF-8",
@@ -22,10 +22,7 @@ lazy val commonOptions = Seq(
   "-Ywarn-nullary-unit",
   "-Ywarn-numeric-widen",
   "-Ywarn-value-discard",
-  "-Xfatal-warnings"
-)
-
-lazy val scala212Options = commonOptions ++ Seq(
+  "-Xfatal-warnings",
   "-opt:l:inline",
   "-Ywarn-unused:imports",
   "-Ywarn-unused:_,imports",
