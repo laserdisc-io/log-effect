@@ -106,8 +106,7 @@ lazy val crossBuildSettings = Seq(
   scalacOptions ++=
     (CrossVersion.partialVersion(scalaVersion.value) match {
       case Some((2, 12)) => scala212Options
-      case Some((2, 13)) => scala213Options
-      case _             => commonOptions
+      case _             => scala213Options
     }),
   parallelExecution in Test := false
 )
