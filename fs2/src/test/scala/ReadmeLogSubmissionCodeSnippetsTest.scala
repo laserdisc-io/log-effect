@@ -224,8 +224,6 @@ import org.scalatest.wordspec.AnyWordSpecLike
     def redisClient[F[_]: ConcurrentEffect: ContextShift: Timer](
       address: String
     ): fs2.Stream[F, RedisClient[F]] =
-      noOpLogStream >>= { implicit log =>
-        RedisClient[F](address)
-      }
+      noOpLogStream >>= { implicit log => RedisClient[F](address) }
   }
 }

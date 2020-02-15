@@ -174,9 +174,7 @@ lazy val releaseSettings: Seq[Def.Setting[_]] = Seq(
   credentials                   := Credentials(Path.userHome / ".sbt" / "sonatype_credentials") :: Nil,
   releasePublishArtifactsAction := PgpKeys.publishSigned.value,
   publishArtifact               in Test := false,
-  pomIncludeRepository := { _ =>
-    false
-  },
+  pomIncludeRepository          := { _ => false },
   licenses := Seq(
     "MIT License" ->
       url("https://raw.githubusercontent.com/laserdisc-io/log-effect/master/LICENSE")

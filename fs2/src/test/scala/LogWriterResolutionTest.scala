@@ -263,9 +263,7 @@ final class LogWriterResolutionTest extends AnyWordSpecLike with Matchers {
         F.info("A message")
 
       @silent def anotherLogger[F[_]: Sync, Env](env: Env): F[Unit] =
-        log4sLog[F]("A log") >>= { implicit log =>
-          aLogger[F, Env].run(env)
-        }
+        log4sLog[F]("A log") >>= { implicit log => aLogger[F, Env].run(env) }
     }
   }
 }

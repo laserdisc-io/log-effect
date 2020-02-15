@@ -12,32 +12,22 @@ object ZioLogWriter {
   import instances._
 
   val log4sFromLogger: URIO[l4s.Logger, LogWriter[Task]] =
-    ZIO.access { log4sLogger =>
-      LogWriter.pureOf[Task](log4sLogger)
-    }
+    ZIO.access(log4sLogger => LogWriter.pureOf[Task](log4sLogger))
 
   val log4sFromName: RIO[String, LogWriter[Task]] =
-    ZIO.accessM { name =>
-      LogWriter.of[Task](ZIO.effect(l4s.getLogger(name)))
-    }
+    ZIO.accessM(name => LogWriter.of[Task](ZIO.effect(l4s.getLogger(name))))
 
   val log4sFromClass: RIO[Class[_], LogWriter[Task]] =
-    ZIO.accessM { c =>
-      LogWriter.of[Task](ZIO.effect(l4s.getLogger(c)))
-    }
+    ZIO.accessM(c => LogWriter.of[Task](ZIO.effect(l4s.getLogger(c))))
 
   val julFromLogger: URIO[jul.Logger, LogWriter[Task]] =
-    ZIO.access { julLogger =>
-      LogWriter.pureOf[Task](julLogger)
-    }
+    ZIO.access(julLogger => LogWriter.pureOf[Task](julLogger))
 
   val julGlobal: Task[LogWriter[Task]] =
     LogWriter.of[Task](IO.effect(jul.Logger.getGlobal))
 
   val scribeFromName: RIO[String, LogWriter[Task]] =
-    ZIO.accessM { name =>
-      LogWriter.of[Task](IO.effect(scribe.Logger(name)))
-    }
+    ZIO.accessM(name => LogWriter.of[Task](IO.effect(scribe.Logger(name))))
 
   val scribeFromClass: RIO[Class[_], LogWriter[Task]] =
     ZIO.accessM { c =>
@@ -46,9 +36,7 @@ object ZioLogWriter {
     }
 
   val scribeFromLogger: RIO[scribe.Logger, LogWriter[Task]] =
-    ZIO.access { scribeLogger =>
-      LogWriter.pureOf(scribeLogger)
-    }
+    ZIO.access(scribeLogger => LogWriter.pureOf(scribeLogger))
 
   val consoleLog: LogWriter[Task] =
     LogWriter.pureOf[Task](LogLevels.Trace)
