@@ -5,7 +5,7 @@ import org.log4s.{ getLogger, LoggedEvent, Logger, TestAppender }
 import org.scalatest.matchers.should.Matchers
 import org.scalatest.wordspec.AnyWordSpecLike
 
-final class Log4sLogWriterTest extends AnyWordSpecLike with Matchers with zio.DefaultRuntime {
+final class Log4sLogWriterTest extends AnyWordSpecLike with Matchers {
   private[this] def capturedLog4sOutOf(
     logWrite: ZIO[Logger, Throwable, Unit]
   ): Option[LoggedEvent] = {
@@ -16,7 +16,7 @@ final class Log4sLogWriterTest extends AnyWordSpecLike with Matchers with zio.De
         }
       }
 
-    unsafeRun(loggingAction)
+    zio.Runtime.default.unsafeRun(loggingAction)
 
     TestAppender.dequeue
   }
