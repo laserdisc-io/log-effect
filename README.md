@@ -44,7 +44,7 @@ Currently Log Effect supports the following backends
 
 |                          | Cats | Fs2 | Cats Effect | Log Effect Core   |
 | ------------------------:| ----:| ---:| -----------:| -----------------:|
-| [![Maven Central](https://img.shields.io/maven-central/v/io.laserdisc/log-effect-fs2_2.12.svg?label=log-effect-fs2&colorB=2282c3)](https://maven-badges.herokuapp.com/maven-central/io.laserdisc/log-effect-fs2_2.12) | 2.1.0 | 2.2.1 | 2.0.0 | [![Maven Central](https://img.shields.io/maven-central/v/io.laserdisc/log-effect-core_2.12.svg?label=%20&colorB=9311fc)](https://maven-badges.herokuapp.com/maven-central/io.laserdisc/log-effect-core_2.12) |
+| [![Maven Central](https://img.shields.io/maven-central/v/io.laserdisc/log-effect-fs2_2.12.svg?label=log-effect-fs2&colorB=2282c3)](https://maven-badges.herokuapp.com/maven-central/io.laserdisc/log-effect-fs2_2.12) | 2.1.1 | 2.3.0 | 2.1.2 | [![Maven Central](https://img.shields.io/maven-central/v/io.laserdisc/log-effect-core_2.12.svg?label=%20&colorB=9311fc)](https://maven-badges.herokuapp.com/maven-central/io.laserdisc/log-effect-core_2.12) |
 | v0.8.0  | 1.6.1 | 1.0.5    | 1.3.1  | v0.8.0  |
 | v0.3.5  | 1.4.0 | 1.0.0-M5 | 1.0.0  | v0.3.5  |
 | v0.2.2  | 1.2.0 | 0.10.5   | 0.10.1 | v0.2.2  |
@@ -54,7 +54,7 @@ Currently Log Effect supports the following backends
 
 |                          | Zio | Scalaz ZIO | Log Effect Core   |
 | ------------------------:| ---:| ----------:| -----------------:|
-| [![Maven Central](https://img.shields.io/maven-central/v/io.laserdisc/log-effect-zio_2.12.svg?label=log-effect-zio&colorB=fb0005)](https://maven-badges.herokuapp.com/maven-central/io.laserdisc/log-effect-zio_2.12) | 1.0.0-RC17 |  | [![Maven Central](https://img.shields.io/maven-central/v/io.laserdisc/log-effect-core_2.12.svg?label=%20&colorB=9311fc)](https://maven-badges.herokuapp.com/maven-central/io.laserdisc/log-effect-core_2.12) |
+| [![Maven Central](https://img.shields.io/maven-central/v/io.laserdisc/log-effect-zio_2.12.svg?label=log-effect-zio&colorB=fb0005)](https://maven-badges.herokuapp.com/maven-central/io.laserdisc/log-effect-zio_2.12) | 1.0.0-RC18-2 |  | [![Maven Central](https://img.shields.io/maven-central/v/io.laserdisc/log-effect-core_2.12.svg?label=%20&colorB=9311fc)](https://maven-badges.herokuapp.com/maven-central/io.laserdisc/log-effect-core_2.12) |
 | v0.8.0 | 1.0.0-RC9 |  | v0.8.0 |
 | v0.7.0 |  | 1.0-RC4 | v0.7.0  |
 | v0.3.5 |  | 0.2.7   | v0.3.5  | 
@@ -63,7 +63,7 @@ Currently Log Effect supports the following backends
 
 |                          | Cats  | Cats Effect | Log4s  | Scribe |
 | ------------------------:| -----:| -----------:| ------:| ------:|
-| [![Maven Central](https://img.shields.io/maven-central/v/io.laserdisc/log-effect-core_2.12.svg?label=log-effect-core&colorB=9311fc)](https://maven-badges.herokuapp.com/maven-central/io.laserdisc/log-effect-core_2.12) |  |  | 1.8.2 | 2.7.10 |
+| [![Maven Central](https://img.shields.io/maven-central/v/io.laserdisc/log-effect-core_2.12.svg?label=log-effect-core&colorB=9311fc)](https://maven-badges.herokuapp.com/maven-central/io.laserdisc/log-effect-core_2.12) |  |  | 1.8.2 | 2.7.12 |
 | v0.8.0  |       |             | 1.8.2  | 2.7.8  |
 | v0.3.5  |       |             | 1.6.1  |        |
 | v0.2.2  | 1.2.0 |             | 1.6.1  |        |
