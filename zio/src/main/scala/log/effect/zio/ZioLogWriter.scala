@@ -35,7 +35,7 @@ object ZioLogWriter {
       LogWriter.of[Task](IO.effect(c.logger))
     }
 
-  val scribeFromLogger: RIO[scribe.Logger, LogWriter[Task]] =
+  val scribeFromLogger: URIO[scribe.Logger, LogWriter[Task]] =
     ZIO.access(scribeLogger => LogWriter.pureOf(scribeLogger))
 
   val consoleLog: LogWriter[Task] =
