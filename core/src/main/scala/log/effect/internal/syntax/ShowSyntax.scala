@@ -9,6 +9,6 @@ private[syntax] trait ShowSyntax {
   implicit final def showSyntax[A](a: A): ShowOps[A] = new ShowOps(a)
 }
 
-final private[syntax] class ShowOps[A](private val a: A) extends AnyVal {
+private[syntax] final class ShowOps[A](private val a: A) extends AnyVal {
   def show(implicit ev: Show[A]): String = ev show a
 }

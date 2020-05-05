@@ -2,13 +2,13 @@ package log
 package effect
 package fs2
 
-import java.util.{ logging => jul }
+import java.util.{logging => jul}
 
 import _root_.fs2.Stream
 import cats.Applicative
 import cats.effect.Sync
 import log.effect.fs2.SyncLogWriter._
-import org.{ log4s => l4s }
+import org.{log4s => l4s}
 
 object Fs2LogWriter {
   def log4sLogStream[F[_]: Sync](l: l4s.Logger): Stream[F, LogWriter[F]] =

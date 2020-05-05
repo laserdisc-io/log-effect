@@ -4,12 +4,12 @@ import org.scalatest.wordspec.AnyWordSpecLike
 
 @silent final class ReadmeConstructionCodeSnippetsTest extends AnyWordSpecLike with Matchers {
   "Zio construction snippets should compile" in {
-    import java.util.{ logging => jul }
+    import java.util.{logging => jul}
 
     import log.effect.zio.ZioLogWriter._
-    import log.effect.{ LogLevels, LogWriter }
-    import org.{ log4s => l4s }
-    import zio.{ RIO, Task }
+    import log.effect.{LogLevels, LogWriter}
+    import org.{log4s => l4s}
+    import zio.{RIO, Task}
 
     sealed abstract class App {
       def someZioProgramUsingLogs: RIO[LogWriter[Task], Unit]

@@ -12,14 +12,14 @@ private[syntax] trait Fs2LogEffectSyntax extends Fs2LogEffectCompanionSyntax {
     new Fs2LogEffectOps(aLogWriter)
 }
 
-sealed private[syntax] trait Fs2LogEffectCompanionSyntax {
+private[syntax] sealed trait Fs2LogEffectCompanionSyntax {
   implicit def fs2LogEffectSyntaxSingleton[F[_]](`_`: LogWriter.type)(
     implicit LW: LogWriter[F]
   ): Fs2LogEffectOps[F] =
     new Fs2LogEffectOps(LW)
 }
 
-final private[syntax] class Fs2LogEffectOps[F[_]](private val aLogWriter: LogWriter[F])
+private[syntax] final class Fs2LogEffectOps[F[_]](private val aLogWriter: LogWriter[F])
     extends AnyVal {
   @inline
   def writeS[A: cats.Show, L <: LogLevel: internal.Show](level: L, a: =>A): Stream[F, Unit] =

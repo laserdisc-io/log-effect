@@ -10,8 +10,8 @@ final class LogWriterResolutionTest extends AnyWordSpecLike with Matchers {
     "correctly infer a valid log4s constructor for an F[_] given an implicit evidence of Sync[F]" in {
       import cats.effect.Sync
       import log.effect.fs2.SyncLogWriter.log4sLog
-      import log.effect.internal.{ EffectSuspension, Functor }
-      import log.effect.{ LogWriter, LogWriterConstructor }
+      import log.effect.internal.{EffectSuspension, Functor}
+      import log.effect.{LogWriter, LogWriterConstructor}
       import org.log4s
 
       def c[F[_]]: F[org.log4s.Logger] => F[LogWriter[F]] = {
@@ -36,12 +36,12 @@ final class LogWriterResolutionTest extends AnyWordSpecLike with Matchers {
     }
 
     "correctly infer a valid jul constructor for an F[_] given an implicit evidence of Sync[F]" in {
-      import java.util.{ logging => jul }
+      import java.util.{logging => jul}
 
       import cats.effect.Sync
       import log.effect.fs2.SyncLogWriter.julLog
-      import log.effect.internal.{ EffectSuspension, Functor }
-      import log.effect.{ LogWriter, LogWriterConstructor }
+      import log.effect.internal.{EffectSuspension, Functor}
+      import log.effect.{LogWriter, LogWriterConstructor}
 
       def c[F[_]]: F[java.util.logging.Logger] => F[LogWriter[F]] = {
         implicit def F: EffectSuspension[F] = ???
@@ -79,9 +79,9 @@ final class LogWriterResolutionTest extends AnyWordSpecLike with Matchers {
 
     "correctly infer a valid console constructor for an F[_] given an implicit evidence of Sync[F]" in {
       import cats.effect.Sync
-      import log.effect.fs2.SyncLogWriter.{ consoleLog, consoleLogUpToLevel }
-      import log.effect.internal.{ EffectSuspension, Id }
-      import log.effect.{ LogLevel, LogLevels, LogWriter, LogWriterConstructor }
+      import log.effect.fs2.SyncLogWriter.{consoleLog, consoleLogUpToLevel}
+      import log.effect.internal.{EffectSuspension, Id}
+      import log.effect.{LogLevel, LogLevels, LogWriter, LogWriterConstructor}
 
       def c[F[_], L <: LogLevel]: L => LogWriter[F] = {
         implicit def F: EffectSuspension[F] = ???
@@ -104,7 +104,7 @@ final class LogWriterResolutionTest extends AnyWordSpecLike with Matchers {
     "correctly infer a valid no-op constructor for an F[_] given an implicit evidence" in {
       import log.effect.fs2.SyncLogWriter.noOpLog
       import log.effect.internal.Id
-      import log.effect.{ LogWriter, LogWriterConstructor }
+      import log.effect.{LogWriter, LogWriterConstructor}
 
       def c: Unit => LogWriter[Id] =
         implicitly[LogWriterConstructor[Unit, Id, Id]].construction
@@ -117,8 +117,8 @@ final class LogWriterResolutionTest extends AnyWordSpecLike with Matchers {
     "correctly infer a valid log4s constructor for IO" in {
       import cats.effect.IO
       import log.effect.fs2.SyncLogWriter.log4sLog
-      import log.effect.internal.{ EffectSuspension, Functor }
-      import log.effect.{ LogWriter, LogWriterConstructor }
+      import log.effect.internal.{EffectSuspension, Functor}
+      import log.effect.{LogWriter, LogWriterConstructor}
       import org.log4s
 
       def c: IO[org.log4s.Logger] => IO[LogWriter[IO]] = {
@@ -143,12 +143,12 @@ final class LogWriterResolutionTest extends AnyWordSpecLike with Matchers {
     }
 
     "correctly infer a valid jul constructor for IO" in {
-      import java.util.{ logging => jul }
+      import java.util.{logging => jul}
 
       import cats.effect.IO
       import log.effect.fs2.SyncLogWriter.julLog
-      import log.effect.internal.{ EffectSuspension, Functor }
-      import log.effect.{ LogWriter, LogWriterConstructor }
+      import log.effect.internal.{EffectSuspension, Functor}
+      import log.effect.{LogWriter, LogWriterConstructor}
 
       def c: IO[java.util.logging.Logger] => IO[LogWriter[IO]] = {
         implicit def F: EffectSuspension[IO] = ???
@@ -175,9 +175,9 @@ final class LogWriterResolutionTest extends AnyWordSpecLike with Matchers {
   "the LogWriterConstructor0 of IO" should {
     "correctly infer a valid console constructor for IO" in {
       import cats.effect.IO
-      import log.effect.fs2.SyncLogWriter.{ consoleLog, consoleLogUpToLevel }
-      import log.effect.internal.{ EffectSuspension, Id }
-      import log.effect.{ LogLevel, LogLevels, LogWriter, LogWriterConstructor }
+      import log.effect.fs2.SyncLogWriter.{consoleLog, consoleLogUpToLevel}
+      import log.effect.internal.{EffectSuspension, Id}
+      import log.effect.{LogLevel, LogLevels, LogWriter, LogWriterConstructor}
 
       def c[L <: LogLevel]: L => LogWriter[IO] = {
         implicit def F: EffectSuspension[IO] = ???
@@ -230,9 +230,9 @@ final class LogWriterResolutionTest extends AnyWordSpecLike with Matchers {
       import cats.Show
       import cats.effect.Sync
       import cats.syntax.apply._
-      import log.effect.LogLevels.{ Debug, Error }
+      import log.effect.LogLevels.{Debug, Error}
       import log.effect.fs2.interop.show._
-      import log.effect.{ Failure, LogWriter }
+      import log.effect.{Failure, LogWriter}
 
       @silent def double[F[_]: Sync: LogWriter](source: fs2.Stream[F, Int]): fs2.Stream[F, Int] = {
         // Show instances are needed for every logged type

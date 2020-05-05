@@ -70,7 +70,7 @@ final class LogWriterSyntaxResolutionTest extends AnyWordSpecLike with Matchers 
 
     "be inferred allowing a boilerplate free mtl-style syntax for errors" in {
       import log.effect.LogLevels.Error
-      import log.effect.{ Failure, LogWriter }
+      import log.effect.{Failure, LogWriter}
 
       @silent def f1[F[_]: LogWriter] =
         LogWriter.write(Error, Failure("test", new Exception("test exception")))

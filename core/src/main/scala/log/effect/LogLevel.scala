@@ -68,7 +68,7 @@ sealed trait LogLevelSyntax {
   implicit def logLevelSyntax[L <: LogLevel](l: L): LogLevelOps[L] = new LogLevelOps(l)
 }
 
-final private[effect] class LogLevelOps[L <: LogLevel](private val l: L) extends AnyVal {
+private[effect] final class LogLevelOps[L <: LogLevel](private val l: L) extends AnyVal {
   def show(implicit ev: Show[LogLevel]): String = ev.show(l)
 
   def >=[LL <: LogLevel](other: LL)(implicit ord: Ordering[LogLevel]): Boolean =

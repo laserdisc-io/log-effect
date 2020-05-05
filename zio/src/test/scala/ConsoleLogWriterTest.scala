@@ -1,8 +1,8 @@
-import java.io.{ ByteArrayOutputStream, PrintStream }
+import java.io.{ByteArrayOutputStream, PrintStream}
 
-import _root_.zio.{ Exit, IO, Task, ZEnv, ZIO }
+import _root_.zio.{Exit, IO, Task, ZEnv, ZIO}
 import log.effect.LogLevels._
-import log.effect.zio.ZioLogWriter.{ consoleLog, consoleLogUpToLevel }
+import log.effect.zio.ZioLogWriter.{consoleLog, consoleLogUpToLevel}
 import org.scalatest.wordspec.AnyWordSpecLike
 import org.scalatest.matchers.should.Matchers
 

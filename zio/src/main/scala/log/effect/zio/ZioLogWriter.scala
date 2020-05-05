@@ -2,11 +2,11 @@ package log
 package effect
 package zio
 
-import java.util.{ logging => jul }
+import java.util.{logging => jul}
 
-import _root_.zio.{ IO, RIO, Task, UIO, URIO, ZIO }
-import log.effect.internal.{ EffectSuspension, Id, Show }
-import org.{ log4s => l4s }
+import _root_.zio.{IO, RIO, Task, UIO, URIO, ZIO}
+import log.effect.internal.{EffectSuspension, Id, Show}
+import org.{log4s => l4s}
 
 object ZioLogWriter {
   import instances._
@@ -48,17 +48,17 @@ object ZioLogWriter {
     LogWriter.of[Id](()).liftT
 
   private[this] object instances {
-    implicit final private[zio] val taskEffectSuspension: EffectSuspension[Task] =
+    private[zio] implicit final val taskEffectSuspension: EffectSuspension[Task] =
       new EffectSuspension[Task] {
         def suspend[A](a: =>A): Task[A] = IO.effect(a)
       }
 
-    implicit final private[zio] val uioEffectSuspension: EffectSuspension[UIO] =
+    private[zio] implicit final val uioEffectSuspension: EffectSuspension[UIO] =
       new EffectSuspension[UIO] {
         def suspend[A](a: =>A): UIO[A] = IO.effectTotal(a)
       }
 
-    implicit final private[zio] def functorInstances[R, E]: internal.Functor[ZIO[R, E, *]] =
+    private[zio] implicit final def functorInstances[R, E]: internal.Functor[ZIO[R, E, *]] =
       new internal.Functor[ZIO[R, E, *]] {
         def fmap[A, B](f: A => B): ZIO[R, E, A] => ZIO[R, E, B] = _ map f
       }

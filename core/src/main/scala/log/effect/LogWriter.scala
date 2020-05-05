@@ -2,7 +2,7 @@ package log
 package effect
 
 import com.github.ghik.silencer.silent
-import log.effect.internal.{ Id, Show }
+import log.effect.internal.{Id, Show}
 
 import scala.language.implicitConversions
 
@@ -17,7 +17,7 @@ object LogWriter extends LogWriterSyntax {
   @inline final def of[F[_]]: logWriterInstancePartial[F, F] =
     new logWriterInstancePartial()
 
-  final private[effect] class logWriterInstancePartial[G[_], F[_]](private val d: Boolean = true)
+  private[effect] final class logWriterInstancePartial[G[_], F[_]](private val d: Boolean = true)
       extends AnyVal {
     @inline @silent def apply[R](read: G[R])(
       implicit instance: LogWriterConstructor[R, G, F]
@@ -26,12 +26,12 @@ object LogWriter extends LogWriterSyntax {
   }
 }
 
-sealed private[effect] trait LogWriterSyntax extends LogWriterAliasingSyntax {
+private[effect] sealed trait LogWriterSyntax extends LogWriterAliasingSyntax {
   implicit def loggerSyntax[T, F[_]](l: LogWriter[F]): LogWriterOps[F] =
     new LogWriterOps(l)
 }
 
-sealed private[effect] trait LogWriterAliasingSyntax {
+private[effect] sealed trait LogWriterAliasingSyntax {
   @silent implicit def logWriterSingleton[F[_]](co: LogWriter.type)(
     implicit LW: LogWriter[F]
   ): LogWriter[F] = LW
@@ -41,7 +41,7 @@ sealed private[effect] trait LogWriterAliasingSyntax {
   ): LogWriterOps[F] = new LogWriterOps(LW)
 }
 
-final private[effect] class LogWriterOps[F[_]](private val aLogger: LogWriter[F]) extends AnyVal {
+private[effect] final class LogWriterOps[F[_]](private val aLogger: LogWriter[F]) extends AnyVal {
   import LogLevels._
 
   @inline def trace[A: Show](a: =>A): F[Unit] =

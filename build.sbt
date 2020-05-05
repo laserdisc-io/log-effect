@@ -98,8 +98,8 @@ lazy val compilerPluginsDependencies = Seq(
   */
 lazy val crossBuildSettings = Seq(
   libraryDependencies ++= testDependencies ++ compilerPluginsDependencies,
-  organization        := "io.laserdisc",
-  parallelExecution   in Test := false,
+  organization := "io.laserdisc",
+  parallelExecution in Test := false,
   scalacOptions ++=
     (CrossVersion.partialVersion(scalaVersion.value) match {
       case Some((2, 12)) => scala212Options
@@ -169,17 +169,17 @@ lazy val releaseSettings: Seq[Def.Setting[_]] = Seq(
     commitNextVersion,
     pushChanges
   ),
-  releaseCrossBuild             := true,
-  publishMavenStyle             := true,
-  credentials                   := Credentials(Path.userHome / ".sbt" / "sonatype_credentials") :: Nil,
+  releaseCrossBuild := true,
+  publishMavenStyle := true,
+  credentials := Credentials(Path.userHome / ".sbt" / "sonatype_credentials") :: Nil,
   releasePublishArtifactsAction := PgpKeys.publishSigned.value,
-  publishArtifact               in Test := false,
-  pomIncludeRepository          := { _ => false },
+  publishArtifact in Test := false,
+  pomIncludeRepository := { _ => false },
   licenses := Seq(
     "MIT License" ->
       url("https://raw.githubusercontent.com/laserdisc-io/log-effect/master/LICENSE")
   ),
-  homepage  := Some(url("http://laserdisc.io")),
+  homepage := Some(url("http://laserdisc.io")),
   publishTo := sonatypePublishTo.value,
   pomExtra :=
     <scm>
@@ -202,7 +202,7 @@ lazy val root = project
   .settings(customCommands)
   .settings(releaseSettings)
   .settings(
-    name            := "log-effect",
+    name := "log-effect",
     publishArtifact := false
   )
 
@@ -212,7 +212,7 @@ lazy val core = project
   .settings(customCommands)
   .settings(releaseSettings)
   .settings(
-    name                := "log-effect-core",
+    name := "log-effect-core",
     libraryDependencies ++= coreDependencies
   )
 
@@ -223,7 +223,7 @@ lazy val fs2 = project
   .settings(customCommands)
   .settings(releaseSettings)
   .settings(
-    name                := "log-effect-fs2",
+    name := "log-effect-fs2",
     libraryDependencies ++= fs2Dependencies
   )
 
@@ -234,6 +234,6 @@ lazy val zio = project
   .settings(customCommands)
   .settings(releaseSettings)
   .settings(
-    name                := "log-effect-zio",
+    name := "log-effect-zio",
     libraryDependencies ++= zioDependencies
   )

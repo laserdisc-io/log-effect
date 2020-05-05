@@ -1,11 +1,11 @@
 package log
 package effect
 
-import java.util.{ logging => jul }
+import java.util.{logging => jul}
 
 import log.effect.internal._
 import log.effect.internal.syntax._
-import org.{ log4s => l4s }
+import org.{log4s => l4s}
 
 sealed trait LogWriterConstructor[R, G[_], F[_]] {
   def construction: G[R] => G[LogWriter[F]]
@@ -56,7 +56,7 @@ object LogWriterConstructor {
               }
 
               F.suspend(
-                if (julLogger.isLoggable(beLevel)) {
+                if (julLogger.isLoggable(beLevel))
                   julLogger.log(
                     a match {
                       case Failure(msg, th) =>
@@ -66,7 +66,6 @@ object LogWriterConstructor {
                       case _ => new jul.LogRecord(beLevel, a.show)
                     }
                   )
-                }
               )
             }
           }

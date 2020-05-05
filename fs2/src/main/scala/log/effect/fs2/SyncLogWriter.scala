@@ -2,12 +2,12 @@ package log
 package effect
 package fs2
 
-import java.util.{ logging => jul }
+import java.util.{logging => jul}
 
 import cats.Applicative
 import cats.effect.Sync
-import log.effect.internal.{ EffectSuspension, Id, Show }
-import org.{ log4s => l4s }
+import log.effect.internal.{EffectSuspension, Id, Show}
+import org.{log4s => l4s}
 
 object SyncLogWriter {
   import instances._
@@ -48,12 +48,12 @@ object SyncLogWriter {
     LogWriter.of[Id](()).liftF
 
   private[this] object instances {
-    implicit final private[fs2] def syncInstances[F[_]](implicit F: Sync[F]): EffectSuspension[F] =
+    private[fs2] implicit final def syncInstances[F[_]](implicit F: Sync[F]): EffectSuspension[F] =
       new EffectSuspension[F] {
         def suspend[A](a: =>A): F[A] = F delay a
       }
 
-    implicit final private[fs2] def functorInstances[F[_]](
+    private[fs2] implicit final def functorInstances[F[_]](
       implicit F: cats.Functor[F]
     ): internal.Functor[F] =
       new internal.Functor[F] {

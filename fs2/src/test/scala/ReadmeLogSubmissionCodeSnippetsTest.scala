@@ -23,7 +23,7 @@ import org.scalatest.wordspec.AnyWordSpecLike
   "`in a streaming environment using `LogWriter`'s syntax` snippet should compile" in {
     import java.nio.channels.AsynchronousChannelGroup
 
-    import cats.effect.{ ConcurrentEffect, ContextShift, Timer }
+    import cats.effect.{ConcurrentEffect, ContextShift, Timer}
     import cats.syntax.flatMap._
     import log.effect.LogWriter
 
@@ -51,7 +51,7 @@ import org.scalatest.wordspec.AnyWordSpecLike
   "`in a streaming environment using `fs2` streams' syntax` snippet should compile" in {
     import java.nio.channels.AsynchronousChannelGroup
 
-    import cats.effect.{ ConcurrentEffect, ContextShift, Timer }
+    import cats.effect.{ConcurrentEffect, ContextShift, Timer}
     import log.effect.LogWriter
     import log.effect.fs2.syntax._
 
@@ -119,13 +119,13 @@ import org.scalatest.wordspec.AnyWordSpecLike
     import java.nio.channels.AsynchronousChannelGroup
 
     import cats.Show
-    import cats.effect.{ ConcurrentEffect, ContextShift, Timer }
+    import cats.effect.{ConcurrentEffect, ContextShift, Timer}
     import cats.instances.string._
     import cats.syntax.either._
     import cats.syntax.flatMap._
-    import log.effect.LogLevels.{ Debug, Error }
+    import log.effect.LogLevels.{Debug, Error}
     import log.effect.fs2.interop.show._
-    import log.effect.{ Failure, LogWriter }
+    import log.effect.{Failure, LogWriter}
 
     import scala.concurrent.ExecutionContext
 
@@ -168,7 +168,7 @@ import org.scalatest.wordspec.AnyWordSpecLike
     import cats.Show
     import cats.effect.Sync
     import log.effect.LogLevels.Error
-    import log.effect.{ Failure, LogWriter }
+    import log.effect.{Failure, LogWriter}
     import log.effect.fs2.syntax._
 
     trait A
@@ -204,7 +204,7 @@ import org.scalatest.wordspec.AnyWordSpecLike
   "laserdisc test snippet should compile" in {
     import java.nio.channels.AsynchronousChannelGroup
 
-    import cats.effect.{ ConcurrentEffect, ContextShift, Timer }
+    import cats.effect.{ConcurrentEffect, ContextShift, Timer}
     import cats.syntax.flatMap._
     import log.effect.fs2.Fs2LogWriter.noOpLogStream
 
