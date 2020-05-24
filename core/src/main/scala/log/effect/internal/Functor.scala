@@ -1,5 +1,4 @@
-package log
-package effect
+package log.effect
 package internal
 
 trait Functor[F[_]] {

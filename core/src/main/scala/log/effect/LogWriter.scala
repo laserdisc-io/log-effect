@@ -1,5 +1,4 @@
-package log
-package effect
+package log.effect
 
 import com.github.ghik.silencer.silent
 import log.effect.internal.{Id, Show}

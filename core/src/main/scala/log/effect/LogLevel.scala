@@ -1,5 +1,4 @@
-package log
-package effect
+package log.effect
 
 import com.github.ghik.silencer.silent
 import log.effect.internal.Show
@@ -14,11 +13,11 @@ object LogLevel extends LogLevelSyntax {
     new Show[LogLevel] {
       def show(t: LogLevel): String =
         t match {
-          case l @ Trace => showFor(l).show(l)
-          case l @ Debug => showFor(l).show(l)
-          case l @ Info  => showFor(l).show(l)
-          case l @ Warn  => showFor(l).show(l)
-          case l @ Error => showFor(l).show(l)
+          case l: Trace => showFor(l).show(l)
+          case l: Debug => showFor(l).show(l)
+          case l: Info  => showFor(l).show(l)
+          case l: Warn  => showFor(l).show(l)
+          case l: Error => showFor(l).show(l)
         }
     }
 

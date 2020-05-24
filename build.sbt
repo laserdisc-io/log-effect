@@ -50,6 +50,7 @@ lazy val versionOf = new {
   val catsEffect    = "2.1.3"
   val fs2           = "2.3.0"
   val kindProjector = "0.11.0"
+  val log4cats      = "1.1.1"
   val log4s         = "1.8.2"
   val scalaCheck    = "1.14.3"
   val scalaTest     = "3.2.0-M4"
@@ -75,6 +76,12 @@ lazy val zioDependencies = Seq(
   "org.log4s" %% "log4s"  % versionOf.log4s,
   "com.outr"  %% "scribe" % versionOf.scribe,
   "dev.zio"   %% "zio"    % versionOf.zio
+) map (_.withSources)
+
+lazy val interopDependencies = Seq(
+  "io.chrisdavenport" %% "log4cats-core"  % versionOf.log4cats,
+  "io.chrisdavenport" %% "log4cats-slf4j" % versionOf.log4cats   % Test,
+  "org.typelevel"     %% "cats-effect"    % versionOf.catsEffect % Test
 ) map (_.withSources)
 
 lazy val testDependencies = Seq(
@@ -197,7 +204,7 @@ lazy val releaseSettings: Seq[Def.Setting[_]] = Seq(
 
 lazy val root = project
   .in(file("."))
-  .aggregate(core, fs2, zio)
+  .aggregate(core, fs2, zio, interop)
   .settings(crossBuildSettings)
   .settings(customCommands)
   .settings(releaseSettings)
@@ -236,4 +243,15 @@ lazy val zio = project
   .settings(
     name := "log-effect-zio",
     libraryDependencies ++= zioDependencies
+  )
+
+lazy val interop = project
+  .in(file("interop"))
+  .dependsOn(core)
+  .settings(crossBuildSettings)
+  .settings(customCommands)
+  .settings(releaseSettings)
+  .settings(
+    name := "log-effect-interop",
+    libraryDependencies ++= interopDependencies
   )
