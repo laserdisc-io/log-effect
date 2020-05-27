@@ -63,7 +63,8 @@ object SyncLogWriter {
     implicit final class NoOpLogF(private val `_`: LogWriter[Id]) extends AnyVal {
       def liftF[F[_]: Applicative]: LogWriter[F] =
         new LogWriter[F] {
-          def write[A: Show, L <: LogLevel: Show](level: L, a: =>A): F[Unit] = Applicative[F].unit
+          private[this] val unit                                             = Applicative[F].unit
+          def write[A: Show, L <: LogLevel: Show](level: L, a: =>A): F[Unit] = unit
         }
     }
   }
