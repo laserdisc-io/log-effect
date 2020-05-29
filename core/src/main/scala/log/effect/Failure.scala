@@ -1,5 +1,4 @@
-package log
-package effect
+package log.effect
 
 import log.effect.internal.Show
 

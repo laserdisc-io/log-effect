@@ -10,10 +10,12 @@
 [![Maven Central](https://img.shields.io/maven-central/v/io.laserdisc/log-effect-core_2.12.svg?label=core%202.12&colorB=9311fc)](https://maven-badges.herokuapp.com/maven-central/io.laserdisc/log-effect-core_2.12)
 [![Maven Central](https://img.shields.io/maven-central/v/io.laserdisc/log-effect-fs2_2.12.svg?label=fs2%202.12&colorB=2282c3)](https://maven-badges.herokuapp.com/maven-central/io.laserdisc/log-effect-fs2_2.12)
 [![Maven Central](https://img.shields.io/maven-central/v/io.laserdisc/log-effect-zio_2.12.svg?label=zio%202.12&colorB=fb0005)](https://maven-badges.herokuapp.com/maven-central/io.laserdisc/log-effect-zio_2.12)
+[![Maven Central](https://img.shields.io/maven-central/v/io.laserdisc/log-effect-interop_2.12.svg?label=interop%202.12&colorB=009933)](https://maven-badges.herokuapp.com/maven-central/io.laserdisc/log-effect-interop_2.12)
 
 [![Maven Central](https://img.shields.io/maven-central/v/io.laserdisc/log-effect-core_2.13.svg?label=core%202.13&colorB=9311fc)](https://maven-badges.herokuapp.com/maven-central/io.laserdisc/log-effect-core_2.13)
 [![Maven Central](https://img.shields.io/maven-central/v/io.laserdisc/log-effect-fs2_2.13.svg?label=fs2%202.13&colorB=2282c3)](https://maven-badges.herokuapp.com/maven-central/io.laserdisc/log-effect-fs2_2.13)
 [![Maven Central](https://img.shields.io/maven-central/v/io.laserdisc/log-effect-zio_2.13.svg?label=zio%202.13&colorB=fb0005)](https://maven-badges.herokuapp.com/maven-central/io.laserdisc/log-effect-zio_2.13)
+[![Maven Central](https://img.shields.io/maven-central/v/io.laserdisc/log-effect-interop_2.13.svg?label=interop%202.13&colorB=009933)](https://maven-badges.herokuapp.com/maven-central/io.laserdisc/log-effect-interop_2.13)
 
 
 ## Start
@@ -44,7 +46,7 @@ Currently Log Effect supports the following backends
 
 |                          | Cats | Fs2 | Cats Effect | Log Effect Core   |
 | ------------------------:| ----:| ---:| -----------:| -----------------:|
-| [![Maven Central](https://img.shields.io/maven-central/v/io.laserdisc/log-effect-fs2_2.12.svg?label=log-effect-fs2&colorB=2282c3)](https://maven-badges.herokuapp.com/maven-central/io.laserdisc/log-effect-fs2_2.12) | 2.1.1 | 2.3.0 | 2.1.2 | [![Maven Central](https://img.shields.io/maven-central/v/io.laserdisc/log-effect-core_2.12.svg?label=%20&colorB=9311fc)](https://maven-badges.herokuapp.com/maven-central/io.laserdisc/log-effect-core_2.12) |
+| [![Maven Central](https://img.shields.io/maven-central/v/io.laserdisc/log-effect-fs2_2.13.svg?label=log-effect-fs2&colorB=2282c3)](https://maven-badges.herokuapp.com/maven-central/io.laserdisc/log-effect-fs2_2.13) | 2.1.1 | 2.3.0 | 2.1.2 | [![Maven Central](https://img.shields.io/maven-central/v/io.laserdisc/log-effect-core_2.12.svg?label=%20&colorB=9311fc)](https://maven-badges.herokuapp.com/maven-central/io.laserdisc/log-effect-core_2.12) |
 | v0.8.0  | 1.6.1 | 1.0.5    | 1.3.1  | v0.8.0  |
 | v0.3.5  | 1.4.0 | 1.0.0-M5 | 1.0.0  | v0.3.5  |
 | v0.2.2  | 1.2.0 | 0.10.5   | 0.10.1 | v0.2.2  |
@@ -54,16 +56,22 @@ Currently Log Effect supports the following backends
 
 |                          | Zio | Scalaz ZIO | Log Effect Core   |
 | ------------------------:| ---:| ----------:| -----------------:|
-| [![Maven Central](https://img.shields.io/maven-central/v/io.laserdisc/log-effect-zio_2.12.svg?label=log-effect-zio&colorB=fb0005)](https://maven-badges.herokuapp.com/maven-central/io.laserdisc/log-effect-zio_2.12) | 1.0.0-RC18-2 |  | [![Maven Central](https://img.shields.io/maven-central/v/io.laserdisc/log-effect-core_2.12.svg?label=%20&colorB=9311fc)](https://maven-badges.herokuapp.com/maven-central/io.laserdisc/log-effect-core_2.12) |
+| [![Maven Central](https://img.shields.io/maven-central/v/io.laserdisc/log-effect-zio_2.13.svg?label=log-effect-zio&colorB=fb0005)](https://maven-badges.herokuapp.com/maven-central/io.laserdisc/log-effect-zio_2.13) | 1.0.0-RC18-2 |  | [![Maven Central](https://img.shields.io/maven-central/v/io.laserdisc/log-effect-core_2.12.svg?label=%20&colorB=9311fc)](https://maven-badges.herokuapp.com/maven-central/io.laserdisc/log-effect-core_2.12) |
 | v0.8.0 | 1.0.0-RC9 |  | v0.8.0 |
 | v0.7.0 |  | 1.0-RC4 | v0.7.0  |
 | v0.3.5 |  | 0.2.7   | v0.3.5  | 
 
 <br>
 
+|                          | Log4cats | Log Effect Core   |
+| ------------------------:| --------:| -----------------:|
+| [![Maven Central](https://img.shields.io/maven-central/v/io.laserdisc/log-effect-interop_2.13.svg?label=log-effect-interop&colorB=009933)](https://maven-badges.herokuapp.com/maven-central/io.laserdisc/log-effect-interop_2.13) | 1.1.1 | [![Maven Central](https://img.shields.io/maven-central/v/io.laserdisc/log-effect-core_2.13.svg?label=%20&colorB=9311fc)](https://maven-badges.herokuapp.com/maven-central/io.laserdisc/log-effect-core_2.13) |
+
+<br>
+
 |                          | Cats  | Cats Effect | Log4s  | Scribe |
 | ------------------------:| -----:| -----------:| ------:| ------:|
-| [![Maven Central](https://img.shields.io/maven-central/v/io.laserdisc/log-effect-core_2.12.svg?label=log-effect-core&colorB=9311fc)](https://maven-badges.herokuapp.com/maven-central/io.laserdisc/log-effect-core_2.12) |  |  | 1.8.2 | 2.7.12 |
+| [![Maven Central](https://img.shields.io/maven-central/v/io.laserdisc/log-effect-core_2.13.svg?label=log-effect-core&colorB=9311fc)](https://maven-badges.herokuapp.com/maven-central/io.laserdisc/log-effect-core_2.13) |  |  | 1.8.2 | 2.7.12 |
 | v0.8.0  |       |             | 1.8.2  | 2.7.8  |
 | v0.3.5  |       |             | 1.6.1  |        |
 | v0.2.2  | 1.2.0 |             | 1.6.1  |        |
@@ -433,41 +441,55 @@ def double[F[_]: Sync: LogWriter](source: fs2.Stream[F, Int]): fs2.Stream[F, A] 
   }
 }
 ```
-**NB:** notice above the `LogWriter`'s implicit evidence given as context bound and the `import log.effect.fs2.interop.show._`. The latter is needed to summon an `internal.Show` given a `cats.Show`.
+**NB:** note above the `LogWriter`'s implicit evidence given as context bound and the `import log.effect.fs2.interop.show._`. The latter is needed to summon an `internal.Show` given a `cats.Show`.
 
-In some cases like tests a non logging instance might come useful. In such a case the `noOp` logging version is provided. See below an example taken from the [Laserdisc](https://github.com/laserdisc-io/laserdisc)'s tests
+## Interop
+
+In some cases log-effect can be used in projects that have a different logging system already in place. A basic interoperability with other logging libraries is provided in `log-effect-interop`. The supported ones at the moment are
+- log4cats
+
+See an example below. 
 ```scala
-import java.nio.channels.AsynchronousChannelGroup
-
-import cats.effect.{ ConcurrentEffect, ContextShift, Timer }
+libraryDependencies += "io.laserdisc" %% "log-effect-interop" % <latest-interop-version>
+```
+```scala
+import cats.effect.{Resource, Sync}
 import cats.syntax.flatMap._
-import log.effect.fs2.Fs2LogWriter.noOpLogStream
+import io.chrisdavenport.log4cats.Logger
+import log.effect.LogWriter
 
-import scala.concurrent.ExecutionContext
+import log.effect.interop.log4cats._
 
 sealed trait RedisClient[F[_]] {
   def address: String
+  def write: F[Unit]
 }
 object RedisClient {
-  def apply[F[_]](addr: String): fs2.Stream[F, RedisClient[F]] =
-    fs2.Stream.emit(new RedisClient[F] { val address = addr })
+  def apply[F[_]: LogWriter](addr: String)(implicit F: Sync[F]): Resource[F, RedisClient[F]] =
+    Resource.make(
+      F.pure(
+        new RedisClient[F] {
+          val address        = addr
+          def write: F[Unit] = LogWriter.info(address)
+        }
+      )
+    )(_ => F.unit)
 }
 
-implicit def EC: ExecutionContext         = ???
-implicit def CG: AsynchronousChannelGroup = ???
+def buildLog4catsLogger[F[_]]: F[Logger[F]] = ???
 
-def redisClient[F[_]: ConcurrentEffect: ContextShift: Timer](
-  address: String
-): fs2.Stream[F, RedisClient[F]] =
-  noOpLogStream >>= { implicit log =>
-    RedisClient[F](address)
+def storeOwnAddress[F[_]: Sync](address: String): F[Unit] =
+  buildLog4catsLogger[F] >>= { implicit l =>
+    RedisClient[F](address).use { cl =>
+      cl.write
+    }
   }
 ```
-<br>
+**NB:** note the `import log.effect.interop.log4cats._` that enables the derivation of a `LogWriter[F]` when a `log4cats`' `Logger[F]` is in scope.
 
 ## License
 
-LaserDisc is licensed under the **[MIT License](LICENSE)** (the "License"); you may not use this software except in
+Log-effect is licensed under the **[MIT License](LICENSE)** (the "License"); you may not use this software except in
 compliance with the License. <br>Unless required by applicable law or agreed to in writing, software distributed under the License is distributed on an
 "AS IS" BASIS, WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
 See the License for the specific language governing permissions and limitations under the License.
