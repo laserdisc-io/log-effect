@@ -1,0 +1,8 @@
+<configuration>
+    <appender name="TEST" class="org.log4s.TestAppender"/>
+
+    <logger name="Test Logger" additivity="true" level="TRACE">
+        <!-- Set additivity to `false` if you don't want this logging to actually go to the main output. -->
+        <appender-ref ref="TEST" />
+    </logger>
+</configuration>

@@ -1,5 +1,4 @@
-package log
-package effect
+package log.effect
 
 import java.util.{logging => jul}
 

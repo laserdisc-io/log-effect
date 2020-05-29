@@ -200,30 +200,4 @@ import org.scalatest.wordspec.AnyWordSpecLike
       }
     }
   }
-
-  "laserdisc test snippet should compile" in {
-    import java.nio.channels.AsynchronousChannelGroup
-
-    import cats.effect.{ConcurrentEffect, ContextShift, Timer}
-    import cats.syntax.flatMap._
-    import log.effect.fs2.Fs2LogWriter.noOpLogStream
-
-    import scala.concurrent.ExecutionContext
-
-    sealed trait RedisClient[F[_]] {
-      def address: String
-    }
-    object RedisClient {
-      def apply[F[_]](addr: String): fs2.Stream[F, RedisClient[F]] =
-        fs2.Stream.emit(new RedisClient[F] { val address = addr })
-    }
-
-    implicit def EC: ExecutionContext         = ???
-    implicit def CG: AsynchronousChannelGroup = ???
-
-    def redisClient[F[_]: ConcurrentEffect: ContextShift: Timer](
-      address: String
-    ): fs2.Stream[F, RedisClient[F]] =
-      noOpLogStream >>= { implicit log => RedisClient[F](address) }
-  }
 }

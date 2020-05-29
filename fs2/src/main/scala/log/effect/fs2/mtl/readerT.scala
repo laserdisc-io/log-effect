@@ -1,5 +1,4 @@
-package log
-package effect
+package log.effect
 package fs2
 package mtl
 
