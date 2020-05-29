@@ -35,12 +35,12 @@ final class InteropLogSelectorTest extends AnyWordSpecLike with Matchers with Te
     def buildLog4catsLogger[F[_]: Sync](logger: Logger): F[SelfAwareStructuredLogger[F]] =
       Slf4jLogger.fromSlf4j[F](logger)
 
-    def storeOwnAddress[F[_]: Sync](address: String)(logger: Logger): F[Unit] =
+    def useLoggingClient[F[_]: Sync](address: String)(logger: Logger): F[Unit] =
       buildLog4catsLogger[F](logger) >>= { implicit l =>
         ALoggingClient[F](address).use(_.useIt)
       }
 
-    val logged = capturedLog4sOutOf(storeOwnAddress[IO]("an address")).map(_.message)
+    val logged = capturedLog4sOutOf(useLoggingClient[IO]("an address")).map(_.message)
 
     logged shouldBe Seq("this is a test")
   }
@@ -50,12 +50,12 @@ final class InteropLogSelectorTest extends AnyWordSpecLike with Matchers with Te
     def buildLog4catsLogger[F[_]: Sync](logger: Logger): F[SelfAwareStructuredLogger[F]] =
       Slf4jLogger.fromSlf4j[F](logger)
 
-    def storeOwnAddress[F[_]: Sync](address: String)(logger: Logger): F[Unit] =
+    def useLoggingClient[F[_]: Sync](address: String)(logger: Logger): F[Unit] =
       buildLog4catsLogger[F](logger) >>= { _ =>
         ALoggingClient[F](address).use(_.useIt)
       }
 
-    val logged = capturedLog4sOutOf(storeOwnAddress[IO]("an address"))
+    val logged = capturedLog4sOutOf(useLoggingClient[IO]("an address"))
 
     logged shouldBe Seq()
   }
