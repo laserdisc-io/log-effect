@@ -24,7 +24,7 @@ import cats.Applicative
   * def useTheClient[F[_]](address: String): F[Unit] = create[F](address)
   * will not log
   */
-final class LogSelector[F[_]](val writer: LogWriter[F]) extends AnyVal
+final class LogSelector[F[_]](val log: LogWriter[F]) extends AnyVal
 
 object LogSelector extends LogSelectorInstances0 {
   @inline final def apply[F[_]](implicit i: LogSelector[F]): LogSelector[F] = i

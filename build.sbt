@@ -247,7 +247,7 @@ lazy val zio = project
 
 lazy val interop = project
   .in(file("interop"))
-  .dependsOn(core)
+  .dependsOn(core, fs2)
   .settings(crossBuildSettings)
   .settings(customCommands)
   .settings(releaseSettings)

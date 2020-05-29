@@ -30,7 +30,7 @@ final class LogSelectorTest extends AnyWordSpecLike with Matchers {
         F.pure(
           new ALoggingClient[F] {
             val address = a
-            val useIt   = LogSelector[F].writer.info("a test")
+            val useIt   = LogSelector[F].log.info("a test")
           }
         )
       )(_ => F.unit)
