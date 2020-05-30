@@ -1,5 +1,3 @@
-import java.io.{ByteArrayOutputStream, PrintStream}
-
 import cats.effect.{IO, Resource, Sync}
 import log.effect.LogWriter
 import log.effect.fs2.LogSelector
@@ -7,16 +5,7 @@ import log.effect.fs2.SyncLogWriter.consoleLog
 import org.scalatest.matchers.should.Matchers
 import org.scalatest.wordspec.AnyWordSpecLike
 
-final class LogSelectorTest extends AnyWordSpecLike with Matchers {
-
-  private[this] def capturedConsoleOutOf(aWrite: IO[Unit]): String = {
-    val lowerStream = new ByteArrayOutputStream()
-    val outStream   = new PrintStream(lowerStream)
-
-    Console.withOut(outStream)(aWrite.unsafeRunSync)
-
-    lowerStream.toString
-  }
+final class LogSelectorTest extends AnyWordSpecLike with Matchers with TestLogCapture {
 
   private[this] sealed trait ALoggingClient[F[_]] {
     def address: String
