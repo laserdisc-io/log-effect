@@ -1,25 +1,10 @@
-import _root_.zio.ZIO
 import com.github.ghik.silencer.silent
+import log.effect.zio.TestLogCapture
 import log.effect.zio.ZioLogWriter.log4sFromLogger
-import org.log4s.{LoggedEvent, Logger, TestAppender, getLogger}
 import org.scalatest.matchers.should.Matchers
 import org.scalatest.wordspec.AnyWordSpecLike
 
-final class Log4sLogWriterTest extends AnyWordSpecLike with Matchers {
-  private[this] def capturedLog4sOutOf(
-    logWrite: ZIO[Logger, Throwable, Unit]
-  ): Option[LoggedEvent] = {
-    @silent val loggingAction =
-      ZIO.effect(getLogger("Test Logger")) >>= { logger =>
-        TestAppender.withAppender() {
-          logWrite provide logger
-        }
-      }
-
-    zio.Runtime.default.unsafeRun(loggingAction)
-
-    TestAppender.dequeue
-  }
+final class Log4sLogWriterTest extends AnyWordSpecLike with Matchers with TestLogCapture {
 
   "the log4s LogWriter's syntax for messages" should {
     "print the expected trace log" in {

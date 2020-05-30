@@ -1,9 +1,10 @@
 import com.github.ghik.silencer.silent
+import log.effect.interop.TestLogCapture
 import org.scalatest.matchers.should.Matchers
 import org.scalatest.wordspec.AnyWordSpecLike
 
 @silent("local method [a-zA-Z0-9]+ in value <local InteropTest> is never used")
-final class InteropTest extends AnyWordSpecLike with Matchers {
+final class InteropTest extends AnyWordSpecLike with Matchers with TestLogCapture {
 
   "A LogWriter instance can be derived from a log4cats Logger" in {
     import cats.effect.IO
@@ -11,7 +12,6 @@ final class InteropTest extends AnyWordSpecLike with Matchers {
     import io.chrisdavenport.log4cats.slf4j.Slf4jLogger
     import log.effect.LogWriter
     import log.effect.internal.Show
-    import log.effect.interop.log4cats._
 
     final class A()
     object A {
@@ -21,33 +21,37 @@ final class InteropTest extends AnyWordSpecLike with Matchers {
         }
     }
 
-    implicit val buildMessageLogger = Slf4jLogger.fromName[IO]("from logger").unsafeRunSync()
+    val logged = capturedLog4sOutOf[IO] { logger =>
+      import log.effect.interop.log4cats._
 
-    val logger = implicitly[LogWriter[IO]]
+      implicit val buildMessageLogger =
+        Slf4jLogger.fromSlf4j[IO](logger).unsafeRunSync()
 
-    val allLogs =
-      logger.trace("a message") >>
-        logger.trace(new Exception("an exception")) >>
-        logger.trace("a message", new Exception("an exception")) >>
-        logger.trace(new A()) >>
-        logger.debug("a message") >>
-        logger.debug(new Exception("an exception")) >>
-        logger.debug("a message", new Exception("an exception")) >>
-        logger.debug(new A()) >>
-        logger.info("a message") >>
-        logger.info(new Exception("an exception")) >>
-        logger.info("a message", new Exception("an exception")) >>
-        logger.info(new A()) >>
-        logger.warn("a message") >>
-        logger.warn(new Exception("an exception")) >>
-        logger.warn("a message", new Exception("an exception")) >>
-        logger.warn(new A()) >>
-        logger.error("a message") >>
-        logger.error(new Exception("an exception")) >>
-        logger.error("a message", new Exception("an exception")) >>
-        logger.error(new A())
+      val lw = implicitly[LogWriter[IO]]
 
-    allLogs.unsafeRunSync()
+      lw.trace("a message") >>
+        lw.trace(new Exception("an exception")) >>
+        lw.trace("a message", new Exception("an exception")) >>
+        lw.trace(new A()) >>
+        lw.debug("a message") >>
+        lw.debug(new Exception("an exception")) >>
+        lw.debug("a message", new Exception("an exception")) >>
+        lw.debug(new A()) >>
+        lw.info("a message") >>
+        lw.info(new Exception("an exception")) >>
+        lw.info("a message", new Exception("an exception")) >>
+        lw.info(new A()) >>
+        lw.warn("a message") >>
+        lw.warn(new Exception("an exception")) >>
+        lw.warn("a message", new Exception("an exception")) >>
+        lw.warn(new A()) >>
+        lw.error("a message") >>
+        lw.error(new Exception("an exception")) >>
+        lw.error("a message", new Exception("an exception")) >>
+        lw.error(new A())
+    }
+
+    logged.size shouldBe 20
   }
 
   "The readme interop example compiles" in {
