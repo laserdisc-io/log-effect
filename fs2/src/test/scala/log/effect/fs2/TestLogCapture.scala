@@ -1,3 +1,6 @@
+package log.effect
+package fs2
+
 import java.io.{ByteArrayOutputStream, PrintStream}
 
 import cats.effect.IO

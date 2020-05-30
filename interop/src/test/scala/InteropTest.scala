@@ -1,4 +1,5 @@
 import com.github.ghik.silencer.silent
+import log.effect.interop.TestLogCapture
 import org.scalatest.matchers.should.Matchers
 import org.scalatest.wordspec.AnyWordSpecLike
 

@@ -1,4 +1,5 @@
 import com.github.ghik.silencer.silent
+import log.effect.zio.TestLogCapture
 import log.effect.zio.ZioLogWriter.log4sFromLogger
 import org.scalatest.matchers.should.Matchers
 import org.scalatest.wordspec.AnyWordSpecLike

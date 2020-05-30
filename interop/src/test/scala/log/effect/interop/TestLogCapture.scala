@@ -1,3 +1,6 @@
+package log.effect
+package interop
+
 import cats.effect.{Effect, Sync}
 import cats.syntax.flatMap._
 import org.log4s.{LoggedEvent, TestAppender, getLogger}

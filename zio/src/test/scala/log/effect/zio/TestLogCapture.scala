@@ -1,6 +1,9 @@
+package log.effect
+package zio
+
+import _root_.zio.{Runtime, ZIO}
 import com.github.ghik.silencer.silent
 import org.log4s.{LoggedEvent, Logger, TestAppender, getLogger}
-import zio.ZIO
 
 trait TestLogCapture {
 
@@ -14,7 +17,7 @@ trait TestLogCapture {
         }
       }
 
-    zio.Runtime.default.unsafeRun(loggingAction)
+    Runtime.default.unsafeRun(loggingAction)
 
     TestAppender.dequeue
   }

@@ -1,6 +1,6 @@
 import cats.effect.{IO, Resource, Sync}
 import log.effect.LogWriter
-import log.effect.fs2.LogSelector
+import log.effect.fs2.{LogSelector, TestLogCapture}
 import log.effect.fs2.SyncLogWriter.consoleLog
 import org.scalatest.matchers.should.Matchers
 import org.scalatest.wordspec.AnyWordSpecLike
@@ -25,7 +25,7 @@ final class LogSelectorTest extends AnyWordSpecLike with Matchers with TestLogCa
       )(_ => F.unit)
   }
 
-  "The logging system uses the LogWriter if one is provided in scope" in {
+  "Log selector uses the LogWriter if one is provided in scope" in {
     def useTheClient[F[_]: Sync](address: String): F[Unit] = {
       implicit val logger: LogWriter[F] = consoleLog[F]
       ALoggingClient[F](address).use(cl => cl.useIt)
@@ -36,7 +36,7 @@ final class LogSelectorTest extends AnyWordSpecLike with Matchers with TestLogCa
     out should include("a test")
   }
 
-  "The logging system defaults to noOpLog if no LogWriter is provided" in {
+  "Log selector defaults to noOpLog if no LogWriter is provided" in {
     def useTheClient[F[_]: Sync](address: String): F[Unit] =
       ALoggingClient[F](address).use(cl => cl.useIt)
 

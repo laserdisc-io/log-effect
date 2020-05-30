@@ -4,6 +4,7 @@ import com.github.ghik.silencer.silent
 import io.chrisdavenport.log4cats.SelfAwareStructuredLogger
 import io.chrisdavenport.log4cats.slf4j.Slf4jLogger
 import log.effect.fs2.LogSelector
+import log.effect.interop.TestLogCapture
 import org.scalatest.matchers.should.Matchers
 import org.scalatest.wordspec.AnyWordSpecLike
 import org.slf4j.Logger
