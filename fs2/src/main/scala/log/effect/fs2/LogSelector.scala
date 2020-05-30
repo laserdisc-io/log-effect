@@ -4,9 +4,10 @@ package fs2
 import cats.Applicative
 
 /**
-  * It helps adding logging capability to components
-  * allowing them to use a `LogWriter[F]` if in scope
-  * or defaulting to noOpLog if none is provided.
+  * It helps to add logging capability to components allowing
+  * them to use a `LogWriter[F]` if in scope or defaulting, when
+  * F[_] is an Applicative, to noOpLog[F] if no `LogWriter` is
+  * provided.
   *
   * Example:
   *
