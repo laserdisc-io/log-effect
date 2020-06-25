@@ -10,10 +10,7 @@ before_cache:
   - find $HOME/.ivy2/cache -name "ivydata-*.properties" -print -delete
   - find $HOME/.sbt        -name "*.lock"               -print -delete
 
-after_success:
-  - bash <(curl -s https://codecov.io/bash)
-
-sbt_args: -Dfile.encoding=UTF8 -Dsbt.color=always -Dsbt.supershell=false
+sbt_args: -Dfile.encoding=UTF8 -Dsbt.color=always
 
 stages:
   - name: Format
