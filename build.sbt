@@ -103,39 +103,35 @@ lazy val compilerPluginsDependencies = Seq(
   */
 lazy val crossBuildSettings = Seq(
   libraryDependencies ++= testDependencies ++ compilerPluginsDependencies,
-  organization := "io.laserdisc",
   parallelExecution in Test := false,
   scalacOptions ++=
     (CrossVersion.partialVersion(scalaVersion.value) match {
       case Some((2, 12)) => scala212Options
       case _             => scala213Options
-    }),
-  parallelExecution in Test := false
+    })
 )
 
 lazy val releaseSettings: Seq[Def.Setting[_]] = Seq(
   publishMavenStyle := true,
-  credentials := Credentials(Path.userHome / ".sbt" / "sonatype_credentials") :: Nil,
   publishArtifact in Test := false,
   pomIncludeRepository := { _ => false },
+  organization := "io.laserdisc",
+  homepage := Some(url("http://laserdisc.io")),
+  publishTo := sonatypePublishTo.value,
+  developers := List(
+    Developer("barambani", "Filippo Mariotti", "", url("https://github.com/barambani"))
+  ),
+  scmInfo := Some(
+    ScmInfo(
+      url("https://github.com/laserdisc-io/log-effect/tree/master"),
+      "scm:git:git@github.com:laserdisc-io/log-effect.git",
+      "scm:git:git@github.com:laserdisc-io/log-effect.git"
+    )
+  ),
   licenses := Seq(
     "MIT License" ->
       url("https://raw.githubusercontent.com/laserdisc-io/log-effect/master/LICENSE")
-  ),
-  homepage := Some(url("http://laserdisc.io")),
-  publishTo := sonatypePublishTo.value,
-  pomExtra :=
-    <scm>
-      <url>https://github.com/laserdisc-io/log-effect/tree/master</url>
-      <connection>scm:git:git@github.com:laserdisc-io/log-effect.git</connection>
-    </scm>
-    <developers>
-      <developer>
-        <id>barambani</id>
-        <name>Filippo Mariotti</name>
-        <url>https://github.com/barambani</url>
-      </developer>
-    </developers>
+  )
 )
 
 lazy val root = project
