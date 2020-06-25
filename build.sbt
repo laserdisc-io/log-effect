@@ -1,5 +1,3 @@
-import sbtrelease.ReleasePlugin.autoImport.ReleaseTransformations._
-
 lazy val scala212Options = Seq(
   "-deprecation",
   "-encoding",
@@ -115,71 +113,9 @@ lazy val crossBuildSettings = Seq(
   parallelExecution in Test := false
 )
 
-lazy val format = Command.command("format") { state =>
-  "scalafmt" :: "test:scalafmt" :: "scalafmtSbt" :: state
-}
-
-lazy val checkFormat = Command.command("checkFormat") { state =>
-  "scalafmtCheck" :: "test:scalafmtCheck" :: "scalafmtSbtCheck" :: state
-}
-
-lazy val fullCiBuild = Command.command("fullCiBuild") { state =>
-  "checkFormat" :: "clean" :: "test" :: state
-}
-
-lazy val customCommands: Seq[Def.Setting[_]] = Seq(
-  commands ++= Seq(format, checkFormat, fullCiBuild)
-)
-
-val scalafmtCheckStep = ReleaseStep(
-  action = st => {
-    val extracted = Project.extract(st)
-    val ref       = extracted.get(thisProjectRef)
-    extracted.runAggregated(scalafmtCheck in Compile in ref, st)
-  },
-  enableCrossBuild = false
-)
-
-val scalafmtCheckTestStep = ReleaseStep(
-  action = st => {
-    val extracted = Project.extract(st)
-    val ref       = extracted.get(thisProjectRef)
-    extracted.runAggregated(scalafmtCheck in Test in ref, st)
-  },
-  enableCrossBuild = false
-)
-
-val scalafmtCheckSbtStep = ReleaseStep(
-  action = st => {
-    val extracted = Project.extract(st)
-    val ref       = extracted.get(thisProjectRef)
-    extracted.runAggregated(scalafmtSbtCheck in Test in ref, st)
-  },
-  enableCrossBuild = false
-)
-
 lazy val releaseSettings: Seq[Def.Setting[_]] = Seq(
-  releaseProcess := Seq[ReleaseStep](
-    checkSnapshotDependencies,
-    runClean,
-    scalafmtCheckStep,
-    scalafmtCheckTestStep,
-    scalafmtCheckSbtStep,
-    inquireVersions,
-    runTest,
-    setReleaseVersion,
-    commitReleaseVersion,
-    tagRelease,
-    publishArtifacts,
-    setNextVersion,
-    releaseStepCommand("sonatypeRelease"),
-    commitNextVersion,
-    pushChanges
-  ),
-  releaseCrossBuild := true,
   publishMavenStyle := true,
   credentials := Credentials(Path.userHome / ".sbt" / "sonatype_credentials") :: Nil,
-  releasePublishArtifactsAction := PgpKeys.publishSigned.value,
   publishArtifact in Test := false,
   pomIncludeRepository := { _ => false },
   licenses := Seq(
@@ -206,17 +142,34 @@ lazy val root = project
   .in(file("."))
   .aggregate(core, fs2, zio, interop)
   .settings(crossBuildSettings)
-  .settings(customCommands)
   .settings(releaseSettings)
   .settings(
     name := "log-effect",
-    publishArtifact := false
+    publishArtifact := false,
+    addCommandAlias("format", ";scalafmt;test:scalafmt;scalafmtSbt"),
+    addCommandAlias(
+      "checkFormat",
+      ";scalafmtCheck;test:scalafmtCheck;scalafmtSbtCheck"
+    ),
+    addCommandAlias(
+      "ciBuild",
+      ";clean;test"
+    ),
+    addCommandAlias(
+      "fullBuild",
+      ";checkFormat;ciBuild"
+    ),
+    // travis release aliases
+    addCommandAlias(
+      "setReleaseOptions",
+      "set scalacOptions ++= Seq(\"-opt:l:method\", \"-opt:l:inline\", \"-opt-inline-from:laserdisc.**\", \"-opt-inline-from:<sources>\")"
+    ),
+    addCommandAlias("releaseIt", ";clean;setReleaseOptions;session list;compile;ci-release")
   )
 
 lazy val core = project
   .in(file("core"))
   .settings(crossBuildSettings)
-  .settings(customCommands)
   .settings(releaseSettings)
   .settings(
     name := "log-effect-core",
@@ -227,7 +180,6 @@ lazy val fs2 = project
   .in(file("fs2"))
   .dependsOn(core)
   .settings(crossBuildSettings)
-  .settings(customCommands)
   .settings(releaseSettings)
   .settings(
     name := "log-effect-fs2",
@@ -238,7 +190,6 @@ lazy val zio = project
   .in(file("zio"))
   .dependsOn(core)
   .settings(crossBuildSettings)
-  .settings(customCommands)
   .settings(releaseSettings)
   .settings(
     name := "log-effect-zio",
@@ -249,7 +200,6 @@ lazy val interop = project
   .in(file("interop"))
   .dependsOn(core, fs2)
   .settings(crossBuildSettings)
-  .settings(customCommands)
   .settings(releaseSettings)
   .settings(
     name := "log-effect-interop",

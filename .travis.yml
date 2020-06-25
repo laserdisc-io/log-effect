@@ -1,26 +1,78 @@
 dist: xenial
 sudo: false
-
 language: scala
+
+before_install:
+  - git fetch --tags
+
+before_cache:
+  - rm -fv $HOME/.ivy2/.sbt.ivy.lock
+  - find $HOME/.ivy2/cache -name "ivydata-*.properties" -print -delete
+  - find $HOME/.sbt        -name "*.lock"               -print -delete
+
+sbt_args: -Dfile.encoding=UTF8 -Dsbt.color=always
+
+stages:
+  - name: Format
+    if: tag IS NOT present
+  - name: Test
+    if: tag IS NOT present
+  - name: Publish Snapshot 2.12
+    if: branch = master AND type = push AND tag IS NOT present AND NOT fork
+  - name: Publish Snapshot 2.13
+    if: branch = master AND type = push AND tag IS NOT present AND NOT fork
+  - name: Release 2.12
+    if: type != pull_request AND tag IS present AND NOT fork
+  - name: Release 2.13
+    if: type != pull_request AND tag IS present AND NOT fork
+
 scala:
   - 2.12.11
   - 2.13.2
-
 jdk:
   - openjdk8
-  - openjdk11
+  - openjdk13
 
-script:
-   - sbt ++$TRAVIS_SCALA_VERSION fullCiBuild
+script: sbt ++$TRAVIS_SCALA_VERSION ciBuild
+
+jobs:
+  include:
+    - stage: Format
+      name: Check with Scalafmt
+      script: sbt ++$TRAVIS_SCALA_VERSION checkFormat
+      jdk: openjdk8
+      scala: 2.13.2
+
+    - stage: Publish Snapshot 2.12
+      name: Publish a snapshot for Scala 2.12
+      script: CI_SNAPSHOT_RELEASE=publish sbt ++$TRAVIS_SCALA_VERSION releaseIt
+      jdk: openjdk8
+      scala: 2.12.11
+
+    - stage: Publish Snapshot 2.13
+      name: Publish a snapshot for Scala 2.13
+      script: CI_SNAPSHOT_RELEASE=publish sbt ++$TRAVIS_SCALA_VERSION releaseIt
+      jdk: openjdk8
+      scala: 2.13.2
+
+    - stage: Release 2.12
+      name: Release for Scala 2.12
+      script: CI_RELEASE=publishSigned sbt ++$TRAVIS_SCALA_VERSION releaseIt
+      jdk: openjdk8
+      scala: 2.12.11
+
+    - stage: Release 2.13
+      name: Release for Scala 2.13
+      script: CI_RELEASE=publishSigned sbt ++$TRAVIS_SCALA_VERSION releaseIt
+      jdk: openjdk8
+      scala: 2.13.2
 
 cache:
   directories:
-  - "$HOME/.coursier/cache"
-  - "$HOME/.ivy2/cache"
-  - "$HOME/.sbt"
-
-before_cache:
-  - find $HOME/.ivy2/cache -name "ivydata-*.properties" | xargs rm
-  - find $HOME/.ivy2/cache -name "*SNAPSHOT*" | xargs rm -rf
-  - find $HOME/.ivy2/cache -name "*.lock" | xargs rm -rf
-  - find $HOME/.coursier/cache -name "*.lock" -type f -delete
+    - "$HOME/.cache/coursier"
+    - "$HOME/.ivy2/cache"
+    - "$HOME/.sbt/boot/"
+    - "$HOME/.sbt"
+    - "lib_managed"
+    - "target"
+    - "project/target"
