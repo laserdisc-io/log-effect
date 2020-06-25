@@ -112,12 +112,10 @@ lazy val crossBuildSettings = Seq(
 )
 
 lazy val releaseSettings: Seq[Def.Setting[_]] = Seq(
-  publishMavenStyle := true,
   publishArtifact in Test := false,
   pomIncludeRepository := { _ => false },
   organization := "io.laserdisc",
   homepage := Some(url("http://laserdisc.io")),
-  publishTo := sonatypePublishTo.value,
   developers := List(
     Developer("barambani", "Filippo Mariotti", "", url("https://github.com/barambani"))
   ),
