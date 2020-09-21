@@ -32,7 +32,7 @@ object Fs2LogWriter {
     Stream eval scribeLog(c)
 
   def scribeLogStream[F[_]: Sync](n: String): Stream[F, LogWriter[F]] =
-    Stream eval { scribeLog(n) }
+    Stream eval scribeLog(n)
 
   def consoleLogStream[F[_]: Sync]: Stream[F, LogWriter[F]] =
     Stream emit consoleLog
