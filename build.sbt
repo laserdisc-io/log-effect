@@ -40,9 +40,6 @@ lazy val scala213Options = scala212Options diff Seq(
   "-Xfuture"
 )
 
-/**
-  * Dependencies
-  */
 lazy val versionOf = new {
   val cats          = "2.2.0"
   val catsEffect    = "2.2.0"
@@ -98,9 +95,6 @@ lazy val compilerPluginsDependencies = Seq(
   "com.github.ghik" %% "silencer-lib" % versionOf.silencer % Provided cross CrossVersion.full
 )
 
-/**
-  * Settings
-  */
 lazy val crossBuildSettings = Seq(
   libraryDependencies ++= testDependencies ++ compilerPluginsDependencies,
   parallelExecution in Test := false,
