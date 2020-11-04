@@ -50,7 +50,7 @@ lazy val versionOf = new {
   val scalaCheck    = "1.15.0"
   val scalaTest     = "3.2.2"
   val zio           = "1.0.3"
-  val scribe        = "2.8.6"
+  val scribe        = "3.0.0"
   val silencer      = "1.7.1"
 }
 
