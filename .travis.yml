@@ -27,7 +27,7 @@ stages:
     if: type != pull_request AND tag IS present AND NOT fork
 
 scala_212: &scala_212 2.12.12
-scala_213: &scala_213 2.13.3
+scala_213: &scala_213 2.13.4
 
 jdk_lts: &jdk_lts openjdk11
 jdk_latest: &jdk_latest openjdk15
