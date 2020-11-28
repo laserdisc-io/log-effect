@@ -1,3 +1,6 @@
+lazy val scala_212 = "2.12.12"
+lazy val scala_213 = "2.13.4"
+
 lazy val versionOf = new {
   val cats          = "2.3.0"
   val catsEffect    = "2.3.0"
@@ -96,6 +99,8 @@ lazy val compilerPluginsDependencies = Seq(
 )
 
 lazy val crossBuildSettings = Seq(
+  scalaVersion := scala_213,
+  crossScalaVersions := Seq(scala_212, scala_213),
   libraryDependencies ++= testDependencies ++ compilerPluginsDependencies,
   parallelExecution in Test := false,
   scalacOptions ++=
