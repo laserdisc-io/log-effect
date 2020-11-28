@@ -1,0 +1,33 @@
+name: Release
+on:
+  release:
+    types:
+      - created
+jobs:
+  release_212:
+    if: github.ref == 'refs/heads/master'
+    name: Release 2.12
+    runs-on: ubuntu-20.04
+    steps:
+      - name: Branch Checkout
+        uses: actions/checkout@v2
+      - name: Install Java And Sbt
+        uses: olafurpg/setup-scala@v10
+        with:
+          java-version: adopt@1.11
+      - name: Release for Scala 2.12
+        run: CI_RELEASE=publishSigned sbt ++2.12.2 releaseIt
+  release_213:
+    if: github.ref == 'refs/heads/master'
+    name: Release 2.13
+    needs: release_212
+    runs-on: ubuntu-20.04
+    steps:
+      - name: Branch Checkout
+        uses: actions/checkout@v2
+      - name: Install Java And Sbt
+        uses: olafurpg/setup-scala@v10
+        with:
+          java-version: adopt@1.11
+      - name: Release for Scala 2.13
+        run: CI_RELEASE=publishSigned sbt ++2.13.4 releaseIt
