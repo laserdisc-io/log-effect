@@ -1,18 +1,15 @@
 name: CI
 on:
-  - pull_request
+  pull_request:
+    branches:
+      - '*'
+  push:
+    branches:
+      - master
 jobs:
   format:
     name: Format
-    strategy:
-      matrix:
-        os:
-          - ubuntu-20.04
-        scala:
-          - 2.13.4
-        java:
-          - adopt@1.11
-    runs-on: ${{ matrix.os }}
+    runs-on: ubuntu-20.04
     steps:
       - name: Branch Checkout
         uses: actions/checkout@v2
@@ -21,7 +18,7 @@ jobs:
         with:
           java-version: adopt@1.11
       - name: Check with Scalafmt
-        run: sbt ++${{ matrix.scala }} checkFormat
+        run: sbt ++2.13.4 checkFormat
   build:
     name: Build
     strategy:
@@ -44,3 +41,31 @@ jobs:
           java-version: ${{ matrix.java }}
       - name: Test - [ ${{ matrix.java }} ] [ ${{ matrix.scala }} ]
         run: sbt ++${{ matrix.scala }} ciBuild
+  publish_212:
+    if: github.event_name == 'push' && github.ref == 'refs/heads/master'
+    name: Publish Snapshot 2.12
+    needs: [format, build]
+    runs-on: ubuntu-20.04
+    steps:
+      - name: Branch Checkout
+        uses: actions/checkout@v2
+      - name: Install Java And Sbt
+        uses: olafurpg/setup-scala@v10
+        with:
+          java-version: adopt@1.11
+      - name: Publish Snapshot for Scala 2.12
+        run: CI_SNAPSHOT_RELEASE=publish sbt ++2.12.2 releaseIt
+  publish_213:
+    if: github.event_name == 'push' && github.ref == 'refs/heads/master'
+    name: Publish Snapshot 2.13
+    needs: publish_212
+    runs-on: ubuntu-20.04
+    steps:
+      - name: Branch Checkout
+        uses: actions/checkout@v2
+      - name: Install Java And Sbt
+        uses: olafurpg/setup-scala@v10
+        with:
+          java-version: adopt@1.11
+      - name: Publish Snapshot for Scala 2.13
+        run: CI_SNAPSHOT_RELEASE=publish sbt ++2.13.4 releaseIt
