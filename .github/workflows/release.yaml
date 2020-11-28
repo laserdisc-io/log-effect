@@ -1,0 +1,61 @@
+name: Release
+on:
+  release:
+    types:
+      - created
+jobs:
+  release_212:
+    if: github.ref == 'refs/heads/master'
+    name: Release 2.12
+    runs-on: ubuntu-20.04
+    steps:
+      - name: Branch Checkout
+        uses: actions/checkout@v2
+        with:
+          fetch-depth: 0
+      - name: Install Java And Sbt
+        uses: olafurpg/setup-scala@v10
+        with:
+          java-version: adopt@1.11
+      - name: Cache
+        uses: actions/cache@v2
+        with:
+          path: |
+            $HOME/.cache/coursier
+            $HOME/.ivy2/cache
+            $HOME/.sbt/boot/
+            $HOME/.sbt
+            lib_managed
+            target
+            project/target
+          key: ${{ runner.os }}-cache-v2-${{ hashFiles('**/*.sbt') }}-${{ hashFiles('project/build.properties') }}
+      - name: Release for Scala 2.12
+        run: CI_RELEASE=publishSigned sbt ++2.12.2 releaseIt
+  release_213:
+    if: github.ref == 'refs/heads/master'
+    name: Release 2.13
+    needs: release_212
+    runs-on: ubuntu-20.04
+    steps:
+      - name: Branch Checkout
+        uses: actions/checkout@v2
+        with:
+          fetch-depth: 0
+      - name: Install Java And Sbt
+        uses: olafurpg/setup-scala@v10
+        with:
+          java-version: adopt@1.11
+      - name: Cache
+        uses: actions/cache@v2
+        with:
+          path: |
+            $HOME/.cache/coursier
+            $HOME/.ivy2/cache
+            $HOME/.sbt/boot/
+            $HOME/.sbt
+            lib_managed
+            target
+            project/target
+          key: ${{ runner.os }}-cache-v2-${{ hashFiles('**/*.sbt') }}-${{ hashFiles('project/build.properties') }}
+      - name: Release for Scala 2.13
+        run: CI_RELEASE=publishSigned sbt ++2.13.4 releaseIt

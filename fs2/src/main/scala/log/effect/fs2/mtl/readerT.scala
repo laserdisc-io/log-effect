@@ -10,7 +10,7 @@ object readerT {
     implicit LW: LogWriter[F]
   ): LogWriter[ReaderT[F, Env, *]] =
     new LogWriter[ReaderT[F, Env, *]] {
-      def write[A: Show, L <: LogLevel: Show](level: L, a: =>A): ReaderT[F, Env, Unit] =
+      def write[A: Show](level: LogLevel, a: =>A): ReaderT[F, Env, Unit] =
         ReaderT.liftF[F, Env, Unit](LW.write(level, a))
     }
 }

@@ -1,0 +1,127 @@
+name: CI
+on:
+  pull_request:
+    branches:
+      - '*'
+  push:
+    branches:
+      - master
+jobs:
+  format:
+    name: Format
+    runs-on: ubuntu-20.04
+    steps:
+      - name: Branch Checkout
+        uses: actions/checkout@v2
+        with:
+          fetch-depth: 0
+      - name: Install Java And Sbt
+        uses: olafurpg/setup-scala@v10
+        with:
+          java-version: adopt@1.11
+      - name: Cache
+        uses: actions/cache@v2
+        with:
+          path: |
+            $HOME/.cache/coursier
+            $HOME/.ivy2/cache
+            $HOME/.sbt/boot/
+            $HOME/.sbt
+            lib_managed
+            target
+            project/target
+          key: ${{ runner.os }}-cache-v2-${{ hashFiles('**/*.sbt') }}-${{ hashFiles('project/build.properties') }}
+      - name: Check with Scalafmt
+        run: sbt ++2.13.4 checkFormat
+  build:
+    name: Build
+    strategy:
+      matrix:
+        os:
+          - ubuntu-20.04
+        scala:
+          - 2.12.12
+          - 2.13.4
+        java:
+          - adopt@1.11
+          - adopt@1.15
+    runs-on: ${{ matrix.os }}
+    steps:
+      - name: Branch Checkout
+        uses: actions/checkout@v2
+        with:
+          fetch-depth: 0
+      - name: Install Java And Sbt
+        uses: olafurpg/setup-scala@v10
+        with:
+          java-version: ${{ matrix.java }}
+      - name: Cache
+        uses: actions/cache@v2
+        with:
+          path: |
+            $HOME/.cache/coursier
+            $HOME/.ivy2/cache
+            $HOME/.sbt/boot/
+            $HOME/.sbt
+            lib_managed
+            target
+            project/target
+          key: ${{ runner.os }}-cache-v2-${{ hashFiles('**/*.sbt') }}-${{ hashFiles('project/build.properties') }}
+      - name: Test - [ ${{ matrix.java }} ] [ ${{ matrix.scala }} ]
+        run: sbt ++${{ matrix.scala }} ciBuild
+  publish_212:
+    if: github.event_name == 'push' && github.ref == 'refs/heads/master'
+    name: Publish Snapshot 2.12
+    needs: [format, build]
+    runs-on: ubuntu-20.04
+    steps:
+      - name: Branch Checkout
+        uses: actions/checkout@v2
+        with:
+          fetch-depth: 0
+      - name: Install Java And Sbt
+        uses: olafurpg/setup-scala@v10
+        with:
+          java-version: adopt@1.11
+      - name: Cache
+        uses: actions/cache@v2
+        with:
+          path: |
+            $HOME/.cache/coursier
+            $HOME/.ivy2/cache
+            $HOME/.sbt/boot/
+            $HOME/.sbt
+            lib_managed
+            target
+            project/target
+          key: ${{ runner.os }}-cache-v2-${{ hashFiles('**/*.sbt') }}-${{ hashFiles('project/build.properties') }}
+      - name: Publish Snapshot for Scala 2.12
+        run: CI_SNAPSHOT_RELEASE=publish sbt ++2.12.2 releaseIt
+  publish_213:
+    if: github.event_name == 'push' && github.ref == 'refs/heads/master'
+    name: Publish Snapshot 2.13
+    needs: publish_212
+    runs-on: ubuntu-20.04
+    steps:
+      - name: Branch Checkout
+        uses: actions/checkout@v2
+        with:
+          fetch-depth: 0
+      - name: Install Java And Sbt
+        uses: olafurpg/setup-scala@v10
+        with:
+          java-version: adopt@1.11
+      - name: Cache
+        uses: actions/cache@v2
+        with:
+          path: |
+            $HOME/.cache/coursier
+            $HOME/.ivy2/cache
+            $HOME/.sbt/boot/
+            $HOME/.sbt
+            lib_managed
+            target
+            project/target
+          key: ${{ runner.os }}-cache-v2-${{ hashFiles('**/*.sbt') }}-${{ hashFiles('project/build.properties') }}
+      - name: Publish Snapshot for Scala 2.13
+        run: CI_SNAPSHOT_RELEASE=publish sbt ++2.13.4 releaseIt

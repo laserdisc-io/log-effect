@@ -3,12 +3,22 @@ package zio
 
 import java.util.{logging => jul}
 
-import _root_.zio.{IO, RIO, Task, UIO, URIO, ZIO}
+import _root_.zio._
+import com.github.ghik.silencer.silent
 import log.effect.internal.{EffectSuspension, Id, Show}
 import org.{log4s => l4s}
 
 object ZioLogWriter {
   import instances._
+
+  final case class LogName(x: String) extends AnyVal
+
+  final type ZLogName      = Has[LogName]
+  final type ZLogClass[A]  = Has[Class[A]]
+  final type ZLog4sLogger  = Has[l4s.Logger]
+  final type ZJulLogger    = Has[jul.Logger]
+  final type ZScribeLogger = Has[scribe.Logger]
+  final type ZLogWriter    = Has[LogWriter[Task]]
 
   val log4sFromLogger: URIO[l4s.Logger, LogWriter[Task]] =
     ZIO.access(log4sLogger => LogWriter.pureOf[Task](log4sLogger))
@@ -46,6 +56,44 @@ object ZioLogWriter {
   val noOpLog: LogWriter[Task] =
     LogWriter.of[Id](()).liftT
 
+  // Needed for 2.12.12 where these warnings still appear
+  @silent("a type was inferred to be `Any`; this may indicate a programming error.")
+  val log4sLayerFromName: RLayer[ZLogName, ZLogWriter] =
+    ZLayer.fromServiceM(name => log4sFromName provide name.x)
+
+  @silent("a type was inferred to be `Any`; this may indicate a programming error.")
+  val log4sLayerFromLogger: RLayer[ZLog4sLogger, ZLogWriter] =
+    ZLayer.fromServiceM(log4sLogger => log4sFromLogger provide log4sLogger)
+
+  @silent("a type was inferred to be `Any`; this may indicate a programming error.")
+  def log4sLayerFromClass[A: Tag]: RLayer[ZLogClass[A], ZLogWriter] =
+    ZLayer.fromServiceM(c => log4sFromClass provide c)
+
+  @silent("a type was inferred to be `Any`; this may indicate a programming error.")
+  val julLayerFromLogger: RLayer[ZJulLogger, ZLogWriter] =
+    ZLayer.fromServiceM(julLogger => julFromLogger provide julLogger)
+
+  @silent("a type was inferred to be `Any`; this may indicate a programming error.")
+  val scribeLayerFromName: RLayer[ZLogName, ZLogWriter] =
+    ZLayer.fromServiceM(name => scribeFromName provide name.x)
+
+  @silent("a type was inferred to be `Any`; this may indicate a programming error.")
+  val scribeLayerFromLogger: RLayer[ZScribeLogger, ZLogWriter] =
+    ZLayer.fromServiceM(scribeLogger => scribeFromLogger provide scribeLogger)
+
+  @silent("a type was inferred to be `Any`; this may indicate a programming error.")
+  def scribeLayerFromClass[A: Tag]: RLayer[ZLogClass[A], ZLogWriter] =
+    ZLayer.fromServiceM(c => scribeFromClass provide c)
+
+  val consoleLogLayer: ULayer[ZLogWriter] =
+    ZLayer.succeed(consoleLog)
+
+  def consoleLogLayerUpToLevel[LL <: LogLevel](minLevel: LL): ULayer[ZLogWriter] =
+    ZLayer.succeed(consoleLogUpToLevel(minLevel))
+
+  val noOpLogLayer: ULayer[ZLogWriter] =
+    ZLayer.succeed(noOpLog)
+
   private[this] object instances {
     private[zio] implicit final val taskEffectSuspension: EffectSuspension[Task] =
       new EffectSuspension[Task] {
@@ -57,15 +105,18 @@ object ZioLogWriter {
         def suspend[A](a: =>A): UIO[A] = IO.effectTotal(a)
       }
 
-    private[zio] implicit final def functorInstances[R, E]: internal.Functor[ZIO[R, E, *]] =
-      new internal.Functor[ZIO[R, E, *]] {
+    private[zio] implicit final def functorInstances[
+      R,
+      E
+    ]: log.effect.internal.Functor[ZIO[R, E, *]] =
+      new log.effect.internal.Functor[ZIO[R, E, *]] {
         def fmap[A, B](f: A => B): ZIO[R, E, A] => ZIO[R, E, B] = _ map f
       }
 
     implicit final class NoOpLogT(private val `_`: LogWriter[Id]) extends AnyVal {
       def liftT: LogWriter[Task] =
         new LogWriter[Task] {
-          override def write[A: Show, L <: LogLevel: Show](level: L, a: =>A): Task[Unit] = Task.unit
+          override def write[A: Show](level: LogLevel, a: =>A): Task[Unit] = Task.unit
         }
     }
   }

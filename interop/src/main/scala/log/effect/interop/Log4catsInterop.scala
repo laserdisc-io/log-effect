@@ -9,7 +9,7 @@ import log.effect.internal.syntax._
 private[interop] trait Log4catsInterop0 extends Log4catsInterop1 {
   implicit def logWriterFromLogger[F[_]](implicit ev: Logger[F]): LogWriter[F] =
     new LogWriter[F] {
-      def write[A: Show, L <: LogLevel: Show](level: L, a: =>A): F[Unit] =
+      def write[A: Show](level: LogLevel, a: =>A): F[Unit] =
         (level, a) match {
           case (Trace, Failure(msg, th)) => ev.trace(th)(msg)
           case (Trace, other)            => ev.trace(other.show)
@@ -28,7 +28,7 @@ private[interop] trait Log4catsInterop0 extends Log4catsInterop1 {
 private[interop] trait Log4catsInterop1 {
   implicit def logWriterFromMessageLogger[F[_]](implicit ev: MessageLogger[F]): LogWriter[F] =
     new LogWriter[F] {
-      def write[A: Show, L <: LogLevel: Show](level: L, a: =>A): F[Unit] =
+      def write[A: Show](level: LogLevel, a: =>A): F[Unit] =
         level match {
           case Trace => ev.trace(a.show)
           case Debug => ev.debug(a.show)
