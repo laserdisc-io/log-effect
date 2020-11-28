@@ -43,38 +43,27 @@ Currently Log Effect supports the following backends
 
 ## Dependencies
 
-|                          | Cats | Fs2 | Cats Effect | Log Effect Core   |
+|                          | Cats | Fs2 | Cats Effect | Log Effect Core   |
 | ------------------------:| ----:| ---:| -----------:| -----------------:|
-| [![Maven Central](https://img.shields.io/maven-central/v/io.laserdisc/log-effect-fs2_2.13.svg?label=log-effect-fs2&colorB=2282c3)](https://maven-badges.herokuapp.com/maven-central/io.laserdisc/log-effect-fs2_2.13) | 2.2.0 | 2.4.4 | 2.2.0 | [![Maven Central](https://img.shields.io/maven-central/v/io.laserdisc/log-effect-core_2.12.svg?label=%20&colorB=9311fc)](https://maven-badges.herokuapp.com/maven-central/io.laserdisc/log-effect-core_2.12) |
-| v0.8.0  | 1.6.1 | 1.0.5    | 1.3.1  | v0.8.0  |
-| v0.3.5  | 1.4.0 | 1.0.0-M5 | 1.0.0  | v0.3.5  |
-| v0.2.2  | 1.2.0 | 0.10.5   | 0.10.1 | v0.2.2  |
-| v0.1.14 | 1.2.0 | 0.10.5   |        | v0.1.14 |
+| [![Maven Central](https://img.shields.io/maven-central/v/io.laserdisc/log-effect-fs2_2.13.svg?label=log-effect-fs2&colorB=2282c3)](https://maven-badges.herokuapp.com/maven-central/io.laserdisc/log-effect-fs2_2.13) | 2.3.0 | 2.4.6 | 2.3.0 | [![Maven Central](https://img.shields.io/maven-central/v/io.laserdisc/log-effect-core_2.12.svg?label=%20&colorB=9311fc)](https://maven-badges.herokuapp.com/maven-central/io.laserdisc/log-effect-core_2.12) |
 
 <br>
 
-|                          | Zio | Scalaz ZIO | Log Effect Core   |
-| ------------------------:| ---:| ----------:| -----------------:|
-| [![Maven Central](https://img.shields.io/maven-central/v/io.laserdisc/log-effect-zio_2.13.svg?label=log-effect-zio&colorB=fb0005)](https://maven-badges.herokuapp.com/maven-central/io.laserdisc/log-effect-zio_2.13) | 1.0.1 |  | [![Maven Central](https://img.shields.io/maven-central/v/io.laserdisc/log-effect-core_2.12.svg?label=%20&colorB=9311fc)](https://maven-badges.herokuapp.com/maven-central/io.laserdisc/log-effect-core_2.12) |
-| v0.8.0 | 1.0.0-RC9 |  | v0.8.0 |
-| v0.7.0 |  | 1.0-RC4 | v0.7.0  |
-| v0.3.5 |  | 0.2.7   | v0.3.5  | 
+|                          | Zio | Log Effect Core |
+| ------------------------:| ---:| ---------------:|
+| [![Maven Central](https://img.shields.io/maven-central/v/io.laserdisc/log-effect-zio_2.13.svg?label=log-effect-zio&colorB=fb0005)](https://maven-badges.herokuapp.com/maven-central/io.laserdisc/log-effect-zio_2.13) | 1.0.3 | [![Maven Central](https://img.shields.io/maven-central/v/io.laserdisc/log-effect-core_2.12.svg?label=%20&colorB=9311fc)](https://maven-badges.herokuapp.com/maven-central/io.laserdisc/log-effect-core_2.12) | 
 
 <br>
 
-|                          | Log4cats | Log Effect Core   |
+|                          | Log4cats | Log Effect Core   |
 | ------------------------:| --------:| -----------------:|
 | [![Maven Central](https://img.shields.io/maven-central/v/io.laserdisc/log-effect-interop_2.13.svg?label=log-effect-interop&colorB=009933)](https://maven-badges.herokuapp.com/maven-central/io.laserdisc/log-effect-interop_2.13) | 1.1.1 | [![Maven Central](https://img.shields.io/maven-central/v/io.laserdisc/log-effect-core_2.13.svg?label=%20&colorB=9311fc)](https://maven-badges.herokuapp.com/maven-central/io.laserdisc/log-effect-core_2.13) |
 
 <br>
 
-|                          | Cats  | Cats Effect | Log4s  | Scribe |
-| ------------------------:| -----:| -----------:| ------:| ------:|
-| [![Maven Central](https://img.shields.io/maven-central/v/io.laserdisc/log-effect-core_2.13.svg?label=log-effect-core&colorB=9311fc)](https://maven-badges.herokuapp.com/maven-central/io.laserdisc/log-effect-core_2.13) |  |  | 1.8.2 | 2.7.12 |
-| v0.8.0  |       |             | 1.8.2  | 2.7.8  |
-| v0.3.5  |       |             | 1.6.1  |        |
-| v0.2.2  | 1.2.0 |             | 1.6.1  |        |
-| v0.1.14 | 1.2.0 | 0.10.1      | 1.6.1  |        |
+|                          | Log4s  | Scribe |
+| ------------------------:| ------:| ------:|
+| [![Maven Central](https://img.shields.io/maven-central/v/io.laserdisc/log-effect-core_2.13.svg?label=log-effect-core&colorB=9311fc)](https://maven-badges.herokuapp.com/maven-central/io.laserdisc/log-effect-core_2.13) | 1.9.0 | 3.1.3 |
 
 <br>
 
@@ -83,153 +72,181 @@ Currently Log Effect supports the following backends
 ### Get Logs
 
 #### Cats Effect Sync
-To get an instance of `LogWriter` for **Cats Effect**'s `Sync` the options below are available
+To get an instance of `LogWriter` for **Cats Effect**'s `Sync` the options below are available (see [here](./fs2/src/main/scala/log/effect/fs2/SyncLogWriter.scala))
+
+*full compiling example [here](./fs2/src/test/scala/ReadmeConstructionCodeSnippetsTest.scala)*
 ```scala
-import java.util.{ logging => jul }
+val log4s1: F[LogWriter[F]] =
+F.delay(l4s.getLogger("test")) map log4sLog[F]
 
-import cats.effect.Sync
-import cats.syntax.functor._
-import log.effect.fs2.SyncLogWriter._
-import log.effect.{ LogLevels, LogWriter }
-import org.{ log4s => l4s }
+val log4s2: F[LogWriter[F]] = log4sLog("a logger")
 
-sealed abstract class App[F[_]](implicit F: Sync[F]) {
-  val log4s1: F[LogWriter[F]] =
-    F.delay(l4s.getLogger("test")) map log4sLog[F]
-
-  val log4s2: F[LogWriter[F]] = log4sLog("a logger")
-
-  val log4s3: F[LogWriter[F]] = {
-    case class LoggerClass()
-    log4sLog(classOf[LoggerClass])
-  }
-
-  val jul1: F[LogWriter[F]] =
-    F.delay(jul.Logger.getLogger("a logger")) map julLog[F]
-
-  val jul2: F[LogWriter[F]] = julLog
-
-  val scribe1: F[LogWriter[F]] =
-    F.delay(scribe.Logger("a logger")) map scribeLog[F]
-
-  val scribe2: F[LogWriter[F]] = scribeLog("a logger")
-
-  val scribe3: F[LogWriter[F]] = {
-    case class LoggerClass()
-    scribeLog(classOf[LoggerClass])
-  }
-
-  val console1: LogWriter[F] = consoleLog
-
-  val console2: LogWriter[F] = consoleLogUpToLevel(LogLevels.Warn)
-
-  val noOp: LogWriter[F] = noOpLog[F]
+val log4s3: F[LogWriter[F]] = {
+case class LoggerClass()
+log4sLog(classOf[LoggerClass])
 }
+
+val jul1: F[LogWriter[F]] =
+F.delay(jul.Logger.getLogger("a logger")) map julLog[F]
+
+val jul2: F[LogWriter[F]] = julLog
+
+val scribe1: F[LogWriter[F]] =
+F.delay(scribe.Logger("a logger")) map scribeLog[F]
+
+val scribe2: F[LogWriter[F]] = scribeLog("a logger")
+
+val scribe3: F[LogWriter[F]] = {
+case class LoggerClass()
+scribeLog(classOf[LoggerClass])
+}
+
+val console1: LogWriter[F] = consoleLog
+
+val console2: LogWriter[F] = consoleLogUpToLevel(LogLevels.Warn)
+
+val noOp: LogWriter[F] = noOpLog[F]
 ```
 
 #### Fs2 Stream
-Simirarly, to get instances of `LogWriter` for **Fs2**'s `Stream` the constructors below are available
+Similarly, to get instances of `LogWriter` for **Fs2**'s `Stream` the constructors below are available [here](./fs2/src/main/scala/log/effect/fs2/SyncLogWriter.scala)
+
+*full compiling example [here](./fs2/src/test/scala/ReadmeConstructionCodeSnippetsTest.scala)*
 ```scala
-import java.util.{ logging => jul }
+val log4s1: fs2.Stream[F, LogWriter[F]] =
+Stream.eval(F.delay(l4s.getLogger("test"))) >>= log4sLogStream[F]
 
-import cats.effect.Sync
-import cats.syntax.flatMap._
-import fs2.Stream
-import log.effect.fs2.Fs2LogWriter._
-import log.effect.{ LogLevels, LogWriter }
-import org.{ log4s => l4s }
+val log4s2: fs2.Stream[F, LogWriter[F]] = log4sLogStream("a logger")
 
-sealed abstract class App[F[_]](implicit F: Sync[F]) {
-  val log4s1: fs2.Stream[F, LogWriter[F]] =
-    Stream.eval(F.delay(l4s.getLogger("test"))) >>= log4sLogStream[F]
-
-  val log4s2: fs2.Stream[F, LogWriter[F]] = log4sLogStream("a logger")
-
-  val log4s3: fs2.Stream[F, LogWriter[F]] = {
-    case class LoggerClass()
-    log4sLogStream(classOf[LoggerClass])
-  }
-
-  val jul1: fs2.Stream[F, LogWriter[F]] =
-    Stream.eval(F.delay(jul.Logger.getLogger("a logger"))) >>= julLogStream[F]
-
-  val jul2: fs2.Stream[F, LogWriter[F]] = julLogStream
-
-  val scribe1: fs2.Stream[F, LogWriter[F]] =
-    Stream.eval(F.delay(scribe.Logger("a logger"))) >>= scribeLogStream[F]
-
-  val scribe2: fs2.Stream[F, LogWriter[F]] = scribeLogStream("a logger")
-
-  val scribe3: fs2.Stream[F, LogWriter[F]] = {
-    case class LoggerClass()
-    scribeLogStream(classOf[LoggerClass])
-  }
-
-  val console1: fs2.Stream[F, LogWriter[F]] = consoleLogStream
-
-  val console2: fs2.Stream[F, LogWriter[F]] = consoleLogStreamUpToLevel(LogLevels.Warn)
-
-  val noOp: fs2.Stream[F, LogWriter[F]] = noOpLogStream
+val log4s3: fs2.Stream[F, LogWriter[F]] = {
+case class LoggerClass()
+log4sLogStream(classOf[LoggerClass])
 }
+
+val jul1: fs2.Stream[F, LogWriter[F]] =
+Stream.eval(F.delay(jul.Logger.getLogger("a logger"))) >>= julLogStream[F]
+
+val jul2: fs2.Stream[F, LogWriter[F]] = julLogStream
+
+val scribe1: fs2.Stream[F, LogWriter[F]] =
+Stream.eval(F.delay(scribe.Logger("a logger"))) >>= scribeLogStream[F]
+
+val scribe2: fs2.Stream[F, LogWriter[F]] = scribeLogStream("a logger")
+
+val scribe3: fs2.Stream[F, LogWriter[F]] = {
+case class LoggerClass()
+scribeLogStream(classOf[LoggerClass])
+}
+
+val console1: fs2.Stream[F, LogWriter[F]] = consoleLogStream
+
+val console2: fs2.Stream[F, LogWriter[F]] = consoleLogStreamUpToLevel(LogLevels.Warn)
+
+val noOp: fs2.Stream[F, LogWriter[F]] = noOpLogStream
 ```
 *See [here](https://github.com/laserdisc-io/laserdisc#example-usage) for an example whit [Laserdisc](https://github.com/laserdisc-io/laserdisc)*
 
 #### Zio Task
-To create instances for `ZIO` some useful constructors can be found [here](https://github.com/laserdisc-io/log-effect/blob/master/zio/src/main/scala/log/effect/zio/ZioLogWriter.scala). Note as they exploit the power and expressiveness of the RIO pattern as shown below
+To create instances for `ZIO` some useful constructors can be found [here](./zio/src/main/scala/log/effect/zio/ZioLogWriter.scala). Note as they exploit the power and expressiveness of `RLayer` an the `RIO` pattern as shown below.
+
+##### Create LogWriter as a Layer
+*full compiling example [here](./zio/src/test/scala/ReadmeLayerConstructionCodeSnippetsTest.scala)*
 ```scala
-import java.util.{ logging => jul }
-
-import log.effect.zio.ZioLogWriter._
-import log.effect.{ LogLevels, LogWriter }
-import org.{ log4s => l4s }
-import zio.{ RIO, Task }
-
-sealed abstract class App {
-  def someZioProgramUsingLogs: RIO[LogWriter[Task], Unit]
-
-  val log4s1: Task[Unit] =
-    Task.effect(l4s.getLogger("a logger")) >>= { logger =>
-      (log4sFromLogger >>> someZioProgramUsingLogs) provide logger
-    }
-
-  val log4s2: Task[Unit] =
-    (log4sFromName >>> someZioProgramUsingLogs) provide "a logger name"
-
-  val log4s3: Task[Unit] = {
-    case class LoggerClass();
-    (log4sFromClass >>> someZioProgramUsingLogs) provide classOf[LoggerClass]
+// Case 1: from a possible config
+val logNameLiveFromConfig: ULayer[ZLogName] =
+  aConfigLive >>> ZLayer.fromFunctionM { env =>
+    ZIO.succeed(LogName(env.get[AConfig].logName))
   }
 
-  val jul1: Task[Unit] =
-    Task.effect(jul.Logger.getLogger("a logger")) >>= { logger =>
-      (julFromLogger >>> someZioProgramUsingLogs) provide logger
-    }
+val log4sCase1: TaskLayer[ZLogWriter] =
+  logNameLiveFromConfig >>> log4sLayerFromName
 
-  val jul2: Task[Unit] =
-    julGlobal >>> someZioProgramUsingLogs
+val scribeCase1: TaskLayer[ZLogWriter] =
+  logNameLiveFromConfig >>> scribeLayerFromName
 
-  val scribe1: Task[Unit] =
-    Task.effect(scribe.Logger("a logger")) >>= { logger =>
-      (scribeFromLogger >>> someZioProgramUsingLogs) provide logger
-    }
+// Case 2: from a name
+val log4sCase2: TaskLayer[ZLogWriter] =
+  logNameLive >>> log4sLayerFromName
 
-  val scribe2: Task[Unit] =
-    (scribeFromName >>> someZioProgramUsingLogs) provide "a logger name"
+val scribeCase2: TaskLayer[ZLogWriter] =
+  logNameLive >>> scribeLayerFromName
 
-  val scribe3: Task[Unit] = {
-    case class LoggerClass();
-    (scribeFromClass >>> someZioProgramUsingLogs) provide classOf[LoggerClass]
+// Case 3: from a logger
+val log4sCase3: TaskLayer[ZLogWriter] =
+  log4sLoggerLive >>> log4sLayerFromLogger
+
+val julCase3: TaskLayer[ZLogWriter] =
+  julLoggerLive >>> julLayerFromLogger
+
+val scribeCase3: TaskLayer[ZLogWriter] =
+  scribeLoggerLive >>> scribeLayerFromLogger
+
+// Case 4: from a class
+val log4sCase4: TaskLayer[ZLogWriter] =
+  classLive >>> log4sLayerFromClass
+
+val scribeCase4: TaskLayer[ZLogWriter] =
+  classLive >>> scribeLayerFromClass
+```
+
+##### Create LogWriter as RIO
+*full compiling example [here](./zio/src/test/scala/ReadmeRioConstructionCodeSnippetsTest.scala)*
+```scala
+// Case 1: from a possible config in a Layer (gives a Layer)
+val log4sCase1: RLayer[Has[AConfig], ZLogWriter] =
+  ZLayer.fromServiceM { config =>
+    log4sFromName.provide(config.logName)
+  }
+val scribe4sCase1: RLayer[Has[AConfig], ZLogWriter] =
+  ZLayer.fromServiceM { config =>
+    scribeFromName.provide(config.logName)
   }
 
-  val console1: Task[Unit] =
-    someZioProgramUsingLogs provide consoleLog
+// Case 2: from a name
+val log4sCase2: Task[Unit] =
+  (log4sFromName >>> someZioProgramUsingLogs) provide aLogName
+  
+val scribeCase2: Task[Unit] =
+  (scribeFromName >>> someZioProgramUsingLogs) provide aLogName
 
-  val console2: Task[Unit] =
-    someZioProgramUsingLogs provide consoleLogUpToLevel(LogLevels.Warn)
+// Case 3: from a logger
+val log4sCase3: Task[Unit] =
+  Task.effect(l4s.getLogger(aLogName)) >>= { logger =>
+    (log4sFromLogger >>> someZioProgramUsingLogs) provide logger
+  }
+val julCase3: Task[Unit] =
+  Task.effect(jul.Logger.getLogger(aLogName)) >>= { logger =>
+    (julFromLogger >>> someZioProgramUsingLogs) provide logger
+  }
+val scribeCase3: Task[Unit] =
+  Task.effect(scribe.Logger(aLogName)) >>= { logger =>
+    (scribeFromLogger >>> someZioProgramUsingLogs) provide logger
+  }
 
-  val noOp: Task[Unit] =
-    someZioProgramUsingLogs provide noOpLog
+// Case 4: from a class
+val log4sCase4: Task[Unit] = {
+  case class LoggerClass();
+  (log4sFromClass >>> someZioProgramUsingLogs) provide classOf[LoggerClass]
 }
+val scribeCase4: Task[Unit] = {
+  case class LoggerClass();
+  (scribeFromClass >>> someZioProgramUsingLogs) provide classOf[LoggerClass]
+}
+
+// Case 5 (Jul): from global logger object
+val julCase5: Task[Unit] =
+  julGlobal >>> someZioProgramUsingLogs
+
+// Case 6: console logger
+val console1: Task[Unit] =
+  someZioProgramUsingLogs provide consoleLog
+
+val console2: Task[Unit] =
+  someZioProgramUsingLogs provide consoleLogUpToLevel(LogLevels.Warn)
+
+// Case 7: No-op logger
+val noOp: Task[Unit] =
+  someZioProgramUsingLogs provide noOpLog
 ```
 
 

@@ -1,0 +1,46 @@
+name: CI
+on:
+  - pull_request
+jobs:
+  format:
+    name: Format
+    strategy:
+      matrix:
+        os:
+          - ubuntu-20.04
+        scala:
+          - 2.13.4
+        java:
+          - adopt@1.11
+    runs-on: ${{ matrix.os }}
+    steps:
+      - name: Branch Checkout
+        uses: actions/checkout@v2
+      - name: Install Java And Sbt
+        uses: olafurpg/setup-scala@v10
+        with:
+          java-version: adopt@1.11
+      - name: Check with Scalafmt
+        run: sbt ++${{ matrix.scala }} checkFormat
+  build:
+    name: Build
+    strategy:
+      matrix:
+        os:
+          - ubuntu-20.04
+        scala:
+          - 2.12.12
+          - 2.13.4
+        java:
+          - adopt@1.11
+          - adopt@1.15
+    runs-on: ${{ matrix.os }}
+    steps:
+      - name: Branch Checkout
+        uses: actions/checkout@v2
+      - name: Install Java And Sbt
+        uses: olafurpg/setup-scala@v10
+        with:
+          java-version: ${{ matrix.java }}
+      - name: Test - [ ${{ matrix.java }} ] [ ${{ matrix.scala }} ]
+        run: sbt ++${{ matrix.scala }} ciBuild

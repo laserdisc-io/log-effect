@@ -1,3 +1,17 @@
+lazy val versionOf = new {
+  val cats          = "2.3.0"
+  val catsEffect    = "2.3.0"
+  val fs2           = "2.4.6"
+  val kindProjector = "0.11.1"
+  val log4cats      = "1.1.1"
+  val log4s         = "1.9.0"
+  val scalaCheck    = "1.15.1"
+  val scalaTest     = "3.2.3"
+  val zio           = "1.0.3"
+  val scribe        = "3.1.3"
+  val silencer      = "1.7.1"
+}
+
 lazy val scala212Options = Seq(
   "-deprecation",
   "-encoding",
@@ -39,20 +53,6 @@ lazy val scala213Options = scala212Options diff Seq(
   "-Yno-adapted-args",
   "-Xfuture"
 )
-
-lazy val versionOf = new {
-  val cats          = "2.2.0"
-  val catsEffect    = "2.2.0"
-  val fs2           = "2.4.6"
-  val kindProjector = "0.11.1"
-  val log4cats      = "1.1.1"
-  val log4s         = "1.9.0"
-  val scalaCheck    = "1.15.1"
-  val scalaTest     = "3.2.3"
-  val zio           = "1.0.3"
-  val scribe        = "3.1.1"
-  val silencer      = "1.7.1"
-}
 
 lazy val coreDependencies = Seq(
   "org.log4s" %% "log4s"  % versionOf.log4s,
@@ -134,7 +134,7 @@ lazy val root = project
   .settings(
     name := "log-effect",
     publishArtifact := false,
-    addCommandAlias("format", ";scalafmt;test:scalafmt;scalafmtSbt"),
+    addCommandAlias("fmt", ";scalafmt;test:scalafmt;scalafmtSbt"),
     addCommandAlias(
       "checkFormat",
       ";scalafmtCheck;test:scalafmtCheck;scalafmtSbtCheck"

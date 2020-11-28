@@ -18,7 +18,7 @@ object LogWriterConstructor {
       val construction: G[l4s.Logger] => G[LogWriter[F]] =
         _ map { l4sLogger =>
           new LogWriter[F] {
-            def write[A: Show, L <: LogLevel: Show](level: L, a: =>A): F[Unit] = {
+            def write[A: Show](level: LogLevel, a: =>A): F[Unit] = {
               val beLevel = level match {
                 case LogLevels.Trace => l4s.Trace
                 case LogLevels.Debug => l4s.Debug
@@ -45,7 +45,7 @@ object LogWriterConstructor {
       val construction: G[jul.Logger] => G[LogWriter[F]] =
         _ map { julLogger =>
           new LogWriter[F] {
-            def write[A: Show, L <: LogLevel: Show](level: L, a: =>A): F[Unit] = {
+            def write[A: Show](level: LogLevel, a: =>A): F[Unit] = {
               val beLevel = level match {
                 case LogLevels.Trace => jul.Level.FINEST
                 case LogLevels.Debug => jul.Level.FINE
@@ -78,7 +78,7 @@ object LogWriterConstructor {
       val construction: G[scribe.Logger] => G[LogWriter[F]] =
         _ map { scribeLogger =>
           new LogWriter[F] {
-            def write[A: Show, L <: LogLevel: Show](level: L, a: =>A): F[Unit] = {
+            def write[A: Show](level: LogLevel, a: =>A): F[Unit] = {
               val beLevel = level match {
                 case LogLevels.Trace => scribe.Level.Trace
                 case LogLevels.Debug => scribe.Level.Debug
@@ -107,7 +107,7 @@ object LogWriterConstructor {
           new LogWriter[F] {
             private val minLogLevel = ll
 
-            def write[A: Show, L <: LogLevel: Show](level: L, a: =>A): F[Unit] =
+            def write[A: Show](level: LogLevel, a: =>A): F[Unit] =
               if (level >= minLogLevel)
                 F.suspend(
                   println(
@@ -123,7 +123,7 @@ object LogWriterConstructor {
       val construction: Unit => Id[LogWriter[Id]] =
         _ =>
           new LogWriter[Id] {
-            def write[A: Show, L <: LogLevel: Show](level: L, a: =>A): Unit = ()
+            def write[A: Show](level: LogLevel, a: =>A): Unit = ()
           }
     }
 }

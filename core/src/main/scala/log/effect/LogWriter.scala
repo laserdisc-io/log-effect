@@ -6,7 +6,7 @@ import log.effect.internal.{Id, Show}
 import scala.language.implicitConversions
 
 trait LogWriter[F[_]] {
-  def write[A: Show, L <: LogLevel: Show](level: L, a: =>A): F[Unit]
+  def write[A: Show](level: LogLevel, a: =>A): F[Unit]
 }
 
 object LogWriter extends LogWriterSyntax {
