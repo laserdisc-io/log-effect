@@ -35,6 +35,7 @@ jobs:
         run: sbt ++2.13.4 checkFormat
   build:
     name: Build
+    needs: format
     strategy:
       matrix:
         os:
@@ -72,7 +73,7 @@ jobs:
   publish_212:
     if: github.event_name == 'push' && github.ref == 'refs/heads/master'
     name: Publish Snapshot 2.12
-    needs: [format, build]
+    needs: build
     runs-on: ubuntu-18.04
     steps:
       - name: Branch Checkout
