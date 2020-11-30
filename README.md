@@ -1,6 +1,6 @@
 # Log Effect
 ![CI](https://github.com/laserdisc-io/log-effect/workflows/CI/badge.svg?branch=master)
-![Release](https://github.com/laserdisc-io/log-effect/workflows/Release/badge.svg?branch=master)
+![Release](https://github.com/laserdisc-io/log-effect/workflows/Release/badge.svg)
 [![Known Vulnerabilities](https://snyk.io/test/github/laserdisc-io/log-effect/badge.svg?targetFile=build.sbt)](https://snyk.io/test/github/laserdisc-io/log-effect?targetFile=build.sbt)
 [![scaladex](https://img.shields.io/badge/scaladex-log--effect-orange.svg)](https://index.scala-lang.org/laserdisc-io/log-effect)
 
