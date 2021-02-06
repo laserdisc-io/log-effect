@@ -11,7 +11,7 @@ lazy val versionOf = new {
   val scalaCheck    = "1.15.2"
   val scalaTest     = "3.2.3"
   val zio           = "1.0.4-1"
-  val scribe        = "3.3.1"
+  val scribe        = "3.3.2"
   val silencer      = "1.7.1"
 }
 
