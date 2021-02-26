@@ -9,7 +9,7 @@ final class InteropTest extends AnyWordSpecLike with Matchers with TestLogCaptur
   "A LogWriter instance can be derived from a log4cats Logger" in {
     import cats.effect.IO
     import cats.syntax.flatMap._
-    import io.chrisdavenport.log4cats.slf4j.Slf4jLogger
+    import org.typelevel.log4cats.slf4j.Slf4jLogger
     import log.effect.LogWriter
     import log.effect.internal.Show
 
@@ -57,7 +57,7 @@ final class InteropTest extends AnyWordSpecLike with Matchers with TestLogCaptur
   "The readme interop example compiles" in {
     import cats.effect.{Resource, Sync}
     import cats.syntax.flatMap._
-    import io.chrisdavenport.log4cats.Logger
+    import org.typelevel.log4cats.Logger
     import log.effect.LogWriter
 
     import log.effect.interop.log4cats._
