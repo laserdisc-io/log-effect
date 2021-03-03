@@ -77,9 +77,9 @@ lazy val zioDependencies = Seq(
 ) map (_.withSources)
 
 lazy val interopDependencies = Seq(
-  "io.chrisdavenport" %% "log4cats-core"  % versionOf.log4cats,
-  "io.chrisdavenport" %% "log4cats-slf4j" % versionOf.log4cats   % Test,
-  "org.typelevel"     %% "cats-effect"    % versionOf.catsEffect % Test
+  "org.typelevel" %% "log4cats-core"  % versionOf.log4cats,
+  "org.typelevel" %% "log4cats-slf4j" % versionOf.log4cats   % Test,
+  "org.typelevel" %% "cats-effect"    % versionOf.catsEffect % Test
 ) map (_.withSources)
 
 lazy val testDependencies = Seq(
