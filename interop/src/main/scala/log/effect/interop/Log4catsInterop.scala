@@ -1,7 +1,7 @@
 package log.effect
 package interop
 
-import io.chrisdavenport.log4cats.{Logger, MessageLogger}
+import org.typelevel.log4cats.{Logger, MessageLogger}
 import log.effect.LogLevels.{Debug, Error, Info, Trace, Warn}
 import log.effect.internal.Show
 import log.effect.internal.syntax._

@@ -1,8 +1,8 @@
 import cats.effect.{IO, Resource, Sync}
 import cats.syntax.flatMap._
 import com.github.ghik.silencer.silent
-import io.chrisdavenport.log4cats.SelfAwareStructuredLogger
-import io.chrisdavenport.log4cats.slf4j.Slf4jLogger
+import org.typelevel.log4cats.SelfAwareStructuredLogger
+import org.typelevel.log4cats.slf4j.Slf4jLogger
 import log.effect.fs2.LogSelector
 import log.effect.interop.TestLogCapture
 import org.scalatest.matchers.should.Matchers
