@@ -1,6 +1,7 @@
 import com.github.ghik.silencer.silent
 import org.scalatest.matchers.should.Matchers
 import org.scalatest.wordspec.AnyWordSpecLike
+import cats.effect.Temporal
 
 @silent final class ReadmeLogSubmissionCodeSnippetsTest extends AnyWordSpecLike with Matchers {
   "`in a monadic sequence of effects` snippet should compile" in {
@@ -23,7 +24,7 @@ import org.scalatest.wordspec.AnyWordSpecLike
   "`in a streaming environment using `LogWriter`'s syntax` snippet should compile" in {
     import java.nio.channels.AsynchronousChannelGroup
 
-    import cats.effect.{ConcurrentEffect, ContextShift, Timer}
+    import cats.effect.ConcurrentEffect
     import cats.syntax.flatMap._
     import log.effect.LogWriter
 
@@ -40,7 +41,7 @@ import org.scalatest.wordspec.AnyWordSpecLike
     implicit def EC: ExecutionContext         = ???
     implicit def CG: AsynchronousChannelGroup = ???
 
-    def redisClient[F[_]: ConcurrentEffect: ContextShift: Timer](
+    def redisClient[F[_]: ConcurrentEffect: ContextShift: Temporal](
       address: String
     )(implicit log: LogWriter[F]): fs2.Stream[F, RedisClient[F]] =
       RedisClient[F](address) evalMap { client =>
@@ -51,7 +52,7 @@ import org.scalatest.wordspec.AnyWordSpecLike
   "`in a streaming environment using `fs2` streams' syntax` snippet should compile" in {
     import java.nio.channels.AsynchronousChannelGroup
 
-    import cats.effect.{ConcurrentEffect, ContextShift, Timer}
+    import cats.effect.ConcurrentEffect
     import log.effect.LogWriter
     import log.effect.fs2.syntax._
 
@@ -68,7 +69,7 @@ import org.scalatest.wordspec.AnyWordSpecLike
     implicit def EC: ExecutionContext         = ???
     implicit def CG: AsynchronousChannelGroup = ???
 
-    def redisCache[F[_]: ConcurrentEffect: ContextShift: Timer](
+    def redisCache[F[_]: ConcurrentEffect: ContextShift: Temporal](
       address: String
     )(implicit log: LogWriter[F]): fs2.Stream[F, RedisClient[F]] =
       for {
@@ -119,7 +120,7 @@ import org.scalatest.wordspec.AnyWordSpecLike
     import java.nio.channels.AsynchronousChannelGroup
 
     import cats.Show
-    import cats.effect.{ConcurrentEffect, ContextShift, Timer}
+    import cats.effect.ConcurrentEffect
     import cats.instances.string._
     import cats.syntax.either._
     import cats.syntax.flatMap._
@@ -142,7 +143,7 @@ import org.scalatest.wordspec.AnyWordSpecLike
     implicit def EC: ExecutionContext         = ???
     implicit def CG: AsynchronousChannelGroup = ???
 
-    def redisClient[F[_]: ConcurrentEffect: ContextShift: Timer: LogWriter](
+    def redisClient[F[_]: ConcurrentEffect: ContextShift: Temporal: LogWriter](
       address: String
     ): fs2.Stream[F, Throwable | RedisClient[F]] = {
       // Cats Show instances are needed for every logged type
