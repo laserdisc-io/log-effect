@@ -1,5 +1,5 @@
 lazy val scala_212 = "2.12.13"
-lazy val scala_213 = "2.13.4"
+lazy val scala_213 = "2.13.5"
 
 lazy val versionOf = new {
   val cats          = "2.6.0"
@@ -102,7 +102,7 @@ lazy val crossBuildSettings = Seq(
   scalaVersion := scala_213,
   crossScalaVersions := Seq(scala_212, scala_213),
   libraryDependencies ++= testDependencies ++ compilerPluginsDependencies,
-  parallelExecution in Test := false,
+  Test / parallelExecution := false,
   scalacOptions ++=
     (CrossVersion.partialVersion(scalaVersion.value) match {
       case Some((2, 12)) => scala212Options
@@ -111,7 +111,7 @@ lazy val crossBuildSettings = Seq(
 )
 
 lazy val releaseSettings: Seq[Def.Setting[_]] = Seq(
-  publishArtifact in Test := false,
+  Test / publishArtifact := false,
   pomIncludeRepository := { _ => false },
   organization := "io.laserdisc",
   homepage := Some(url("http://laserdisc.io")),

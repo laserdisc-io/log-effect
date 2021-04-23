@@ -182,13 +182,6 @@ val julCase3: TaskLayer[ZLogWriter] =
 
 val scribeCase3: TaskLayer[ZLogWriter] =
   scribeLoggerLive >>> scribeLayerFromLogger
-
-// Case 4: from a class
-val log4sCase4: TaskLayer[ZLogWriter] =
-  classLive >>> log4sLayerFromClass
-
-val scribeCase4: TaskLayer[ZLogWriter] =
-  classLive >>> scribeLayerFromClass
 ```
 
 ##### Create LogWriter as RIO

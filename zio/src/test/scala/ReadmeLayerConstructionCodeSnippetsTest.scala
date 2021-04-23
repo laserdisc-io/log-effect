@@ -33,9 +33,6 @@ import org.scalatest.wordspec.AnyWordSpecLike
 
       final val scribeLoggerLive: ULayer[ZEnv with ZScribeLogger] =
         ZEnv.live ++ ZLayer.succeed(aScribeLogger)
-
-      final val classLive: ULayer[ZEnv with ZLogClass[LoggerClass]] =
-        ZEnv.live ++ ZLayer.succeed(classOf[LoggerClass])
     }
 
     sealed abstract class App {
@@ -69,13 +66,6 @@ import org.scalatest.wordspec.AnyWordSpecLike
 
       val scribeCase3: TaskLayer[ZLogWriter] =
         scribeLoggerLive >>> scribeLayerFromLogger
-
-      // Case 4: from a class
-      val log4sCase4: TaskLayer[ZLogWriter] =
-        classLive >>> log4sLayerFromClass
-
-      val scribeCase4: TaskLayer[ZLogWriter] =
-        classLive >>> scribeLayerFromClass
     }
   }
 }
