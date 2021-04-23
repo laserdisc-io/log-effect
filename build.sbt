@@ -4,14 +4,14 @@ lazy val scala_213 = "2.13.4"
 lazy val versionOf = new {
   val cats          = "2.6.0"
   val catsEffect    = "2.5.0"
-  val fs2           = "2.5.4"
+  val fs2           = "2.5.5"
   val kindProjector = "0.11.3"
   val log4cats      = "1.2.2"
   val log4s         = "1.9.0"
   val scalaCheck    = "1.15.3"
   val scalaTest     = "3.2.8"
   val zio           = "1.0.7"
-  val scribe        = "3.5.1"
+  val scribe        = "3.5.3"
   val silencer      = "1.7.3"
 }
 
