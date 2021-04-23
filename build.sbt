@@ -1,17 +1,17 @@
 lazy val scala_212 = "2.12.13"
-lazy val scala_213 = "2.13.4"
+lazy val scala_213 = "2.13.5"
 
 lazy val versionOf = new {
-  val cats          = "2.5.0"
-  val catsEffect    = "2.4.1"
-  val fs2           = "2.5.3"
+  val cats          = "2.6.0"
+  val catsEffect    = "2.5.0"
+  val fs2           = "2.5.5"
   val kindProjector = "0.11.3"
   val log4cats      = "2.0.0"
   val log4s         = "1.9.0"
   val scalaCheck    = "1.15.3"
-  val scalaTest     = "3.2.6"
-  val zio           = "1.0.5"
-  val scribe        = "3.5.0"
+  val scalaTest     = "3.2.7"
+  val zio           = "1.0.7"
+  val scribe        = "3.5.3"
   val silencer      = "1.7.3"
 }
 
@@ -102,7 +102,7 @@ lazy val crossBuildSettings = Seq(
   scalaVersion := scala_213,
   crossScalaVersions := Seq(scala_212, scala_213),
   libraryDependencies ++= testDependencies ++ compilerPluginsDependencies,
-  parallelExecution in Test := false,
+  Test / parallelExecution := false,
   scalacOptions ++=
     (CrossVersion.partialVersion(scalaVersion.value) match {
       case Some((2, 12)) => scala212Options
@@ -111,7 +111,7 @@ lazy val crossBuildSettings = Seq(
 )
 
 lazy val releaseSettings: Seq[Def.Setting[_]] = Seq(
-  publishArtifact in Test := false,
+  Test / publishArtifact := false,
   pomIncludeRepository := { _ => false },
   organization := "io.laserdisc",
   homepage := Some(url("http://laserdisc.io")),
