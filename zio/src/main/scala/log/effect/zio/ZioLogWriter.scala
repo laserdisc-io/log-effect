@@ -63,15 +63,11 @@ object ZioLogWriter {
 
   @silent("a type was inferred to be `Any`; this may indicate a programming error.")
   val log4sLayerFromLogger: RLayer[ZLog4sLogger, ZLogWriter] =
-    ZLayer.fromServiceM(log4sLogger => log4sFromLogger provide log4sLogger)
-
-  @silent("a type was inferred to be `Any`; this may indicate a programming error.")
-  def log4sLayerFromClass[A: Tag]: RLayer[ZLogClass[A], ZLogWriter] =
-    ZLayer.fromServiceM(c => log4sFromClass provide c)
+    ZLayer.fromServiceM(log4sFromLogger.provide)
 
   @silent("a type was inferred to be `Any`; this may indicate a programming error.")
   val julLayerFromLogger: RLayer[ZJulLogger, ZLogWriter] =
-    ZLayer.fromServiceM(julLogger => julFromLogger provide julLogger)
+    ZLayer.fromServiceM(julFromLogger.provide)
 
   @silent("a type was inferred to be `Any`; this may indicate a programming error.")
   val scribeLayerFromName: RLayer[ZLogName, ZLogWriter] =
@@ -79,11 +75,7 @@ object ZioLogWriter {
 
   @silent("a type was inferred to be `Any`; this may indicate a programming error.")
   val scribeLayerFromLogger: RLayer[ZScribeLogger, ZLogWriter] =
-    ZLayer.fromServiceM(scribeLogger => scribeFromLogger provide scribeLogger)
-
-  @silent("a type was inferred to be `Any`; this may indicate a programming error.")
-  def scribeLayerFromClass[A: Tag]: RLayer[ZLogClass[A], ZLogWriter] =
-    ZLayer.fromServiceM(c => scribeFromClass provide c)
+    ZLayer.fromServiceM(scribeFromLogger.provide)
 
   val consoleLogLayer: ULayer[ZLogWriter] =
     ZLayer.succeed(consoleLog)

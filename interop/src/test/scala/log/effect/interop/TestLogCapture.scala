@@ -8,7 +8,7 @@ import org.slf4j.Logger
 
 trait TestLogCapture {
 
-  protected final def capturedLog4sOutOf[F[_]: Sync: Effect](
+  protected final def capturedLog4sOutOf[F[_]: Effect](
     logWrite: Logger => F[Unit]
   ): Seq[LoggedEvent] = {
     val loggingAction: F[Unit] =
