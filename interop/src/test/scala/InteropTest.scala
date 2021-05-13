@@ -8,7 +8,7 @@ final class InteropTest extends AnyWordSpecLike with Matchers with TestLogCaptur
 
   "A LogWriter instance can be derived from a log4cats Logger" in {
     import cats.effect.IO
-    import cats.syntax.flatMap._
+    import cats.effect.unsafe.implicits.global
     import org.typelevel.log4cats.slf4j.Slf4jLogger
     import log.effect.LogWriter
     import log.effect.internal.Show
@@ -21,7 +21,7 @@ final class InteropTest extends AnyWordSpecLike with Matchers with TestLogCaptur
         }
     }
 
-    val logged = capturedLog4sOutOf[IO] { logger =>
+    val logged = capturedLog4sOutOf { logger =>
       import log.effect.interop.log4cats._
 
       implicit val buildMessageLogger =
