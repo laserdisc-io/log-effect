@@ -139,25 +139,15 @@ lazy val root = project
   .settings(
     name := "log-effect",
     publishArtifact := false,
-    addCommandAlias("fmt", ";scalafmt;test:scalafmt;scalafmtSbt"),
-    addCommandAlias(
-      "checkFormat",
-      ";scalafmtCheck;test:scalafmtCheck;scalafmtSbtCheck"
-    ),
-    addCommandAlias(
-      "ciBuild",
-      ";clean;test"
-    ),
-    addCommandAlias(
-      "fullBuild",
-      ";checkFormat;ciBuild"
-    ),
-    // travis release aliases
+    addCommandAlias("fmt", "scalafmt;Test/scalafmt;scalafmtSbt"),
+    addCommandAlias("checkFormat", "scalafmtCheck;Test/scalafmtCheck;scalafmtSbtCheck"),
+    addCommandAlias("ciBuild", "clean;test"),
+    addCommandAlias("fullBuild", "checkFormat;ciBuild"),
     addCommandAlias(
       "setReleaseOptions",
       "set scalacOptions ++= Seq(\"-opt:l:method\", \"-opt:l:inline\", \"-opt-inline-from:laserdisc.**\", \"-opt-inline-from:<sources>\")"
     ),
-    addCommandAlias("releaseIt", ";clean;setReleaseOptions;session list;compile;ci-release")
+    addCommandAlias("releaseIt", "clean;setReleaseOptions;session list;compile;ci-release")
   )
 
 lazy val core = project
