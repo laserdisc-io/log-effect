@@ -4,6 +4,7 @@ package fs2
 import java.io.{ByteArrayOutputStream, PrintStream}
 
 import cats.effect.IO
+import cats.effect.unsafe.implicits.global
 
 trait TestLogCapture {
 

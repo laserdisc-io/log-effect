@@ -14,6 +14,13 @@ project/target
 project/project/*
 !project/project/plugins.sbt
 
+# Metals + Bloop
+.metals/
+metals.sbt
+.bloop/
+.bsp/
+.vscode/
+
 # IDEA specific
 .idea
 
