@@ -47,7 +47,7 @@ Currently Log Effect supports the following backends
 
 |                          | Cats | Fs2 | Cats Effect | Log Effect Core   |
 | ------------------------:| ----:| ---:| -----------:| -----------------:|
-| [![Maven Central](https://img.shields.io/maven-central/v/io.laserdisc/log-effect-fs2_2.13.svg?label=log-effect-fs2&colorB=2282c3)](https://maven-badges.herokuapp.com/maven-central/io.laserdisc/log-effect-fs2_2.13) | 2.6.0 | 2.5.5 | 2.5.0 | [![Maven Central](https://img.shields.io/maven-central/v/io.laserdisc/log-effect-core_2.13.svg?label=%20&colorB=9311fc)](https://maven-badges.herokuapp.com/maven-central/io.laserdisc/log-effect-core_2.13) |
+| [![Maven Central](https://img.shields.io/maven-central/v/io.laserdisc/log-effect-fs2_2.13.svg?label=log-effect-fs2&colorB=2282c3)](https://maven-badges.herokuapp.com/maven-central/io.laserdisc/log-effect-fs2_2.13) | 2.6.0 | 3.0.2 | 3.1.0 | [![Maven Central](https://img.shields.io/maven-central/v/io.laserdisc/log-effect-core_2.13.svg?label=%20&colorB=9311fc)](https://maven-badges.herokuapp.com/maven-central/io.laserdisc/log-effect-core_2.13) |
 
 <br>
 
@@ -59,13 +59,13 @@ Currently Log Effect supports the following backends
 
 |                          | Log4cats | Log Effect Core   |
 | ------------------------:| --------:| -----------------:|
-| [![Maven Central](https://img.shields.io/maven-central/v/io.laserdisc/log-effect-interop_2.13.svg?label=log-effect-interop&colorB=009933)](https://maven-badges.herokuapp.com/maven-central/io.laserdisc/log-effect-interop_2.13) | 1.2.2 | [![Maven Central](https://img.shields.io/maven-central/v/io.laserdisc/log-effect-core_2.13.svg?label=%20&colorB=9311fc)](https://maven-badges.herokuapp.com/maven-central/io.laserdisc/log-effect-core_2.13) |
+| [![Maven Central](https://img.shields.io/maven-central/v/io.laserdisc/log-effect-interop_2.13.svg?label=log-effect-interop&colorB=009933)](https://maven-badges.herokuapp.com/maven-central/io.laserdisc/log-effect-interop_2.13) | 2.1.0 | [![Maven Central](https://img.shields.io/maven-central/v/io.laserdisc/log-effect-core_2.13.svg?label=%20&colorB=9311fc)](https://maven-badges.herokuapp.com/maven-central/io.laserdisc/log-effect-core_2.13) |
 
 <br>
 
 |                          | Log4s  | Scribe |
 | ------------------------:| ------:| ------:|
-| [![Maven Central](https://img.shields.io/maven-central/v/io.laserdisc/log-effect-core_2.13.svg?label=log-effect-core&colorB=9311fc)](https://maven-badges.herokuapp.com/maven-central/io.laserdisc/log-effect-core_2.13) | 1.9.0 | 3.5.3 |
+| [![Maven Central](https://img.shields.io/maven-central/v/io.laserdisc/log-effect-core_2.13.svg?label=log-effect-core&colorB=9311fc)](https://maven-badges.herokuapp.com/maven-central/io.laserdisc/log-effect-core_2.13) | 1.9.0 | 3.5.4 |
 
 <br>
 
