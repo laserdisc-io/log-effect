@@ -3,15 +3,15 @@ lazy val scala_213 = "2.13.5"
 
 lazy val versionOf = new {
   val cats          = "2.6.0"
-  val catsEffect    = "2.5.0"
+  val catsEffect    = "3.1.0"
   val fs2           = "3.0.2"
   val kindProjector = "0.11.3"
-  val log4cats      = "1.2.2"
+  val log4cats      = "2.1.0"
   val log4s         = "1.9.0"
-  val scalaCheck    = "1.15.3"
+  val scalaCheck    = "1.15.4"
   val scalaTest     = "3.2.8"
   val zio           = "1.0.7"
-  val scribe        = "3.5.3"
+  val scribe        = "3.5.4"
   val silencer      = "1.7.3"
 }
 
@@ -139,25 +139,15 @@ lazy val root = project
   .settings(
     name := "log-effect",
     publishArtifact := false,
-    addCommandAlias("fmt", ";scalafmt;test:scalafmt;scalafmtSbt"),
-    addCommandAlias(
-      "checkFormat",
-      ";scalafmtCheck;test:scalafmtCheck;scalafmtSbtCheck"
-    ),
-    addCommandAlias(
-      "ciBuild",
-      ";clean;test"
-    ),
-    addCommandAlias(
-      "fullBuild",
-      ";checkFormat;ciBuild"
-    ),
-    // travis release aliases
+    addCommandAlias("fmt", "scalafmt;Test/scalafmt;scalafmtSbt"),
+    addCommandAlias("checkFormat", "scalafmtCheck;Test/scalafmtCheck;scalafmtSbtCheck"),
+    addCommandAlias("ciBuild", "clean;test"),
+    addCommandAlias("fullBuild", "checkFormat;ciBuild"),
     addCommandAlias(
       "setReleaseOptions",
       "set scalacOptions ++= Seq(\"-opt:l:method\", \"-opt:l:inline\", \"-opt-inline-from:laserdisc.**\", \"-opt-inline-from:<sources>\")"
     ),
-    addCommandAlias("releaseIt", ";clean;setReleaseOptions;session list;compile;ci-release")
+    addCommandAlias("releaseIt", "clean;setReleaseOptions;session list;compile;ci-release")
   )
 
 lazy val core = project
