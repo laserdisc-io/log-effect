@@ -16,9 +16,7 @@ final class InteropTest extends AnyWordSpecLike with Matchers with TestLogCaptur
     final class A()
     object A {
       implicit val showA: Show[A] =
-        new Show[A] {
-          def show(a: A): String = "an A"
-        }
+        (_: A) => "an A"
     }
 
     val logged = capturedLog4sOutOf { logger =>
