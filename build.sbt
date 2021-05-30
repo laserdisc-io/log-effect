@@ -12,7 +12,7 @@ lazy val versionOf = new {
   val scalaTest     = "3.2.9"
   val zio           = "1.0.8"
   val scribe        = "3.5.5"
-  val silencer      = "1.7.4"
+  val silencer      = "1.7.5"
 }
 
 lazy val scala212Options = Seq(
