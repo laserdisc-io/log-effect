@@ -99,7 +99,7 @@ lazy val compilerPluginsDependencies = Seq(
 )
 
 lazy val crossBuildSettings = Seq(
-  scalaVersion := scala_213,
+  scalaVersion       := scala_213,
   crossScalaVersions := Seq(scala_212, scala_213),
   libraryDependencies ++= testDependencies ++ compilerPluginsDependencies,
   Test / parallelExecution := false,
@@ -112,9 +112,9 @@ lazy val crossBuildSettings = Seq(
 
 lazy val releaseSettings: Seq[Def.Setting[_]] = Seq(
   Test / publishArtifact := false,
-  pomIncludeRepository := { _ => false },
-  organization := "io.laserdisc",
-  homepage := Some(url("http://laserdisc.io")),
+  pomIncludeRepository   := { _ => false },
+  organization           := "io.laserdisc",
+  homepage               := Some(url("http://laserdisc.io")),
   developers := List(
     Developer("barambani", "Filippo Mariotti", "", url("https://github.com/barambani"))
   ),
@@ -137,7 +137,7 @@ lazy val root = project
   .settings(crossBuildSettings)
   .settings(releaseSettings)
   .settings(
-    name := "log-effect",
+    name            := "log-effect",
     publishArtifact := false,
     addCommandAlias("fmt", "scalafmt;Test/scalafmt;scalafmtSbt"),
     addCommandAlias("checkFormat", "scalafmtCheck;Test/scalafmtCheck;scalafmtSbtCheck"),
