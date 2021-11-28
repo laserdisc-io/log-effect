@@ -2,7 +2,7 @@ lazy val scala_212 = "2.12.15"
 lazy val scala_213 = "2.13.7"
 
 lazy val versionOf = new {
-  val cats          = "2.6.1"
+  val cats          = "2.7.0"
   val catsEffect    = "3.2.9"
   val fs2           = "3.2.2"
   val kindProjector = "0.13.2"
