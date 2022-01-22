@@ -6,12 +6,12 @@ lazy val versionOf = new {
   val catsEffect    = "3.3.4"
   val fs2           = "3.2.4"
   val kindProjector = "0.13.2"
-  val log4cats      = "2.1.1"
+  val log4cats      = "2.2.0"
   val log4s         = "1.10.0"
   val scalaCheck    = "1.15.4"
   val scalaTest     = "3.2.10"
   val zio           = "1.0.13"
-  val scribe        = "3.6.9"
+  val scribe        = "3.6.10"
   val silencer      = "1.7.7"
 }
 
