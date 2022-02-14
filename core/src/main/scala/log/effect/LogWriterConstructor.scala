@@ -1,10 +1,10 @@
 package log.effect
 
 import java.util.{logging => jul}
-
 import log.effect.internal._
 import log.effect.internal.syntax._
 import org.{log4s => l4s}
+import scribe.message.Message
 
 sealed trait LogWriterConstructor[R, G[_], F[_]] {
   def construction: G[R] => G[LogWriter[F]]
@@ -89,8 +89,8 @@ object LogWriterConstructor {
 
               F.suspend(
                 a match {
-                  case Failure(msg, th) => scribeLogger.log(beLevel, msg, Some(th))
-                  case _                => scribeLogger.log(beLevel, a.show, None)
+                  case Failure(msg, th) => scribeLogger.log(beLevel, msg, Message.static(th) :: Nil)
+                  case _                => scribeLogger.log(beLevel, a.show, Nil)
                 }
               )
             }
