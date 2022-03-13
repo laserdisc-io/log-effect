@@ -19,10 +19,11 @@
  * CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
  */
 
-import com.github.ghik.silencer.silent
 import log.effect.internal.Show
 import org.scalatest.wordspec.AnyWordSpecLike
 import org.scalatest.matchers.should.Matchers
+
+import scala.annotation.nowarn
 
 final class LogWriterSyntaxResolutionTest extends AnyWordSpecLike with Matchers {
   case class A()
@@ -36,7 +37,7 @@ final class LogWriterSyntaxResolutionTest extends AnyWordSpecLike with Matchers 
     "be inferred without extra import" in {
       import log.effect.LogWriter
 
-      @silent def test[F[_]](l: LogWriter[F]) = {
+      @nowarn def test[F[_]](l: LogWriter[F]) = {
         l.trace(A())
         l.trace("test")
         l.trace(new Throwable("test"))
@@ -70,22 +71,22 @@ final class LogWriterSyntaxResolutionTest extends AnyWordSpecLike with Matchers 
       import log.effect.LogLevels.Trace
       import log.effect.LogWriter
 
-      @silent def f1[F[_]: LogWriter] =
+      @nowarn def f1[F[_]: LogWriter] =
         LogWriter.write(Trace, "test")
 
-      @silent def f2[F[_]: LogWriter] =
+      @nowarn def f2[F[_]: LogWriter] =
         LogWriter.trace(A())
 
-      @silent def f3[F[_]: LogWriter] =
+      @nowarn def f3[F[_]: LogWriter] =
         LogWriter.debug(A())
 
-      @silent def f4[F[_]: LogWriter] =
+      @nowarn def f4[F[_]: LogWriter] =
         LogWriter.info(A())
 
-      @silent def f5[F[_]: LogWriter] =
+      @nowarn def f5[F[_]: LogWriter] =
         LogWriter.error(A())
 
-      @silent def f6[F[_]: LogWriter] =
+      @nowarn def f6[F[_]: LogWriter] =
         LogWriter.warn(A())
     }
 
@@ -93,10 +94,10 @@ final class LogWriterSyntaxResolutionTest extends AnyWordSpecLike with Matchers 
       import log.effect.LogLevels.Error
       import log.effect.{Failure, LogWriter}
 
-      @silent def f1[F[_]: LogWriter] =
+      @nowarn def f1[F[_]: LogWriter] =
         LogWriter.write(Error, Failure("test", new Exception("test exception")))
 
-      @silent def f2[F[_]: LogWriter] =
+      @nowarn def f2[F[_]: LogWriter] =
         LogWriter.error(Failure("test", new Exception("test exception")))
     }
   }

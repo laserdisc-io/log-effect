@@ -21,10 +21,11 @@
 
 import cats.Applicative
 import cats.syntax.functor._
-import com.github.ghik.silencer.silent
 import log.effect.internal
 import org.scalatest.matchers.should.Matchers
 import org.scalatest.wordspec.AnyWordSpecLike
+
+import scala.annotation.nowarn
 
 final class LogWriterResolutionTest extends AnyWordSpecLike with Matchers {
   "the construction" should {
@@ -46,13 +47,13 @@ final class LogWriterResolutionTest extends AnyWordSpecLike with Matchers {
         implicitly[LogWriterConstructor[log4s.Logger, internal.Id, F]].construction
       }
 
-      @silent def l1[F[_]](implicit F: Sync[F]): F[LogWriter[F]] =
+      @nowarn def l1[F[_]](implicit F: Sync[F]): F[LogWriter[F]] =
         c(F.delay(org.log4s.getLogger("test")))
 
-      @silent def pureL1[F[_]]: LogWriter[F] =
+      @nowarn def pureL1[F[_]]: LogWriter[F] =
         cPure[F](org.log4s.getLogger("test"))
 
-      @silent def l2[F[_]](implicit F: Sync[F]): F[LogWriter[F]] =
+      @nowarn def l2[F[_]](implicit F: Sync[F]): F[LogWriter[F]] =
         F.delay(org.log4s.getLogger("test")) map log4sLog[F]
     }
 
@@ -75,13 +76,13 @@ final class LogWriterResolutionTest extends AnyWordSpecLike with Matchers {
         implicitly[LogWriterConstructor[jul.Logger, internal.Id, F]].construction
       }
 
-      @silent def l1[F[_]](implicit F: Sync[F]): F[LogWriter[F]] =
+      @nowarn def l1[F[_]](implicit F: Sync[F]): F[LogWriter[F]] =
         c(F.delay(java.util.logging.Logger.getGlobal))
 
-      @silent def pureL1[F[_]]: LogWriter[F] =
+      @nowarn def pureL1[F[_]]: LogWriter[F] =
         cPure[F](java.util.logging.Logger.getGlobal)
 
-      @silent def l2[F[_]](implicit F: Sync[F]): F[LogWriter[F]] =
+      @nowarn def l2[F[_]](implicit F: Sync[F]): F[LogWriter[F]] =
         F.delay(java.util.logging.Logger.getGlobal) map julLog[F]
     }
 
@@ -109,16 +110,16 @@ final class LogWriterResolutionTest extends AnyWordSpecLike with Matchers {
         implicitly[LogWriterConstructor[L, Id, F]].construction
       }
 
-      @silent def l1[F[_]]: LogWriter[F] =
+      @nowarn def l1[F[_]]: LogWriter[F] =
         c[F, LogLevels.Trace](LogLevels.Trace)
 
-      @silent def l2[F[_]: Sync]: LogWriter[F] =
+      @nowarn def l2[F[_]: Sync]: LogWriter[F] =
         consoleLog[F]
 
-      @silent def l3[F[_]]: LogWriter[F] =
+      @nowarn def l3[F[_]]: LogWriter[F] =
         c[F, LogLevels.Info](LogLevels.Info)
 
-      @silent def l4[F[_]: Sync]: LogWriter[F] =
+      @nowarn def l4[F[_]: Sync]: LogWriter[F] =
         consoleLogUpToLevel(LogLevels.Info)
     }
 
@@ -130,9 +131,9 @@ final class LogWriterResolutionTest extends AnyWordSpecLike with Matchers {
       def c: Unit => LogWriter[Id] =
         implicitly[LogWriterConstructor[Unit, Id, Id]].construction
 
-      @silent def l1: LogWriter[Id] = c(())
+      @nowarn def l1: LogWriter[Id] = c(())
 
-      @silent def l2[F[_]: Applicative]: LogWriter[F] = noOpLog[F]
+      @nowarn def l2[F[_]: Applicative]: LogWriter[F] = noOpLog[F]
     }
 
     "correctly infer a valid log4s constructor for IO" in {
@@ -153,13 +154,13 @@ final class LogWriterResolutionTest extends AnyWordSpecLike with Matchers {
         implicitly[LogWriterConstructor[log4s.Logger, internal.Id, IO]].construction
       }
 
-      @silent def l1: IO[LogWriter[IO]] =
+      @nowarn def l1: IO[LogWriter[IO]] =
         c(IO.delay(org.log4s.getLogger("test")))
 
-      @silent def pureL1: LogWriter[IO] =
+      @nowarn def pureL1: LogWriter[IO] =
         cPure(org.log4s.getLogger("test"))
 
-      @silent def l2: IO[LogWriter[IO]] =
+      @nowarn def l2: IO[LogWriter[IO]] =
         IO.delay(org.log4s.getLogger("test")) map log4sLog[IO]
     }
 
@@ -182,13 +183,13 @@ final class LogWriterResolutionTest extends AnyWordSpecLike with Matchers {
         implicitly[LogWriterConstructor[jul.Logger, internal.Id, IO]].construction
       }
 
-      @silent def l1: IO[LogWriter[IO]] =
+      @nowarn def l1: IO[LogWriter[IO]] =
         c(IO.delay(java.util.logging.Logger.getGlobal))
 
-      @silent def pureL1: LogWriter[IO] =
+      @nowarn def pureL1: LogWriter[IO] =
         cPure(java.util.logging.Logger.getGlobal)
 
-      @silent def l2: IO[LogWriter[IO]] =
+      @nowarn def l2: IO[LogWriter[IO]] =
         IO.delay(java.util.logging.Logger.getGlobal) map julLog[IO]
     }
   }
@@ -205,13 +206,13 @@ final class LogWriterResolutionTest extends AnyWordSpecLike with Matchers {
         implicitly[LogWriterConstructor[L, Id, IO]].construction
       }
 
-      @silent def l1: LogWriter[IO] = c(LogLevels.Trace)
+      @nowarn def l1: LogWriter[IO] = c(LogLevels.Trace)
 
-      @silent def l2: LogWriter[IO] = consoleLog[IO]
+      @nowarn def l2: LogWriter[IO] = consoleLog[IO]
 
-      @silent def l3: LogWriter[IO] = c(LogLevels.Info)
+      @nowarn def l3: LogWriter[IO] = c(LogLevels.Info)
 
-      @silent def l4: LogWriter[IO] = consoleLogUpToLevel(LogLevels.Info)
+      @nowarn def l4: LogWriter[IO] = consoleLogUpToLevel(LogLevels.Info)
     }
 
     "not be able to infer a no-op constructor for IO without lifting (see SyncLogWriter.noOpLog)" in {
@@ -223,7 +224,7 @@ final class LogWriterResolutionTest extends AnyWordSpecLike with Matchers {
         |def c: Unit => LogWriter[IO] =
         |  implicitly[LogWriterConstructor[Unit, Id, IO]].construction
         |
-        |@silent def l: LogWriter[IO] = c(())
+        |def l: LogWriter[IO] = c(())
       """.stripMargin shouldNot compile
     }
   }
@@ -234,7 +235,7 @@ final class LogWriterResolutionTest extends AnyWordSpecLike with Matchers {
       import cats.syntax.apply._
       import log.effect.LogWriter
 
-      @silent def double[F[_]: Sync: LogWriter](source: fs2.Stream[F, Int]): fs2.Stream[F, Int] =
+      @nowarn def double[F[_]: Sync: LogWriter](source: fs2.Stream[F, Int]): fs2.Stream[F, Int] =
         source evalMap { n =>
           LogWriter.debug("Processing a number") *>
             LogWriter.debug(n.toString) *>
@@ -255,7 +256,7 @@ final class LogWriterResolutionTest extends AnyWordSpecLike with Matchers {
       import log.effect.fs2.interop.show._
       import log.effect.{Failure, LogWriter}
 
-      @silent def double[F[_]: Sync: LogWriter](source: fs2.Stream[F, Int]): fs2.Stream[F, Int] = {
+      @nowarn def double[F[_]: Sync: LogWriter](source: fs2.Stream[F, Int]): fs2.Stream[F, Int] = {
         // Show instances are needed for every logged type
         implicit def addressShow: Show[Int] = ???
 
@@ -283,7 +284,7 @@ final class LogWriterResolutionTest extends AnyWordSpecLike with Matchers {
       def aLogger[F[_], Env](implicit F: LogWriter[ReaderT[F, Env, *]]): ReaderT[F, Env, Unit] =
         F.info("A message")
 
-      @silent def anotherLogger[F[_]: Sync, Env](env: Env): F[Unit] =
+      @nowarn def anotherLogger[F[_]: Sync, Env](env: Env): F[Unit] =
         log4sLog[F]("A log") >>= { implicit log => aLogger[F, Env].run(env) }
     }
   }

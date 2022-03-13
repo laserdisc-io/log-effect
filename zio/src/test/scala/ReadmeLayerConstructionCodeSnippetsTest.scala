@@ -19,15 +19,16 @@
  * CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
  */
 
-import com.github.ghik.silencer.silent
 import org.scalatest.matchers.should.Matchers
 import org.scalatest.wordspec.AnyWordSpecLike
 
-@silent final class ReadmeLayerConstructionCodeSnippetsTest extends AnyWordSpecLike with Matchers {
+import scala.annotation.nowarn
+
+@nowarn final class ReadmeLayerConstructionCodeSnippetsTest extends AnyWordSpecLike with Matchers {
   "Zio Layer construction snippets should compile" in {
     import java.util.{logging => jul}
 
-    import log.effect.zio.ZioLogWriter._
+    import log.effect.zio._, log.effect.zio.ZioLogWriter._
     import org.{log4s => l4s}
     import zio._
 

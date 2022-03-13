@@ -19,11 +19,12 @@
  * CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
  */
 
-import com.github.ghik.silencer.silent
 import org.scalatest.matchers.should.Matchers
 import org.scalatest.wordspec.AnyWordSpecLike
 
-@silent final class ReadmeRioConstructionCodeSnippetsTest extends AnyWordSpecLike with Matchers {
+import scala.annotation.nowarn
+
+@nowarn final class ReadmeRioConstructionCodeSnippetsTest extends AnyWordSpecLike with Matchers {
   "Zio RIO construction snippets should compile" in {
     import java.util.{logging => jul}
 

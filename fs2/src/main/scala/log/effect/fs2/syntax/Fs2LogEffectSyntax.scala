@@ -25,13 +25,15 @@ package syntax
 
 import _root_.fs2.Stream
 
+import scala.annotation.nowarn
+
 private[syntax] trait Fs2LogEffectSyntax extends Fs2LogEffectCompanionSyntax {
   implicit def fs2LogEffectSyntax[F[_]](aLogWriter: LogWriter[F]): Fs2LogEffectOps[F] =
     new Fs2LogEffectOps(aLogWriter)
 }
 
 private[syntax] sealed trait Fs2LogEffectCompanionSyntax {
-  implicit def fs2LogEffectSyntaxSingleton[F[_]](`_`: LogWriter.type)(
+  implicit def fs2LogEffectSyntaxSingleton[F[_]](@nowarn _underlying: LogWriter.type)(
     implicit LW: LogWriter[F]
   ): Fs2LogEffectOps[F] =
     new Fs2LogEffectOps(LW)
@@ -52,7 +54,7 @@ private[syntax] final class Fs2LogEffectOps[F[_]](private val aLogWriter: LogWri
     Stream eval aLogWriter.trace(msg)
 
   @inline
-  def traceS(th: =>Throwable)(implicit `_`: DummyImplicit): Stream[F, Unit] =
+  def traceS(th: =>Throwable)(implicit _dummy: DummyImplicit): Stream[F, Unit] =
     Stream eval aLogWriter.trace(th)
 
   @inline
@@ -68,7 +70,7 @@ private[syntax] final class Fs2LogEffectOps[F[_]](private val aLogWriter: LogWri
     Stream eval aLogWriter.debug(msg)
 
   @inline
-  def debugS(th: =>Throwable)(implicit `_`: DummyImplicit): Stream[F, Unit] =
+  def debugS(th: =>Throwable)(implicit _dummy: DummyImplicit): Stream[F, Unit] =
     Stream eval aLogWriter.debug(th)
 
   @inline
@@ -84,7 +86,7 @@ private[syntax] final class Fs2LogEffectOps[F[_]](private val aLogWriter: LogWri
     Stream eval aLogWriter.info(msg)
 
   @inline
-  def infoS(th: =>Throwable)(implicit `_`: DummyImplicit): Stream[F, Unit] =
+  def infoS(th: =>Throwable)(implicit _dummy: DummyImplicit): Stream[F, Unit] =
     Stream eval aLogWriter.info(th)
 
   @inline
@@ -100,7 +102,7 @@ private[syntax] final class Fs2LogEffectOps[F[_]](private val aLogWriter: LogWri
     Stream eval aLogWriter.error(msg)
 
   @inline
-  def errorS(th: =>Throwable)(implicit `_`: DummyImplicit): Stream[F, Unit] =
+  def errorS(th: =>Throwable)(implicit _dummy: DummyImplicit): Stream[F, Unit] =
     Stream eval aLogWriter.error(th)
 
   @inline
@@ -116,7 +118,7 @@ private[syntax] final class Fs2LogEffectOps[F[_]](private val aLogWriter: LogWri
     Stream eval aLogWriter.warn(msg)
 
   @inline
-  def warnS(th: =>Throwable)(implicit `_`: DummyImplicit): Stream[F, Unit] =
+  def warnS(th: =>Throwable)(implicit _dummy: DummyImplicit): Stream[F, Unit] =
     Stream eval aLogWriter.warn(th)
 
   @inline

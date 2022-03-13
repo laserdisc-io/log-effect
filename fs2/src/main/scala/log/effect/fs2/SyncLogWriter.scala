@@ -80,7 +80,7 @@ object SyncLogWriter {
         def fmap[A, B](f: A => B): F[A] => F[B] = F lift f
       }
 
-    implicit final class NoOpLogF(private val `_`: LogWriter[Id]) extends AnyVal {
+    implicit final class NoOpLogF(private val _underlying: LogWriter[Id]) extends AnyVal {
       def liftF[F[_]: Applicative]: LogWriter[F] =
         new LogWriter[F] {
           private[this] val unit                               = Applicative[F].unit

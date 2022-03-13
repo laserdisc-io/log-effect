@@ -21,8 +21,9 @@
 
 package log.effect
 
-import com.github.ghik.silencer.silent
 import log.effect.internal.Show
+
+import scala.annotation.nowarn
 
 sealed trait LogLevel extends Product with Serializable
 object LogLevel extends LogLevelSyntax {
@@ -73,7 +74,7 @@ object LogLevel extends LogLevelSyntax {
           }
       }
 
-  @silent private def showFor[A](a: A)(implicit ev: Show[A]): Show[A] = ev
+  @nowarn private def showFor[A](a: A)(implicit ev: Show[A]): Show[A] = ev
 }
 
 sealed trait LogLevelSyntax {

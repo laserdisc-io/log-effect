@@ -19,10 +19,11 @@
  * CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
  */
 
-import com.github.ghik.silencer.silent
 import log.effect.internal
 import org.scalatest.wordspec.AnyWordSpecLike
 import org.scalatest.matchers.should.Matchers
+
+import scala.annotation.nowarn
 
 final class LogWriterResolutionTest extends AnyWordSpecLike with Matchers {
   "the construction" should {
@@ -44,13 +45,13 @@ final class LogWriterResolutionTest extends AnyWordSpecLike with Matchers {
         implicitly[LogWriterConstructor[l4s.Logger, internal.Id, Task]].construction
       }
 
-      @silent def l1: Task[LogWriter[Task]] =
+      @nowarn def l1: Task[LogWriter[Task]] =
         c(IO.effect(l4s.getLogger("test")))
 
-      @silent def pureL1: LogWriter[Task] =
+      @nowarn def pureL1: LogWriter[Task] =
         cPure(l4s.getLogger("test"))
 
-      @silent def l2: Task[LogWriter[Task]] =
+      @nowarn def l2: Task[LogWriter[Task]] =
         log4sFromLogger.provide(l4s.getLogger("test"))
     }
 
@@ -73,13 +74,13 @@ final class LogWriterResolutionTest extends AnyWordSpecLike with Matchers {
         implicitly[LogWriterConstructor[jul.Logger, internal.Id, Task]].construction
       }
 
-      @silent def l1: Task[LogWriter[Task]] =
+      @nowarn def l1: Task[LogWriter[Task]] =
         c(IO.effect(jul.Logger.getGlobal))
 
-      @silent def pureL1: LogWriter[Task] =
+      @nowarn def pureL1: LogWriter[Task] =
         cPure(jul.Logger.getGlobal)
 
-      @silent def l2: Task[LogWriter[Task]] =
+      @nowarn def l2: Task[LogWriter[Task]] =
         julFromLogger.provide(jul.Logger.getGlobal)
     }
   }
@@ -96,13 +97,13 @@ final class LogWriterResolutionTest extends AnyWordSpecLike with Matchers {
         implicitly[LogWriterConstructor[L, Id, Task]].construction
       }
 
-      @silent def l1: LogWriter[Task] = c(LogLevels.Trace)
+      @nowarn def l1: LogWriter[Task] = c(LogLevels.Trace)
 
-      @silent def l2: LogWriter[Task] = consoleLog
+      @nowarn def l2: LogWriter[Task] = consoleLog
 
-      @silent def l3: LogWriter[Task] = c(LogLevels.Info)
+      @nowarn def l3: LogWriter[Task] = c(LogLevels.Info)
 
-      @silent def l4: LogWriter[Task] = consoleLogUpToLevel(LogLevels.Info)
+      @nowarn def l4: LogWriter[Task] = consoleLogUpToLevel(LogLevels.Info)
     }
 
     "correctly infer a valid no-op constructor for an F[_] given an implicit evidence" in {
@@ -114,9 +115,9 @@ final class LogWriterResolutionTest extends AnyWordSpecLike with Matchers {
       def c: Unit => LogWriter[Id] =
         implicitly[LogWriterConstructor[Unit, Id, Id]].construction
 
-      @silent def l1: LogWriter[Id] = c(())
+      @nowarn def l1: LogWriter[Id] = c(())
 
-      @silent def l2: LogWriter[Task] = noOpLog
+      @nowarn def l2: LogWriter[Task] = noOpLog
     }
 
     "not be able to infer a no-op constructor for zio Task without lifting (see ZioLogWriter.noOpLog)" in {
@@ -125,7 +126,7 @@ final class LogWriterResolutionTest extends AnyWordSpecLike with Matchers {
         |import log.effect.{LogWriter, LogWriterConstructor}
         |import _root_.zio.Task
         |
-        |@silent def c: Unit => LogWriter[Task] =
+        |def c: Unit => LogWriter[Task] =
         |  implicitly[LogWriterConstructor[Unit, Id, Task]].construction
       """.stripMargin shouldNot compile
     }
