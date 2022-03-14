@@ -2,6 +2,9 @@
 [![Continuous Integration](https://github.com/laserdisc-io/log-effect/actions/workflows/ci.yml/badge.svg)](https://github.com/laserdisc-io/log-effect/actions/workflows/ci.yml)
 [![Known Vulnerabilities](https://snyk.io/test/github/laserdisc-io/log-effect/badge.svg?targetFile=build.sbt)](https://snyk.io/test/github/laserdisc-io/log-effect?targetFile=build.sbt)
 [![log-effect-core Scala version support](https://index.scala-lang.org/laserdisc-io/log-effect/log-effect-core/latest-by-scala-version.svg?platform=jvm](https://index.scala-lang.org/laserdisc-io/log-effect/log-effect-core)
+[![log-effect-fs2 Scala version support](https://index.scala-lang.org/laserdisc-io/log-effect/log-effect-fs2/latest-by-scala-version.svg?platform=jvm](https://index.scala-lang.org/laserdisc-io/log-effect/log-effect-fs2)
+[![log-effect-interop Scala version support](https://index.scala-lang.org/laserdisc-io/log-effect/log-effect-interop/latest-by-scala-version.svg?platform=jvm](https://index.scala-lang.org/laserdisc-io/log-effect/log-effect-interop)
+[![log-effect-zio Scala version support](https://index.scala-lang.org/laserdisc-io/log-effect/log-effect-zio/latest-by-scala-version.svg?platform=jvm](https://index.scala-lang.org/laserdisc-io/log-effect/log-effect-zio)
 
 [![Join the chat at https://gitter.im/laserdisc-io/laserdisc](https://badges.gitter.im/laserdisc-io/laserdisc.svg)](https://gitter.im/laserdisc-io/laserdisc?utm_source=badge&utm_medium=badge&utm_campaign=pr-badge&utm_content=badge)
 [![License: MIT](https://img.shields.io/badge/License-MIT-blue.svg)](https://raw.githubusercontent.com/laserdisc-io/log-effect/master/LICENSE)
