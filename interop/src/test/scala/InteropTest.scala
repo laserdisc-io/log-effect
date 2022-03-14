@@ -19,19 +19,38 @@
  * CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
  */
 
-import com.github.ghik.silencer.silent
+import cats.effect.{Resource, Sync}
+import log.effect.LogWriter
 import log.effect.interop.TestLogCapture
 import org.scalatest.matchers.should.Matchers
 import org.scalatest.wordspec.AnyWordSpecLike
+import org.typelevel.log4cats.SelfAwareStructuredLogger
 
-@silent("local method [a-zA-Z0-9]+ in value <local InteropTest> is never used")
+import scala.annotation.nowarn
+
+sealed trait RedisClient[F[_]] {
+  def address: String
+  def write: F[Unit]
+}
+object RedisClient {
+  def apply[F[_]: LogWriter](addr: String)(implicit F: Sync[F]): Resource[F, RedisClient[F]] =
+    Resource.make(
+      F.pure(
+        new RedisClient[F] {
+          val address        = addr
+          def write: F[Unit] = LogWriter.info(address)
+        }
+      )
+    )(_ => F.unit)
+}
+
+@nowarn("msg=local method [a-zA-Z0-9]+ in value <local InteropTest> is never used")
 final class InteropTest extends AnyWordSpecLike with Matchers with TestLogCapture {
 
   "A LogWriter instance can be derived from a log4cats Logger" in {
     import cats.effect.IO
     import cats.effect.unsafe.implicits.global
     import org.typelevel.log4cats.slf4j.Slf4jLogger
-    import log.effect.LogWriter
     import log.effect.internal.Show
 
     final class A()
@@ -43,7 +62,7 @@ final class InteropTest extends AnyWordSpecLike with Matchers with TestLogCaptur
     val logged = capturedLog4sOutOf { logger =>
       import log.effect.interop.log4cats._
 
-      implicit val buildMessageLogger =
+      implicit val buildMessageLogger: SelfAwareStructuredLogger[IO] =
         Slf4jLogger.fromSlf4j[IO](logger).unsafeRunSync()
 
       val lw = implicitly[LogWriter[IO]]
@@ -74,28 +93,10 @@ final class InteropTest extends AnyWordSpecLike with Matchers with TestLogCaptur
   }
 
   "The readme interop example compiles" in {
-    import cats.effect.{Resource, Sync}
     import cats.syntax.flatMap._
     import org.typelevel.log4cats.Logger
-    import log.effect.LogWriter
 
     import log.effect.interop.log4cats._
-
-    sealed trait RedisClient[F[_]] {
-      def address: String
-      def write: F[Unit]
-    }
-    object RedisClient {
-      def apply[F[_]: LogWriter](addr: String)(implicit F: Sync[F]): Resource[F, RedisClient[F]] =
-        Resource.make(
-          F.pure(
-            new RedisClient[F] {
-              val address        = addr
-              def write: F[Unit] = LogWriter.info(address)
-            }
-          )
-        )(_ => F.unit)
-    }
 
     def buildLog4catsLogger[F[_]]: F[Logger[F]] = ???
 

@@ -25,7 +25,6 @@ package zio
 import java.util.{logging => jul}
 
 import _root_.zio._
-import com.github.ghik.silencer.silent
 import log.effect.internal.{EffectSuspension, Id, Show}
 import org.{log4s => l4s}
 
@@ -77,25 +76,19 @@ object ZioLogWriter {
   val noOpLog: LogWriter[Task] =
     LogWriter.of[Id](()).liftT
 
-  // Needed for 2.12.12 where these warnings still appear
-  @silent("a type was inferred to be `Any`; this may indicate a programming error.")
-  val log4sLayerFromName: RLayer[ZLogName, ZLogWriter] =
+  val log4sLayerFromName: RLayer[Any with ZLogName, ZLogWriter] =
     ZLayer.fromServiceM(name => log4sFromName provide name.x)
 
-  @silent("a type was inferred to be `Any`; this may indicate a programming error.")
-  val log4sLayerFromLogger: RLayer[ZLog4sLogger, ZLogWriter] =
+  val log4sLayerFromLogger: RLayer[Any with ZLog4sLogger, ZLogWriter] =
     ZLayer.fromServiceM(log4sFromLogger.provide)
 
-  @silent("a type was inferred to be `Any`; this may indicate a programming error.")
-  val julLayerFromLogger: RLayer[ZJulLogger, ZLogWriter] =
+  val julLayerFromLogger: RLayer[Any with ZJulLogger, ZLogWriter] =
     ZLayer.fromServiceM(julFromLogger.provide)
 
-  @silent("a type was inferred to be `Any`; this may indicate a programming error.")
-  val scribeLayerFromName: RLayer[ZLogName, ZLogWriter] =
+  val scribeLayerFromName: RLayer[Any with ZLogName, ZLogWriter] =
     ZLayer.fromServiceM(name => scribeFromName provide name.x)
 
-  @silent("a type was inferred to be `Any`; this may indicate a programming error.")
-  val scribeLayerFromLogger: RLayer[ZScribeLogger, ZLogWriter] =
+  val scribeLayerFromLogger: RLayer[Any with ZScribeLogger, ZLogWriter] =
     ZLayer.fromServiceM(scribeFromLogger.provide)
 
   val consoleLogLayer: ULayer[ZLogWriter] =
@@ -126,7 +119,7 @@ object ZioLogWriter {
         def fmap[A, B](f: A => B): ZIO[R, E, A] => ZIO[R, E, B] = _ map f
       }
 
-    implicit final class NoOpLogT(private val `_`: LogWriter[Id]) extends AnyVal {
+    implicit final class NoOpLogT(private val _underlying: LogWriter[Id]) extends AnyVal {
       def liftT: LogWriter[Task] =
         new LogWriter[Task] {
           override def write[A: Show](level: LogLevel, a: =>A): Task[Unit] = Task.unit

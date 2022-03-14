@@ -21,7 +21,6 @@
 
 import cats.effect.{IO, Resource, Sync}
 import cats.syntax.flatMap._
-import com.github.ghik.silencer.silent
 import org.typelevel.log4cats.SelfAwareStructuredLogger
 import org.typelevel.log4cats.slf4j.Slf4jLogger
 import log.effect.fs2.LogSelector
@@ -30,7 +29,6 @@ import org.scalatest.matchers.should.Matchers
 import org.scalatest.wordspec.AnyWordSpecLike
 import org.slf4j.Logger
 
-@silent("parameter value l in anonymous function is never used")
 final class InteropLogSelectorTest extends AnyWordSpecLike with Matchers with TestLogCapture {
 
   private[this] sealed trait ALoggingClient[F[_]] {

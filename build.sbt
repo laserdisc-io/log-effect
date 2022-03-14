@@ -1,5 +1,6 @@
 val scala_212 = "2.12.15"
 val scala_213 = "2.13.8"
+val scala_3   = "3.1.1"
 
 val versionOf = new {
   val cats          = "2.7.0"
@@ -12,7 +13,6 @@ val versionOf = new {
   val scalaTest     = "3.2.11"
   val zio           = "1.0.13"
   val scribe        = "3.8.2"
-  val silencer      = "1.7.8"
 }
 
 lazy val coreDependencies = Seq(
@@ -49,20 +49,17 @@ lazy val testDependencies = Seq(
 lazy val compilerPluginsDependencies = Seq(
   compilerPlugin(
     "org.typelevel" %% "kind-projector" % versionOf.kindProjector cross CrossVersion.full
-  ),
-  compilerPlugin(
-    "com.github.ghik" %% "silencer-plugin" % versionOf.silencer cross CrossVersion.full
-  ),
-  "com.github.ghik" %% "silencer-lib" % versionOf.silencer % Provided cross CrossVersion.full
+  )
 )
 
 ThisBuild / tlBaseVersion       := "0.16"
 ThisBuild / tlCiReleaseBranches := Seq("master")
+ThisBuild / tlVersionIntroduced := Map("3" -> "0.16.3")
 ThisBuild / organization        := "io.laserdisc"
 ThisBuild / organizationName    := "LaserDisc"
 ThisBuild / licenses            := Seq(License.MIT)
 ThisBuild / developers          := List(tlGitHubDev("barambani", "Filippo Mariotti"))
-ThisBuild / crossScalaVersions  := Seq(scala_212, scala_213)
+ThisBuild / crossScalaVersions  := Seq(scala_212, scala_213, scala_3)
 ThisBuild / scalaVersion        := scala_213
 ThisBuild / githubWorkflowJavaVersions := Seq(
   JavaSpec.temurin("8"),
@@ -71,7 +68,10 @@ ThisBuild / githubWorkflowJavaVersions := Seq(
 )
 ThisBuild / Test / parallelExecution := false
 
-ThisBuild / libraryDependencies ++= testDependencies ++ compilerPluginsDependencies
+ThisBuild / libraryDependencies ++= testDependencies
+ThisBuild / libraryDependencies ++= {
+  if (tlIsScala3.value) Seq.empty else compilerPluginsDependencies
+}
 
 lazy val root = tlCrossRootProject.aggregate(core, fs2, zio, interop)
 
