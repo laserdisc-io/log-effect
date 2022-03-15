@@ -1,18 +1,12 @@
 # Log Effect
-![CI](https://github.com/laserdisc-io/log-effect/workflows/CI/badge.svg?branch=master)
-![Release](https://github.com/laserdisc-io/log-effect/workflows/Release/badge.svg)
+[![Continuous Integration](https://github.com/laserdisc-io/log-effect/actions/workflows/ci.yml/badge.svg)](https://github.com/laserdisc-io/log-effect/actions/workflows/ci.yml)
 [![Known Vulnerabilities](https://snyk.io/test/github/laserdisc-io/log-effect/badge.svg?targetFile=build.sbt)](https://snyk.io/test/github/laserdisc-io/log-effect?targetFile=build.sbt)
-[![scaladex](https://img.shields.io/badge/scaladex-log--effect-orange.svg)](https://index.scala-lang.org/laserdisc-io/log-effect)
 
-[![Maven Central](https://img.shields.io/maven-central/v/io.laserdisc/log-effect-core_2.12.svg?label=core%202.12&colorB=9311fc)](https://maven-badges.herokuapp.com/maven-central/io.laserdisc/log-effect-core_2.12)
-[![Maven Central](https://img.shields.io/maven-central/v/io.laserdisc/log-effect-fs2_2.12.svg?label=fs2%202.12&colorB=2282c3)](https://maven-badges.herokuapp.com/maven-central/io.laserdisc/log-effect-fs2_2.12)
-[![Maven Central](https://img.shields.io/maven-central/v/io.laserdisc/log-effect-zio_2.12.svg?label=zio%202.12&colorB=fb0005)](https://maven-badges.herokuapp.com/maven-central/io.laserdisc/log-effect-zio_2.12)
-[![Maven Central](https://img.shields.io/maven-central/v/io.laserdisc/log-effect-interop_2.12.svg?label=interop%202.12&colorB=009933)](https://maven-badges.herokuapp.com/maven-central/io.laserdisc/log-effect-interop_2.12)
+[![log-effect-fs2 Scala version support](https://index.scala-lang.org/laserdisc-io/log-effect/log-effect-fs2/latest-by-scala-version.svg?platform=jvm&color=2282c3)](https://index.scala-lang.org/laserdisc-io/log-effect/log-effect-fs2)
+[![log-effect-zio Scala version support](https://index.scala-lang.org/laserdisc-io/log-effect/log-effect-zio/latest-by-scala-version.svg?platform=jvm&color=fb0005)](https://index.scala-lang.org/laserdisc-io/log-effect/log-effect-zio)
 
-[![Maven Central](https://img.shields.io/maven-central/v/io.laserdisc/log-effect-core_2.13.svg?label=core%202.13&colorB=9311fc)](https://maven-badges.herokuapp.com/maven-central/io.laserdisc/log-effect-core_2.13)
-[![Maven Central](https://img.shields.io/maven-central/v/io.laserdisc/log-effect-fs2_2.13.svg?label=fs2%202.13&colorB=2282c3)](https://maven-badges.herokuapp.com/maven-central/io.laserdisc/log-effect-fs2_2.13)
-[![Maven Central](https://img.shields.io/maven-central/v/io.laserdisc/log-effect-zio_2.13.svg?label=zio%202.13&colorB=fb0005)](https://maven-badges.herokuapp.com/maven-central/io.laserdisc/log-effect-zio_2.13)
-[![Maven Central](https://img.shields.io/maven-central/v/io.laserdisc/log-effect-interop_2.13.svg?label=interop%202.13&colorB=009933)](https://maven-badges.herokuapp.com/maven-central/io.laserdisc/log-effect-interop_2.13)
+[![log-effect-interop Scala version support](https://index.scala-lang.org/laserdisc-io/log-effect/log-effect-interop/latest-by-scala-version.svg?platform=jvm&color=009933)](https://index.scala-lang.org/laserdisc-io/log-effect/log-effect-interop)
+[![log-effect-core Scala version support](https://index.scala-lang.org/laserdisc-io/log-effect/log-effect-core/latest-by-scala-version.svg?platform=jvm&color=9311fc)](https://index.scala-lang.org/laserdisc-io/log-effect/log-effect-core)
 
 [![Join the chat at https://gitter.im/laserdisc-io/laserdisc](https://badges.gitter.im/laserdisc-io/laserdisc.svg)](https://gitter.im/laserdisc-io/laserdisc?utm_source=badge&utm_medium=badge&utm_campaign=pr-badge&utm_content=badge)
 [![License: MIT](https://img.shields.io/badge/License-MIT-blue.svg)](https://raw.githubusercontent.com/laserdisc-io/log-effect/master/LICENSE)
@@ -20,7 +14,7 @@
 
 
 ## Start
-Log Effect is available for Scala **_2.12_** and **_2.13_**. Helper constructors are provided for **Cats Effect**'s `Sync` `F[_]`, for **Fs2**'s `Stream` and for **ZIO**'s `Task`. 
+Log Effect is available for Scala **_2.12_**, **_2.13_** and **_3_**. Helper constructors are provided for **Cats Effect**'s `Sync` `F[_]`, for **Fs2**'s `Stream` and for **ZIO**'s `Task`. 
 Add
 ```scala
 libraryDependencies += "io.laserdisc" %% "log-effect-fs2" % <latest-fs2-version>
@@ -47,27 +41,27 @@ Currently Log Effect supports the following backends
 
 |                          | Cats | Fs2 | Cats Effect | Log Effect Core   |
 | ------------------------:| ----:| ---:| -----------:| -----------------:|
-| [![Maven Central](https://img.shields.io/maven-central/v/io.laserdisc/log-effect-fs2_2.13.svg?label=log-effect-fs2&colorB=2282c3)](https://maven-badges.herokuapp.com/maven-central/io.laserdisc/log-effect-fs2_2.13) | 2.7.0 | 3.2.4 | 3.3.5 | [![Maven Central](https://img.shields.io/maven-central/v/io.laserdisc/log-effect-core_2.13.svg?label=%20&colorB=9311fc)](https://maven-badges.herokuapp.com/maven-central/io.laserdisc/log-effect-core_2.13) |
+| [![Maven Central](https://img.shields.io/maven-central/v/io.laserdisc/log-effect-fs2_2.13.svg?label=log-effect-fs2&colorB=2282c3)](https://maven-badges.herokuapp.com/maven-central/io.laserdisc/log-effect-fs2_2.13) | 2.7.0 | 3.2.5 | 3.3.7 | [![Maven Central](https://img.shields.io/maven-central/v/io.laserdisc/log-effect-core_2.13.svg?label=%20&colorB=9311fc)](https://maven-badges.herokuapp.com/maven-central/io.laserdisc/log-effect-core_2.13) |
 
-<br>
+<br/>
 
 |                          | Zio | Log Effect Core |
 | ------------------------:| ---:| ---------------:|
 | [![Maven Central](https://img.shields.io/maven-central/v/io.laserdisc/log-effect-zio_2.13.svg?label=log-effect-zio&colorB=fb0005)](https://maven-badges.herokuapp.com/maven-central/io.laserdisc/log-effect-zio_2.13) | 1.0.13 | [![Maven Central](https://img.shields.io/maven-central/v/io.laserdisc/log-effect-core_2.12.svg?label=%20&colorB=9311fc)](https://maven-badges.herokuapp.com/maven-central/io.laserdisc/log-effect-core_2.13) | 
 
-<br>
+<br/>
 
 |                          | Log4cats | Log Effect Core   |
 | ------------------------:| --------:| -----------------:|
 | [![Maven Central](https://img.shields.io/maven-central/v/io.laserdisc/log-effect-interop_2.13.svg?label=log-effect-interop&colorB=009933)](https://maven-badges.herokuapp.com/maven-central/io.laserdisc/log-effect-interop_2.13) | 2.2.0 | [![Maven Central](https://img.shields.io/maven-central/v/io.laserdisc/log-effect-core_2.13.svg?label=%20&colorB=9311fc)](https://maven-badges.herokuapp.com/maven-central/io.laserdisc/log-effect-core_2.13) |
 
-<br>
+<br/>
 
 |                          | Log4s  | Scribe |
 | ------------------------:| ------:| ------:|
-| [![Maven Central](https://img.shields.io/maven-central/v/io.laserdisc/log-effect-core_2.13.svg?label=log-effect-core&colorB=9311fc)](https://maven-badges.herokuapp.com/maven-central/io.laserdisc/log-effect-core_2.13) | 1.10.0 | 3.7.1 |
+| [![Maven Central](https://img.shields.io/maven-central/v/io.laserdisc/log-effect-core_2.13.svg?label=log-effect-core&colorB=9311fc)](https://maven-badges.herokuapp.com/maven-central/io.laserdisc/log-effect-core_2.13) | 1.10.0 | 3.8.2 |
 
-<br>
+<br/>
 
 ## Examples
 
@@ -79,28 +73,28 @@ To get an instance of `LogWriter` for **Cats Effect**'s `Sync` the options below
 *full compiling example [here](./fs2/src/test/scala/ReadmeConstructionCodeSnippetsTest.scala)*
 ```scala
 val log4s1: F[LogWriter[F]] =
-F.delay(l4s.getLogger("test")) map log4sLog[F]
+  F.delay(l4s.getLogger("test")) map log4sLog[F]
 
 val log4s2: F[LogWriter[F]] = log4sLog("a logger")
 
 val log4s3: F[LogWriter[F]] = {
-case class LoggerClass()
-log4sLog(classOf[LoggerClass])
+  case class LoggerClass()
+  log4sLog(classOf[LoggerClass])
 }
 
 val jul1: F[LogWriter[F]] =
-F.delay(jul.Logger.getLogger("a logger")) map julLog[F]
+  F.delay(jul.Logger.getLogger("a logger")) map julLog[F]
 
 val jul2: F[LogWriter[F]] = julLog
 
 val scribe1: F[LogWriter[F]] =
-F.delay(scribe.Logger("a logger")) map scribeLog[F]
+  F.delay(scribe.Logger("a logger")) map scribeLog[F]
 
 val scribe2: F[LogWriter[F]] = scribeLog("a logger")
 
 val scribe3: F[LogWriter[F]] = {
-case class LoggerClass()
-scribeLog(classOf[LoggerClass])
+  case class LoggerClass()
+  scribeLog(classOf[LoggerClass])
 }
 
 val console1: LogWriter[F] = consoleLog
@@ -116,28 +110,28 @@ Similarly, to get instances of `LogWriter` for **Fs2**'s `Stream` the constructo
 *full compiling example [here](./fs2/src/test/scala/ReadmeConstructionCodeSnippetsTest.scala)*
 ```scala
 val log4s1: fs2.Stream[F, LogWriter[F]] =
-Stream.eval(F.delay(l4s.getLogger("test"))) >>= log4sLogStream[F]
+  Stream.eval(F.delay(l4s.getLogger("test"))) >>= log4sLogStream[F]
 
 val log4s2: fs2.Stream[F, LogWriter[F]] = log4sLogStream("a logger")
 
 val log4s3: fs2.Stream[F, LogWriter[F]] = {
-case class LoggerClass()
-log4sLogStream(classOf[LoggerClass])
+  case class LoggerClass()
+  log4sLogStream(classOf[LoggerClass])
 }
 
 val jul1: fs2.Stream[F, LogWriter[F]] =
-Stream.eval(F.delay(jul.Logger.getLogger("a logger"))) >>= julLogStream[F]
+  Stream.eval(F.delay(jul.Logger.getLogger("a logger"))) >>= julLogStream[F]
 
 val jul2: fs2.Stream[F, LogWriter[F]] = julLogStream
 
 val scribe1: fs2.Stream[F, LogWriter[F]] =
-Stream.eval(F.delay(scribe.Logger("a logger"))) >>= scribeLogStream[F]
+  Stream.eval(F.delay(scribe.Logger("a logger"))) >>= scribeLogStream[F]
 
 val scribe2: fs2.Stream[F, LogWriter[F]] = scribeLogStream("a logger")
 
 val scribe3: fs2.Stream[F, LogWriter[F]] = {
-case class LoggerClass()
-scribeLogStream(classOf[LoggerClass])
+  case class LoggerClass()
+  scribeLogStream(classOf[LoggerClass])
 }
 
 val console1: fs2.Stream[F, LogWriter[F]] = consoleLogStream
@@ -146,7 +140,7 @@ val console2: fs2.Stream[F, LogWriter[F]] = consoleLogStreamUpToLevel(LogLevels.
 
 val noOp: fs2.Stream[F, LogWriter[F]] = noOpLogStream
 ```
-*See [here](https://github.com/laserdisc-io/laserdisc#example-usage) for an example whit [Laserdisc](https://github.com/laserdisc-io/laserdisc)*
+*See [here](https://github.com/laserdisc-io/laserdisc#example-usage) for an example with [Laserdisc](https://github.com/laserdisc-io/laserdisc)*
 
 #### Zio Task
 To create instances for `ZIO` some useful constructors can be found [here](./zio/src/main/scala/log/effect/zio/ZioLogWriter.scala). Note as they exploit the power and expressiveness of `RLayer` an the `RIO` pattern as shown below.
@@ -220,11 +214,11 @@ val scribeCase3: Task[Unit] =
 
 // Case 4: from a class
 val log4sCase4: Task[Unit] = {
-  case class LoggerClass();
+  case class LoggerClass()
   (log4sFromClass >>> someZioProgramUsingLogs) provide classOf[LoggerClass]
 }
 val scribeCase4: Task[Unit] = {
-  case class LoggerClass();
+  case class LoggerClass()
   (scribeFromClass >>> someZioProgramUsingLogs) provide classOf[LoggerClass]
 }
 
