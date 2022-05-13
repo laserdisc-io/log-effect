@@ -70,23 +70,23 @@ final class InteropTest extends AnyWordSpecLike with Matchers with TestLogCaptur
       lw.trace("a message") >>
         lw.trace(new Exception("an exception")) >>
         lw.trace("a message", new Exception("an exception")) >>
-        lw.trace(new A()) >>
+        lw.trace(new A) >>
         lw.debug("a message") >>
         lw.debug(new Exception("an exception")) >>
         lw.debug("a message", new Exception("an exception")) >>
-        lw.debug(new A()) >>
+        lw.debug(new A) >>
         lw.info("a message") >>
         lw.info(new Exception("an exception")) >>
         lw.info("a message", new Exception("an exception")) >>
-        lw.info(new A()) >>
+        lw.info(new A) >>
         lw.warn("a message") >>
         lw.warn(new Exception("an exception")) >>
         lw.warn("a message", new Exception("an exception")) >>
-        lw.warn(new A()) >>
+        lw.warn(new A) >>
         lw.error("a message") >>
         lw.error(new Exception("an exception")) >>
         lw.error("a message", new Exception("an exception")) >>
-        lw.error(new A())
+        lw.error(new A)
     }
 
     logged.size shouldBe 20

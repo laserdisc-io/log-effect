@@ -29,7 +29,7 @@ import org.scalatest.wordspec.AnyWordSpecLike
 
 final class ConsoleLogWriterTest extends AnyWordSpecLike with Matchers with zio.App {
   private[this] def capturedConsoleOutOf(aWrite: Task[Unit]): String = {
-    val lowerStream = new ByteArrayOutputStream()
+    val lowerStream = new ByteArrayOutputStream
     val outStream   = new PrintStream(lowerStream)
 
     Console.withOut(outStream)(unsafeRun(aWrite))

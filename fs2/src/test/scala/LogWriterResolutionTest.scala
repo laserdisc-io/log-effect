@@ -242,9 +242,8 @@ final class LogWriterResolutionTest extends AnyWordSpecLike with Matchers {
             Sync[F].pure(n * 2) <*
             LogWriter.debug("Processed")
         } handleErrorWith { th =>
-          fs2.Stream eval (
+          fs2.Stream eval
             LogWriter.error("Ops, something didn't work", th) *> Sync[F].pure(0)
-          )
         }
     }
 
@@ -266,9 +265,8 @@ final class LogWriterResolutionTest extends AnyWordSpecLike with Matchers {
             Sync[F].pure(n * 2) <*
             LogWriter.write(Debug, "Processed")
         } handleErrorWith { th =>
-          fs2.Stream eval (
+          fs2.Stream eval
             LogWriter.write(Error, Failure("Ops, something didn't work", th)) *> Sync[F].pure(0)
-          )
         }
       }
     }

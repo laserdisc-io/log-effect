@@ -54,33 +54,33 @@ import scala.annotation.nowarn
 
       // Case 2: from a name
       val log4sCase2: Task[Unit] =
-        (log4sFromName >>> someZioProgramUsingLogs) provide aLogName
+        log4sFromName >>> someZioProgramUsingLogs provide aLogName
 
       val scribeCase2: Task[Unit] =
-        (scribeFromName >>> someZioProgramUsingLogs) provide aLogName
+        scribeFromName >>> someZioProgramUsingLogs provide aLogName
 
       // Case 3: from a logger
       val log4sCase3: Task[Unit] =
         Task.effect(l4s.getLogger(aLogName)) >>= { logger =>
-          (log4sFromLogger >>> someZioProgramUsingLogs) provide logger
+          log4sFromLogger >>> someZioProgramUsingLogs provide logger
         }
       val julCase3: Task[Unit] =
         Task.effect(jul.Logger.getLogger(aLogName)) >>= { logger =>
-          (julFromLogger >>> someZioProgramUsingLogs) provide logger
+          julFromLogger >>> someZioProgramUsingLogs provide logger
         }
       val scribeCase3: Task[Unit] =
         Task.effect(scribe.Logger(aLogName)) >>= { logger =>
-          (scribeFromLogger >>> someZioProgramUsingLogs) provide logger
+          scribeFromLogger >>> someZioProgramUsingLogs provide logger
         }
 
       // Case 4: from a class
       val log4sCase4: Task[Unit] = {
         case class LoggerClass();
-        (log4sFromClass >>> someZioProgramUsingLogs) provide classOf[LoggerClass]
+        log4sFromClass >>> someZioProgramUsingLogs provide classOf[LoggerClass]
       }
       val scribeCase4: Task[Unit] = {
         case class LoggerClass();
-        (scribeFromClass >>> someZioProgramUsingLogs) provide classOf[LoggerClass]
+        scribeFromClass >>> someZioProgramUsingLogs provide classOf[LoggerClass]
       }
 
       // Case 5 (Jul): from global logger object

@@ -113,9 +113,8 @@ import scala.annotation.nowarn
           Sync[F].pure(n * 2) <*
           LogWriter.debug("Processed")
       } handleErrorWith { th =>
-        fs2.Stream eval (
+        fs2.Stream eval
           LogWriter.error("Ops, something didn't work", th) >> Sync[F].pure(0)
-        )
       }
   }
 
@@ -176,12 +175,11 @@ import scala.annotation.nowarn
           LogWriter.debug(client) >>
           Async[F].pure(client.asRight)
       } handleErrorWith { th =>
-        fs2.Stream eval (
+        fs2.Stream eval
           LogWriter.write(
             Error,
             Failure("Ops, something didn't work", th)
           ) >> Async[F].pure(th.asLeft)
-        )
       }
     }
   }
@@ -211,7 +209,7 @@ import scala.annotation.nowarn
         n <- source
         _ <- LogWriter.debugS("Processing a number")
         _ <- LogWriter.debugS(n) // N.B. the syntax requires a `cats.Show` for `Int`
-        r <- (processAnInt andThen fs2.Stream.emit)(n)
+        r <- processAnInt andThen fs2.Stream.emit(n)
         _ <- LogWriter.debugS("Processed")
         _ <- LogWriter.debugS(r) // Same here, a `cats.Show` for `A` is needed
       } yield r) handleErrorWith { th =>

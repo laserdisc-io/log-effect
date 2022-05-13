@@ -31,10 +31,10 @@ trait LogWriter[F[_]] {
 
 object LogWriter extends LogWriterSyntax {
   @inline final def pureOf[F[_]]: logWriterInstancePartial[Id, F] =
-    new logWriterInstancePartial[Id, F]()
+    new logWriterInstancePartial[Id, F]
 
   @inline final def of[F[_]]: logWriterInstancePartial[F, F] =
-    new logWriterInstancePartial()
+    new logWriterInstancePartial
 
   private[effect] final class logWriterInstancePartial[G[_], F[_]](private val d: Boolean = true)
       extends AnyVal {
