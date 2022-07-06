@@ -4,7 +4,7 @@ val scala_3   = "3.1.2"
 
 val versionOf = new {
   val cats          = "2.7.0"
-  val catsEffect    = "3.3.12"
+  val catsEffect    = "3.3.13"
   val fs2           = "3.2.7"
   val kindProjector = "0.13.2"
   val log4cats      = "2.3.1"
