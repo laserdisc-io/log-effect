@@ -5,13 +5,13 @@ val scala_3   = "3.1.2"
 val versionOf = new {
   val cats          = "2.7.0"
   val catsEffect    = "3.3.12"
-  val fs2           = "3.2.7"
+  val fs2           = "3.2.9"
   val kindProjector = "0.13.2"
   val log4cats      = "2.3.1"
   val log4s         = "1.10.0"
   val scalaCheck    = "1.16.0"
   val scalaTest     = "3.2.12"
-  val zio           = "1.0.14"
+  val zio           = "1.0.15"
   val scribe        = "3.8.3"
 }
 
