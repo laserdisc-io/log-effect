@@ -3,7 +3,7 @@ val scala_213 = "2.13.8"
 val scala_3   = "3.1.2"
 
 val versionOf = new {
-  val cats          = "2.7.0"
+  val cats          = "2.8.0"
   val catsEffect    = "3.3.14"
   val fs2           = "3.2.9"
   val kindProjector = "0.13.2"
