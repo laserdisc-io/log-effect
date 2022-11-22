@@ -21,11 +21,12 @@
 
 package log.effect
 
-import java.util.{logging => jul}
 import log.effect.internal._
 import log.effect.internal.syntax._
 import org.{log4s => l4s}
-import scribe.message.Message
+import scribe.message.LoggableMessage._
+
+import java.util.{logging => jul}
 
 sealed trait LogWriterConstructor[R, G[_], F[_]] {
   def construction: G[R] => G[LogWriter[F]]
@@ -99,22 +100,27 @@ object LogWriterConstructor {
       val construction: G[scribe.Logger] => G[LogWriter[F]] =
         _ map { scribeLogger =>
           new LogWriter[F] {
-            def write[A: Show](level: LogLevel, a: =>A): F[Unit] = {
-              val beLevel = level match {
-                case LogLevels.Trace => scribe.Level.Trace
-                case LogLevels.Debug => scribe.Level.Debug
-                case LogLevels.Info  => scribe.Level.Info
-                case LogLevels.Warn  => scribe.Level.Warn
-                case LogLevels.Error => scribe.Level.Error
-              }
-
+            def write[A: Show](level: LogLevel, a: =>A): F[Unit] =
               F.suspend(
                 a match {
-                  case Failure(msg, th) => scribeLogger.log(beLevel, msg, Message.static(th) :: Nil)
-                  case _                => scribeLogger.log(beLevel, a.show, Nil)
+                  case Failure(msg, th) =>
+                    level match {
+                      case LogLevels.Trace => scribeLogger.trace(msg, th)
+                      case LogLevels.Debug => scribeLogger.debug(msg, th)
+                      case LogLevels.Info  => scribeLogger.info(msg, th)
+                      case LogLevels.Warn  => scribeLogger.warn(msg, th)
+                      case LogLevels.Error => scribeLogger.error(msg, th)
+                    }
+                  case _ =>
+                    level match {
+                      case LogLevels.Trace => scribeLogger.trace(a.show)
+                      case LogLevels.Debug => scribeLogger.debug(a.show)
+                      case LogLevels.Info  => scribeLogger.info(a.show)
+                      case LogLevels.Warn  => scribeLogger.warn(a.show)
+                      case LogLevels.Error => scribeLogger.error(a.show)
+                    }
                 }
               )
-            }
           }
         }
     }
