@@ -12,7 +12,7 @@ val versionOf = new {
   val scalaCheck    = "1.16.0"
   val scalaTest     = "3.2.14"
   val zio           = "1.0.16"
-  val scribe        = "3.8.3"
+  val scribe        = "3.10.1"
 }
 
 lazy val coreDependencies = Seq(
@@ -73,7 +73,13 @@ ThisBuild / libraryDependencies ++= {
   if (tlIsScala3.value) Seq.empty else compilerPluginsDependencies
 }
 
-lazy val root = tlCrossRootProject.aggregate(core, fs2, zio, interop)
+lazy val root = tlCrossRootProject
+  .aggregate(core, fs2, zio, interop)
+  .settings(
+    addCommandAlias("fmt", "scalafmt;Test/scalafmt;scalafmtSbt"),
+    addCommandAlias("checkFormat", "scalafmtCheck;Test/scalafmtCheck;scalafmtSbtCheck"),
+    addCommandAlias("check", "checkFormat;clean;test")
+  )
 
 lazy val core = project
   .in(file("core"))
