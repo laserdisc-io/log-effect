@@ -1,18 +1,18 @@
 val scala_212 = "2.12.17"
-val scala_213 = "2.13.8"
-val scala_3   = "3.2.0"
+val scala_213 = "2.13.10"
+val scala_3   = "3.2.1"
 
 val versionOf = new {
-  val cats          = "2.8.0"
-  val catsEffect    = "3.3.14"
-  val fs2           = "3.3.0"
+  val cats          = "2.9.0"
+  val catsEffect    = "3.4.1"
+  val fs2           = "3.4.0"
   val kindProjector = "0.13.2"
-  val log4cats      = "2.4.0"
+  val log4cats      = "2.5.0"
   val log4s         = "1.10.0"
-  val scalaCheck    = "1.16.0"
-  val scalaTest     = "3.2.13"
+  val scalaCheck    = "1.17.0"
+  val scalaTest     = "3.2.14"
   val zio           = "1.0.16"
-  val scribe        = "3.8.3"
+  val scribe        = "3.10.1"
 }
 
 lazy val coreDependencies = Seq(
@@ -73,7 +73,13 @@ ThisBuild / libraryDependencies ++= {
   if (tlIsScala3.value) Seq.empty else compilerPluginsDependencies
 }
 
-lazy val root = tlCrossRootProject.aggregate(core, fs2, zio, interop)
+lazy val root = tlCrossRootProject
+  .aggregate(core, fs2, zio, interop)
+  .settings(
+    addCommandAlias("fmt", "scalafmt;Test/scalafmt;scalafmtSbt"),
+    addCommandAlias("checkFormat", "scalafmtCheck;Test/scalafmtCheck;scalafmtSbtCheck"),
+    addCommandAlias("check", "checkFormat;clean;test")
+  )
 
 lazy val core = project
   .in(file("core"))
