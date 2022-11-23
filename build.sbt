@@ -11,7 +11,7 @@ val versionOf = new {
   val log4s         = "1.10.0"
   val scalaCheck    = "1.17.0"
   val scalaTest     = "3.2.14"
-  val zio           = "1.0.16"
+  val zio           = "1.0.17"
   val scribe        = "3.10.1"
 }
 
