@@ -1,6 +1,6 @@
 val scala_212 = "2.12.16"
 val scala_213 = "2.13.8"
-val scala_3   = "3.2.0"
+val scala_3   = "3.2.1"
 
 val versionOf = new {
   val cats          = "2.9.0"
