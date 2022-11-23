@@ -1,5 +1,5 @@
 val scala_212 = "2.12.16"
-val scala_213 = "2.13.8"
+val scala_213 = "2.13.10"
 val scala_3   = "3.2.1"
 
 val versionOf = new {
@@ -9,7 +9,7 @@ val versionOf = new {
   val kindProjector = "0.13.2"
   val log4cats      = "2.5.0"
   val log4s         = "1.10.0"
-  val scalaCheck    = "1.16.0"
+  val scalaCheck    = "1.17.0"
   val scalaTest     = "3.2.14"
   val zio           = "1.0.16"
   val scribe        = "3.10.1"
