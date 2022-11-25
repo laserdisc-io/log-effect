@@ -21,7 +21,7 @@
 
 import java.io.{ByteArrayOutputStream, PrintStream}
 
-import _root_.zio.{Console => _, LogLevel => _, _}
+import _root_.zio.{Console => _, Trace => _, _}
 import log.effect.LogLevels._
 import log.effect.zio.ZioLogWriter.{consoleLog, consoleLogUpToLevel}
 import org.scalatest.matchers.should.Matchers
@@ -235,7 +235,7 @@ final class ConsoleLogWriterTest extends AnyWordSpecLike with Matchers with ZIOA
     "created with level Trace" should {
       "log all the messages" in {
         val out = capturedConsoleOutOf {
-          val cl = consoleLogUpToLevel(log.effect.LogLevels.Trace)
+          val cl = consoleLogUpToLevel(Trace)
 
           (cl.error("error message")
             *> cl.warn("warn message")
