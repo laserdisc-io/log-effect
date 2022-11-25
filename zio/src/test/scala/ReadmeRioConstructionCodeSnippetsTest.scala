@@ -43,14 +43,14 @@ import scala.annotation.nowarn
       import Setup._
 
       // Case 1: from a possible config in a Layer (gives a Layer)
-      val log4sCase1: RLayer[AConfig, ZLogWriter] = ZLayer {
-        ZIO.service[AConfig].flatMap(c => log4sFromName.provideEnvironment(ZEnvironment(c.logName)))
-      }
-      val scribe4sCase1: RLayer[AConfig, ZLogWriter] = ZLayer {
-        ZIO
-          .service[AConfig]
-          .flatMap(c => scribeFromName.provideEnvironment(ZEnvironment(c.logName)))
-      }
+      val log4sCase1: RLayer[AConfig, ZLogWriter] =
+        ZLayer(ZIO.serviceWithZIO { c =>
+          log4sFromName.provideEnvironment(ZEnvironment(c.logName))
+        })
+      val scribe4sCase1: RLayer[AConfig, ZLogWriter] =
+        ZLayer(ZIO.serviceWithZIO { c =>
+          scribeFromName.provideEnvironment(ZEnvironment(c.logName))
+        })
 
       // Case 2: from a name
       val log4sCase2: Task[Unit] =
