@@ -52,7 +52,7 @@ lazy val compilerPluginsDependencies = Seq(
   )
 )
 
-ThisBuild / tlBaseVersion       := "0.16"
+ThisBuild / tlBaseVersion       := "0.17"
 ThisBuild / tlCiReleaseBranches := Seq("master")
 ThisBuild / tlVersionIntroduced := Map("3" -> "0.16.3")
 ThisBuild / organization        := "io.laserdisc"
