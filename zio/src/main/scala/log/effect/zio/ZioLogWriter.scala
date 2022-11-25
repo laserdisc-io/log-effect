@@ -22,11 +22,11 @@
 package log.effect
 package zio
 
-import java.util.{logging => jul}
-
 import _root_.zio.{LogLevel => _, _}
 import log.effect.internal.{EffectSuspension, Id, Show}
 import org.{log4s => l4s}
+
+import java.util.{logging => jul}
 
 object ZioLogWriter {
   import instances._
@@ -47,7 +47,7 @@ object ZioLogWriter {
     ZIO.serviceWithZIO(name => LogWriter.of[Task](ZIO.attempt(l4s.getLogger(name))))
 
   val log4sFromClass: RIO[Class[_], ZLogWriter] =
-    ZIO.serviceWithZIO(clazz => LogWriter.of[Task](ZIO.attempt(l4s.getLogger(clazz))))
+    ZIO.serviceWithZIO((clazz: Class[_]) => LogWriter.of[Task](ZIO.attempt(l4s.getLogger(clazz))))
 
   val julFromLogger: URIO[ZJulLogger, ZLogWriter] =
     ZIO.serviceWith(julLogger => LogWriter.pureOf[Task](julLogger))
@@ -59,7 +59,7 @@ object ZioLogWriter {
     ZIO.serviceWithZIO(name => LogWriter.of[Task](ZIO.attempt(scribe.Logger(name))))
 
   val scribeFromClass: RIO[Class[_], ZLogWriter] =
-    ZIO.serviceWithZIO { clazz =>
+    ZIO.serviceWithZIO { (clazz: Class[_]) =>
       import scribe._
       LogWriter.of[Task](ZIO.attempt(clazz.logger))
     }
@@ -76,25 +76,30 @@ object ZioLogWriter {
   val noOpLog: ZLogWriter =
     LogWriter.of[Id](()).liftT
 
-  val log4sLayerFromName: RLayer[ZLogName, ZLogWriter] = ZLayer {
-    ZIO.service[ZLogName].flatMap(name => log4sFromName.provideEnvironment(ZEnvironment(name.x)))
-  }
+  val log4sLayerFromName: RLayer[ZLogName, ZLogWriter] =
+    ZLayer(ZIO.serviceWithZIO { name =>
+      log4sFromName.provideEnvironment(ZEnvironment(name.x))
+    })
 
-  val log4sLayerFromLogger: RLayer[ZLog4sLogger, ZLogWriter] = ZLayer {
-    ZIO.service[ZLog4sLogger].flatMap(l => log4sFromLogger.provideEnvironment(ZEnvironment(l)))
-  }
+  val log4sLayerFromLogger: RLayer[ZLog4sLogger, ZLogWriter] =
+    ZLayer(ZIO.serviceWithZIO { l =>
+      log4sFromLogger.provideEnvironment(ZEnvironment(l))
+    })
 
-  val julLayerFromLogger: RLayer[ZJulLogger, ZLogWriter] = ZLayer {
-    ZIO.service[ZJulLogger].flatMap(l => julFromLogger.provideEnvironment(ZEnvironment(l)))
-  }
+  val julLayerFromLogger: RLayer[ZJulLogger, ZLogWriter] =
+    ZLayer(ZIO.serviceWithZIO { l =>
+      julFromLogger.provideEnvironment(ZEnvironment(l))
+    })
 
-  val scribeLayerFromName: RLayer[ZLogName, ZLogWriter] = ZLayer {
-    ZIO.service[ZLogName].flatMap(name => scribeFromName.provideEnvironment(ZEnvironment(name.x)))
-  }
+  val scribeLayerFromName: RLayer[ZLogName, ZLogWriter] =
+    ZLayer(ZIO.serviceWithZIO { name =>
+      scribeFromName.provideEnvironment(ZEnvironment(name.x))
+    })
 
-  val scribeLayerFromLogger: RLayer[ZScribeLogger, ZLogWriter] = ZLayer {
-    ZIO.service[ZScribeLogger].flatMap(l => scribeFromLogger.provideEnvironment(ZEnvironment(l)))
-  }
+  val scribeLayerFromLogger: RLayer[ZScribeLogger, ZLogWriter] =
+    ZLayer(ZIO.serviceWithZIO { l =>
+      scribeFromLogger.provideEnvironment(ZEnvironment(l))
+    })
 
   val consoleLogLayer: ULayer[ZLogWriter] =
     ZLayer.succeed(consoleLog)

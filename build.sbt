@@ -62,7 +62,6 @@ ThisBuild / developers          := List(tlGitHubDev("barambani", "Filippo Mariot
 ThisBuild / crossScalaVersions  := Seq(scala_212, scala_213, scala_3)
 ThisBuild / scalaVersion        := scala_213
 ThisBuild / githubWorkflowJavaVersions := Seq(
-  JavaSpec.temurin("8"),
   JavaSpec.temurin("11"),
   JavaSpec.temurin("17")
 )

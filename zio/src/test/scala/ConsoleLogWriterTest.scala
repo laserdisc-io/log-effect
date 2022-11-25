@@ -264,6 +264,6 @@ final class ConsoleLogWriterTest extends AnyWordSpecLike with Matchers with ZIOA
     }
   }
 
-  override def run: ZIO[Environment with ZIOAppArgs with Scope, Any, Any] =
+  override def run: ZIO[Environment with ZIOAppArgs with Scope, Nothing, ExitCode] =
     ZIO.succeed(ExitCode.success)
 }
