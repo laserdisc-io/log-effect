@@ -47,7 +47,7 @@ Currently Log Effect supports the following backends
 
 |                          | Zio | Log Effect Core |
 | ------------------------:| ---:| ---------------:|
-| [![Maven Central](https://img.shields.io/maven-central/v/io.laserdisc/log-effect-zio_2.13.svg?label=log-effect-zio&colorB=fb0005)](https://maven-badges.herokuapp.com/maven-central/io.laserdisc/log-effect-zio_2.13) | 1.0.17 | [![Maven Central](https://img.shields.io/maven-central/v/io.laserdisc/log-effect-core_2.12.svg?label=%20&colorB=9311fc)](https://maven-badges.herokuapp.com/maven-central/io.laserdisc/log-effect-core_2.13) | 
+| [![Maven Central](https://img.shields.io/maven-central/v/io.laserdisc/log-effect-zio_2.13.svg?label=log-effect-zio&colorB=fb0005)](https://maven-badges.herokuapp.com/maven-central/io.laserdisc/log-effect-zio_2.13) | 2.0.4 | [![Maven Central](https://img.shields.io/maven-central/v/io.laserdisc/log-effect-core_2.12.svg?label=%20&colorB=9311fc)](https://maven-badges.herokuapp.com/maven-central/io.laserdisc/log-effect-core_2.13) | 
 
 <br/>
 
