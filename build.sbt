@@ -65,7 +65,8 @@ ThisBuild / githubWorkflowJavaVersions := Seq(
   JavaSpec.temurin("11"),
   JavaSpec.temurin("17")
 )
-ThisBuild / Test / parallelExecution := false
+ThisBuild / githubWorkflowBuildMatrixExclusions := Seq()
+ThisBuild / Test / parallelExecution            := false
 
 ThisBuild / libraryDependencies ++= testDependencies
 ThisBuild / libraryDependencies ++= {
