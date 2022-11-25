@@ -7,6 +7,7 @@
 
 [![log-effect-fs2 Scala version support](https://index.scala-lang.org/laserdisc-io/log-effect/log-effect-fs2/latest-by-scala-version.svg?platform=jvm&color=2282c3)](https://index.scala-lang.org/laserdisc-io/log-effect/log-effect-fs2)
 
+
 [![log-effect-zio Scala version support](https://index.scala-lang.org/laserdisc-io/log-effect/log-effect-zio/latest-by-scala-version.svg?platform=jvm&color=fb0005)](https://index.scala-lang.org/laserdisc-io/log-effect/log-effect-zio)
 
 [![log-effect-core Scala version support](https://index.scala-lang.org/laserdisc-io/log-effect/log-effect-core/latest-by-scala-version.svg?platform=jvm&color=9311fc)](https://index.scala-lang.org/laserdisc-io/log-effect/log-effect-core)
