@@ -11,7 +11,7 @@ val versionOf = new {
   val log4s         = "1.10.0"
   val scalaCheck    = "1.17.0"
   val scalaTest     = "3.2.14"
-  val zio           = "1.0.17"
+  val zio           = "2.0.4"
   val scribe        = "3.10.5"
 }
 
@@ -62,11 +62,11 @@ ThisBuild / developers          := List(tlGitHubDev("barambani", "Filippo Mariot
 ThisBuild / crossScalaVersions  := Seq(scala_212, scala_213, scala_3)
 ThisBuild / scalaVersion        := scala_213
 ThisBuild / githubWorkflowJavaVersions := Seq(
-  JavaSpec.temurin("8"),
   JavaSpec.temurin("11"),
   JavaSpec.temurin("17")
 )
-ThisBuild / Test / parallelExecution := false
+ThisBuild / githubWorkflowBuildMatrixExclusions := Seq()
+ThisBuild / Test / parallelExecution            := false
 
 ThisBuild / libraryDependencies ++= testDependencies
 ThisBuild / libraryDependencies ++= {

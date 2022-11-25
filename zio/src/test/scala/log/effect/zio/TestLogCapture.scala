@@ -22,7 +22,7 @@
 package log.effect
 package zio
 
-import _root_.zio.{Runtime, Task, ZIO}
+import _root_.zio.{Runtime, Task, Unsafe, ZEnvironment, ZIO}
 import org.log4s.{LoggedEvent, Logger, TestAppender, getLogger}
 
 trait TestLogCapture {
@@ -31,13 +31,15 @@ trait TestLogCapture {
     logWrite: ZIO[Logger, Throwable, Unit]
   ): Option[LoggedEvent] = {
     val loggingAction: Task[Unit] =
-      ZIO.effect(getLogger("Test Logger")) >>= { logger =>
+      ZIO.attempt(getLogger("Test Logger")).flatMap { logger =>
         TestAppender.withAppender() {
-          logWrite provide logger
+          logWrite.provideEnvironment(ZEnvironment(logger))
         }
       }
 
-    Runtime.default.unsafeRun(loggingAction)
+    Unsafe.unsafe { implicit unsafe =>
+      Runtime.default.unsafe.run(loggingAction).getOrThrowFiberFailure()
+    }
 
     TestAppender.dequeue
   }

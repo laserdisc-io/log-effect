@@ -28,7 +28,7 @@ import scala.annotation.nowarn
 final class LogWriterResolutionTest extends AnyWordSpecLike with Matchers {
   "the construction" should {
     "correctly infer a valid log4s constructor for ZIO" in {
-      import _root_.zio.{IO, Task}
+      import _root_.zio.{Task, ZEnvironment, ZIO}
       import log.effect.internal.{EffectSuspension, Functor}
       import log.effect.zio.ZioLogWriter.log4sFromLogger
       import log.effect.{LogWriter, LogWriterConstructor}
@@ -46,19 +46,19 @@ final class LogWriterResolutionTest extends AnyWordSpecLike with Matchers {
       }
 
       @nowarn def l1: Task[LogWriter[Task]] =
-        c(IO.effect(l4s.getLogger("test")))
+        c(ZIO.attempt(l4s.getLogger("test")))
 
       @nowarn def pureL1: LogWriter[Task] =
         cPure(l4s.getLogger("test"))
 
       @nowarn def l2: Task[LogWriter[Task]] =
-        log4sFromLogger.provide(l4s.getLogger("test"))
+        log4sFromLogger.provideEnvironment(ZEnvironment(l4s.getLogger("test")))
     }
 
     "correctly infer a valid jul constructor for IO" in {
       import java.util.{logging => jul}
 
-      import _root_.zio.{IO, Task}
+      import _root_.zio.{Task, ZEnvironment, ZIO}
       import log.effect.internal.{EffectSuspension, Functor}
       import log.effect.zio.ZioLogWriter.julFromLogger
       import log.effect.{LogWriter, LogWriterConstructor}
@@ -75,13 +75,13 @@ final class LogWriterResolutionTest extends AnyWordSpecLike with Matchers {
       }
 
       @nowarn def l1: Task[LogWriter[Task]] =
-        c(IO.effect(jul.Logger.getGlobal))
+        c(ZIO.attempt(jul.Logger.getGlobal))
 
       @nowarn def pureL1: LogWriter[Task] =
         cPure(jul.Logger.getGlobal)
 
       @nowarn def l2: Task[LogWriter[Task]] =
-        julFromLogger.provide(jul.Logger.getGlobal)
+        julFromLogger.provideEnvironment(ZEnvironment(jul.Logger.getGlobal))
     }
   }
 
