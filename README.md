@@ -1,17 +1,17 @@
 # Log Effect
 [![Continuous Integration](https://github.com/laserdisc-io/log-effect/actions/workflows/ci.yml/badge.svg)](https://github.com/laserdisc-io/log-effect/actions/workflows/ci.yml)
 [![Known Vulnerabilities](https://snyk.io/test/github/laserdisc-io/log-effect/badge.svg?targetFile=build.sbt)](https://snyk.io/test/github/laserdisc-io/log-effect?targetFile=build.sbt)
-
-[![log-effect-fs2 Scala version support](https://index.scala-lang.org/laserdisc-io/log-effect/log-effect-fs2/latest-by-scala-version.svg?platform=jvm&color=2282c3)](https://index.scala-lang.org/laserdisc-io/log-effect/log-effect-fs2)
-[![log-effect-zio Scala version support](https://index.scala-lang.org/laserdisc-io/log-effect/log-effect-zio/latest-by-scala-version.svg?platform=jvm&color=fb0005)](https://index.scala-lang.org/laserdisc-io/log-effect/log-effect-zio)
-
-[![log-effect-interop Scala version support](https://index.scala-lang.org/laserdisc-io/log-effect/log-effect-interop/latest-by-scala-version.svg?platform=jvm&color=009933)](https://index.scala-lang.org/laserdisc-io/log-effect/log-effect-interop)
-[![log-effect-core Scala version support](https://index.scala-lang.org/laserdisc-io/log-effect/log-effect-core/latest-by-scala-version.svg?platform=jvm&color=9311fc)](https://index.scala-lang.org/laserdisc-io/log-effect/log-effect-core)
-
 [![Join the chat at https://gitter.im/laserdisc-io/laserdisc](https://badges.gitter.im/laserdisc-io/laserdisc.svg)](https://gitter.im/laserdisc-io/laserdisc?utm_source=badge&utm_medium=badge&utm_campaign=pr-badge&utm_content=badge)
 [![License: MIT](https://img.shields.io/badge/License-MIT-blue.svg)](https://raw.githubusercontent.com/laserdisc-io/log-effect/master/LICENSE)
 [![Scala Steward badge](https://img.shields.io/badge/Scala_Steward-helping-blue.svg?style=flat&logo=data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAA4AAAAQCAMAAAARSr4IAAAAVFBMVEUAAACHjojlOy5NWlrKzcYRKjGFjIbp293YycuLa3pYY2LSqql4f3pCUFTgSjNodYRmcXUsPD/NTTbjRS+2jomhgnzNc223cGvZS0HaSD0XLjbaSjElhIr+AAAAAXRSTlMAQObYZgAAAHlJREFUCNdNyosOwyAIhWHAQS1Vt7a77/3fcxxdmv0xwmckutAR1nkm4ggbyEcg/wWmlGLDAA3oL50xi6fk5ffZ3E2E3QfZDCcCN2YtbEWZt+Drc6u6rlqv7Uk0LdKqqr5rk2UCRXOk0vmQKGfc94nOJyQjouF9H/wCc9gECEYfONoAAAAASUVORK5CYII=)](https://scala-steward.org)
 
+[![log-effect-fs2 Scala version support](https://index.scala-lang.org/laserdisc-io/log-effect/log-effect-fs2/latest-by-scala-version.svg?platform=jvm&color=2282c3)](https://index.scala-lang.org/laserdisc-io/log-effect/log-effect-fs2)
+
+[![log-effect-zio Scala version support](https://index.scala-lang.org/laserdisc-io/log-effect/log-effect-zio/latest-by-scala-version.svg?platform=jvm&color=fb0005)](https://index.scala-lang.org/laserdisc-io/log-effect/log-effect-zio)
+
+[![log-effect-core Scala version support](https://index.scala-lang.org/laserdisc-io/log-effect/log-effect-core/latest-by-scala-version.svg?platform=jvm&color=9311fc)](https://index.scala-lang.org/laserdisc-io/log-effect/log-effect-core)
+
+[![log-effect-interop Scala version support](https://index.scala-lang.org/laserdisc-io/log-effect/log-effect-interop/latest-by-scala-version.svg?platform=jvm&color=009933)](https://index.scala-lang.org/laserdisc-io/log-effect/log-effect-interop)
 
 ## Start
 Log Effect is available for Scala **_2.12_**, **_2.13_** and **_3_**. Helper constructors are provided for **Cats Effect**'s `Sync` `F[_]`, for **Fs2**'s `Stream` and for **ZIO**'s `Task`. 
