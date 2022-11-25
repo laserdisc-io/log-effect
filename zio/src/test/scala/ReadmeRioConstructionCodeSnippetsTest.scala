@@ -43,60 +43,75 @@ import scala.annotation.nowarn
       import Setup._
 
       // Case 1: from a possible config in a Layer (gives a Layer)
-      val log4sCase1: RLayer[Has[AConfig], ZLogWriter] =
-        ZLayer.fromServiceM { config =>
-          log4sFromName.provide(config.logName)
-        }
-      val scribe4sCase1: RLayer[Has[AConfig], ZLogWriter] =
-        ZLayer.fromServiceM { config =>
-          scribeFromName.provide(config.logName)
-        }
+      val log4sCase1: RLayer[AConfig, ZLogWriter] = ZLayer {
+        ZIO.service[AConfig].flatMap(c => log4sFromName.provideEnvironment(ZEnvironment(c.logName)))
+      }
+      val scribe4sCase1: RLayer[AConfig, ZLogWriter] = ZLayer {
+        ZIO
+          .service[AConfig]
+          .flatMap(c => scribeFromName.provideEnvironment(ZEnvironment(c.logName)))
+      }
 
       // Case 2: from a name
       val log4sCase2: Task[Unit] =
-        (log4sFromName >>> someZioProgramUsingLogs) provide aLogName
+        log4sFromName.provideEnvironment(ZEnvironment(aLogName)).flatMap { logger =>
+          someZioProgramUsingLogs.provideEnvironment(ZEnvironment(logger))
+        }
 
       val scribeCase2: Task[Unit] =
-        (scribeFromName >>> someZioProgramUsingLogs) provide aLogName
+        scribeFromName.provideEnvironment(ZEnvironment(aLogName)).flatMap { logger =>
+          someZioProgramUsingLogs.provideEnvironment(ZEnvironment(logger))
+        }
 
       // Case 3: from a logger
-      val log4sCase3: Task[Unit] =
-        Task.effect(l4s.getLogger(aLogName)) >>= { logger =>
-          (log4sFromLogger >>> someZioProgramUsingLogs) provide logger
-        }
-      val julCase3: Task[Unit] =
-        Task.effect(jul.Logger.getLogger(aLogName)) >>= { logger =>
-          (julFromLogger >>> someZioProgramUsingLogs) provide logger
-        }
-      val scribeCase3: Task[Unit] =
-        Task.effect(scribe.Logger(aLogName)) >>= { logger =>
-          (scribeFromLogger >>> someZioProgramUsingLogs) provide logger
-        }
+      val log4sCase3: Task[Unit] = for {
+        logger    <- ZIO.attempt(l4s.getLogger(aLogName))
+        logWriter <- log4sFromLogger.provideEnvironment(ZEnvironment(logger))
+        _         <- someZioProgramUsingLogs.provideEnvironment(ZEnvironment(logWriter))
+      } yield ()
+      val julCase3: Task[Unit] = for {
+        logger    <- ZIO.attempt(jul.Logger.getLogger(aLogName))
+        logWriter <- julFromLogger.provideEnvironment(ZEnvironment(logger))
+        _         <- someZioProgramUsingLogs.provideEnvironment(ZEnvironment(logWriter))
+      } yield ()
+      val scribeCase3: Task[Unit] = for {
+        logger    <- ZIO.attempt(scribe.Logger(aLogName))
+        logWriter <- scribeFromLogger.provideEnvironment(ZEnvironment(logger))
+        _         <- someZioProgramUsingLogs.provideEnvironment(ZEnvironment(logWriter))
+      } yield ()
 
       // Case 4: from a class
       val log4sCase4: Task[Unit] = {
         case class LoggerClass();
-        (log4sFromClass >>> someZioProgramUsingLogs) provide classOf[LoggerClass]
+        log4sFromClass.provideEnvironment(ZEnvironment(classOf[LoggerClass])).flatMap { logger =>
+          someZioProgramUsingLogs.provideEnvironment(ZEnvironment(logger))
+        }
       }
       val scribeCase4: Task[Unit] = {
         case class LoggerClass();
-        (scribeFromClass >>> someZioProgramUsingLogs) provide classOf[LoggerClass]
+        scribeFromClass.provideEnvironment(ZEnvironment(classOf[LoggerClass])).flatMap { logger =>
+          someZioProgramUsingLogs.provideEnvironment(ZEnvironment(logger))
+        }
       }
 
       // Case 5 (Jul): from global logger object
       val julCase5: Task[Unit] =
-        julGlobal >>> someZioProgramUsingLogs
+        julGlobal.flatMap(logger =>
+          someZioProgramUsingLogs.provideEnvironment(ZEnvironment(logger))
+        )
 
       // Case 6: console logger
       val console1: Task[Unit] =
-        someZioProgramUsingLogs provide consoleLog
+        someZioProgramUsingLogs.provideEnvironment(ZEnvironment(consoleLog))
 
       val console2: Task[Unit] =
-        someZioProgramUsingLogs provide consoleLogUpToLevel(LogLevels.Warn)
+        someZioProgramUsingLogs.provideEnvironment(
+          ZEnvironment(consoleLogUpToLevel(LogLevels.Warn))
+        )
 
       // Case 7: No-op logger
       val noOp: Task[Unit] =
-        someZioProgramUsingLogs provide noOpLog
+        someZioProgramUsingLogs.provideEnvironment(ZEnvironment(noOpLog))
     }
   }
 }

@@ -21,18 +21,22 @@
 
 import java.io.{ByteArrayOutputStream, PrintStream}
 
-import _root_.zio._
+import _root_.zio.{Console => _, LogLevel => _, _}
 import log.effect.LogLevels._
 import log.effect.zio.ZioLogWriter.{consoleLog, consoleLogUpToLevel}
 import org.scalatest.matchers.should.Matchers
 import org.scalatest.wordspec.AnyWordSpecLike
 
-final class ConsoleLogWriterTest extends AnyWordSpecLike with Matchers with zio.App {
+final class ConsoleLogWriterTest extends AnyWordSpecLike with Matchers with ZIOAppDefault {
   private[this] def capturedConsoleOutOf(aWrite: Task[Unit]): String = {
     val lowerStream = new ByteArrayOutputStream()
     val outStream   = new PrintStream(lowerStream)
 
-    Console.withOut(outStream)(unsafeRun(aWrite))
+    Console.withOut(outStream) {
+      Unsafe.unsafe { implicit unsafe =>
+        Runtime.default.unsafe.run(aWrite).getOrThrowFiberFailure()
+      }
+    }
 
     lowerStream.toString
   }
@@ -231,7 +235,7 @@ final class ConsoleLogWriterTest extends AnyWordSpecLike with Matchers with zio.
     "created with level Trace" should {
       "log all the messages" in {
         val out = capturedConsoleOutOf {
-          val cl = consoleLogUpToLevel(Trace)
+          val cl = consoleLogUpToLevel(log.effect.LogLevels.Trace)
 
           (cl.error("error message")
             *> cl.warn("warn message")
@@ -260,5 +264,6 @@ final class ConsoleLogWriterTest extends AnyWordSpecLike with Matchers with zio.
     }
   }
 
-  override def run(args: List[String]): ZIO[ZEnv, Nothing, ExitCode] = IO.succeed(ExitCode.success)
+  override def run: ZIO[Environment with ZIOAppArgs with Scope, Any, Any] =
+    ZIO.succeed(ExitCode.success)
 }

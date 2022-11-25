@@ -29,7 +29,7 @@ final class Log4sLogWriterTest extends AnyWordSpecLike with Matchers with TestLo
   "the log4s LogWriter's syntax for messages" should {
     "print the expected trace log" in {
       val Some(logged) = capturedLog4sOutOf(
-        log4sFromLogger >>= (_.trace("test trace message"))
+        log4sFromLogger.flatMap(_.trace("test trace message"))
       )
 
       logged.level.levelStr should be("TRACE")
@@ -39,7 +39,7 @@ final class Log4sLogWriterTest extends AnyWordSpecLike with Matchers with TestLo
 
     "print the expected debug log" in {
       val Some(logged) = capturedLog4sOutOf(
-        log4sFromLogger >>= (_.debug("test debug message"))
+        log4sFromLogger.flatMap(_.debug("test debug message"))
       )
 
       logged.level.levelStr should be("DEBUG")
@@ -49,7 +49,7 @@ final class Log4sLogWriterTest extends AnyWordSpecLike with Matchers with TestLo
 
     "print the expected info log" in {
       val Some(logged) = capturedLog4sOutOf(
-        log4sFromLogger >>= (_.info("test info message"))
+        log4sFromLogger.flatMap(_.info("test info message"))
       )
 
       logged.level.levelStr should be("INFO")
@@ -59,7 +59,7 @@ final class Log4sLogWriterTest extends AnyWordSpecLike with Matchers with TestLo
 
     "print the expected warn log" in {
       val Some(logged) = capturedLog4sOutOf(
-        log4sFromLogger >>= (_.warn("test warn message"))
+        log4sFromLogger.flatMap(_.warn("test warn message"))
       )
 
       logged.level.levelStr should be("WARN")
@@ -69,7 +69,7 @@ final class Log4sLogWriterTest extends AnyWordSpecLike with Matchers with TestLo
 
     "print the expected error log" in {
       val Some(logged) = capturedLog4sOutOf(
-        log4sFromLogger >>= (_.error("test error message"))
+        log4sFromLogger.flatMap(_.error("test error message"))
       )
 
       logged.level.levelStr should be("ERROR")
@@ -79,7 +79,7 @@ final class Log4sLogWriterTest extends AnyWordSpecLike with Matchers with TestLo
 
     "print the expected exception log" in {
       val Some(logged) = capturedLog4sOutOf(
-        log4sFromLogger >>= (_.error(new Exception("Test Exception")))
+        log4sFromLogger.flatMap(_.error(new Exception("Test Exception")))
       )
 
       logged.level.levelStr should be("ERROR")

@@ -41,20 +41,20 @@ import scala.annotation.nowarn
       final case class LoggerClass()
       final case class AConfig(logName: String)
 
-      final val aConfigLive: ULayer[ZEnv with Has[AConfig]] =
-        ZEnv.live ++ ZLayer.succeed(AConfig(aLogName))
+      final val aConfigLive: ULayer[AConfig] =
+        ZLayer.succeed(AConfig(aLogName))
 
-      final val logNameLive: ULayer[ZEnv with ZLogName] =
-        ZEnv.live ++ ZLayer.succeed(LogName(aLogName))
+      final val logNameLive: ULayer[ZLogName] =
+        ZLayer.succeed(LogName(aLogName))
 
-      final val log4sLoggerLive: ULayer[ZEnv with ZLog4sLogger] =
-        ZEnv.live ++ ZLayer.succeed(aLog4sLogger)
+      final val log4sLoggerLive: ULayer[ZLog4sLogger] =
+        ZLayer.succeed(aLog4sLogger)
 
-      final val julLoggerLive: ULayer[ZEnv with ZJulLogger] =
-        ZEnv.live ++ ZLayer.succeed(aJulLogger)
+      final val julLoggerLive: ULayer[ZJulLogger] =
+        ZLayer.succeed(aJulLogger)
 
-      final val scribeLoggerLive: ULayer[ZEnv with ZScribeLogger] =
-        ZEnv.live ++ ZLayer.succeed(aScribeLogger)
+      final val scribeLoggerLive: ULayer[ZScribeLogger] =
+        ZLayer.succeed(aScribeLogger)
     }
 
     sealed abstract class App {
@@ -62,9 +62,7 @@ import scala.annotation.nowarn
 
       // Case 1: from a possible config
       val logNameLiveFromConfig: ULayer[ZLogName] =
-        aConfigLive >>> ZLayer.fromFunctionM { env =>
-          ZIO.succeed(LogName(env.get[AConfig].logName))
-        }
+        aConfigLive >>> ZLayer(ZIO.service[AConfig].map(c => LogName(c.logName)))
 
       val log4sCase1: TaskLayer[ZLogWriter] =
         logNameLiveFromConfig >>> log4sLayerFromName
