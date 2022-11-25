@@ -57,28 +57,30 @@ import scala.annotation.nowarn
         log4sFromName.provideEnvironment(ZEnvironment(aLogName)).flatMap { logger =>
           someZioProgramUsingLogs.provideEnvironment(ZEnvironment(logger))
         }
-
       val scribeCase2: Task[Unit] =
         scribeFromName.provideEnvironment(ZEnvironment(aLogName)).flatMap { logger =>
           someZioProgramUsingLogs.provideEnvironment(ZEnvironment(logger))
         }
 
       // Case 3: from a logger
-      val log4sCase3: Task[Unit] = for {
-        logger    <- ZIO.attempt(l4s.getLogger(aLogName))
-        logWriter <- log4sFromLogger.provideEnvironment(ZEnvironment(logger))
-        _         <- someZioProgramUsingLogs.provideEnvironment(ZEnvironment(logWriter))
-      } yield ()
-      val julCase3: Task[Unit] = for {
-        logger    <- ZIO.attempt(jul.Logger.getLogger(aLogName))
-        logWriter <- julFromLogger.provideEnvironment(ZEnvironment(logger))
-        _         <- someZioProgramUsingLogs.provideEnvironment(ZEnvironment(logWriter))
-      } yield ()
-      val scribeCase3: Task[Unit] = for {
-        logger    <- ZIO.attempt(scribe.Logger(aLogName))
-        logWriter <- scribeFromLogger.provideEnvironment(ZEnvironment(logger))
-        _         <- someZioProgramUsingLogs.provideEnvironment(ZEnvironment(logWriter))
-      } yield ()
+      val log4sCase3: Task[Unit] =
+        for {
+          logger    <- ZIO.attempt(l4s.getLogger(aLogName))
+          logWriter <- log4sFromLogger.provideEnvironment(ZEnvironment(logger))
+          _         <- someZioProgramUsingLogs.provideEnvironment(ZEnvironment(logWriter))
+        } yield ()
+      val julCase3: Task[Unit] =
+        for {
+          logger    <- ZIO.attempt(jul.Logger.getLogger(aLogName))
+          logWriter <- julFromLogger.provideEnvironment(ZEnvironment(logger))
+          _         <- someZioProgramUsingLogs.provideEnvironment(ZEnvironment(logWriter))
+        } yield ()
+      val scribeCase3: Task[Unit] =
+        for {
+          logger    <- ZIO.attempt(scribe.Logger(aLogName))
+          logWriter <- scribeFromLogger.provideEnvironment(ZEnvironment(logger))
+          _         <- someZioProgramUsingLogs.provideEnvironment(ZEnvironment(logWriter))
+        } yield ()
 
       // Case 4: from a class
       val log4sCase4: Task[Unit] = {
