@@ -1,1 +1,1 @@
-addSbtPlugin("org.typelevel" % "sbt-typelevel" % "0.4.20")
+addSbtPlugin("org.typelevel" % "sbt-typelevel" % "0.4.21")
