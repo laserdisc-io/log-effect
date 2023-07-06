@@ -12,7 +12,7 @@ val versionOf = new {
   val scalaCheck    = "1.17.0"
   val scalaTest     = "3.2.16"
   val zio           = "2.0.15"
-  val scribe        = "3.11.5"
+  val scribe        = "3.11.7"
 }
 
 lazy val coreDependencies = Seq(
