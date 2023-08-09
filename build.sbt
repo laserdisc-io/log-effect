@@ -1,5 +1,5 @@
 val scala_212 = "2.12.18"
-val scala_213 = "2.13.10"
+val scala_213 = "2.13.11"
 val scala_3   = "3.3.0"
 
 val versionOf = new {
