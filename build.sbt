@@ -5,14 +5,14 @@ val scala_3   = "3.3.0"
 val versionOf = new {
   val cats          = "2.10.0"
   val catsEffect    = "3.5.1"
-  val fs2           = "3.8.0"
+  val fs2           = "3.9.1"
   val kindProjector = "0.13.2"
   val log4cats      = "2.6.0"
   val log4s         = "1.10.0"
   val scalaCheck    = "1.17.0"
   val scalaTest     = "3.2.16"
   val zio           = "2.0.16"
-  val scribe        = "3.11.9"
+  val scribe        = "3.12.1"
 }
 
 lazy val coreDependencies = Seq(
