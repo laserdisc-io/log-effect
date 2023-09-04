@@ -2,7 +2,7 @@ val scala_212 = "2.12.18"
 val scala_213 = "2.13.11"
 val scala_3   = "3.3.0"
 
-val versionOf = new {
+val V = new {
   val cats          = "2.9.0"
   val catsEffect    = "3.5.1"
   val fs2           = "3.8.0"
@@ -11,46 +11,26 @@ val versionOf = new {
   val log4s         = "1.10.0"
   val scalaCheck    = "1.17.0"
   val scalaTest     = "3.2.16"
-  val zio           = "2.0.15"
   val scribe        = "3.11.9"
+  val zio           = "2.0.15"
 }
 
-lazy val coreDependencies = Seq(
-  "org.log4s" %% "log4s"  % versionOf.log4s,
-  "com.outr"  %% "scribe" % versionOf.scribe
-).map(_.withSources)
-
-lazy val fs2Dependencies = Seq(
-  "org.log4s"     %% "log4s"       % versionOf.log4s,
-  "com.outr"      %% "scribe"      % versionOf.scribe,
-  "org.typelevel" %% "cats-core"   % versionOf.cats,
-  "org.typelevel" %% "cats-effect" % versionOf.catsEffect,
-  "co.fs2"        %% "fs2-core"    % versionOf.fs2
-).map(_.withSources)
-
-lazy val zioDependencies = Seq(
-  "org.log4s" %% "log4s"  % versionOf.log4s,
-  "com.outr"  %% "scribe" % versionOf.scribe,
-  "dev.zio"   %% "zio"    % versionOf.zio
-).map(_.withSources)
-
-lazy val interopDependencies = Seq(
-  "org.typelevel" %% "log4cats-core"  % versionOf.log4cats,
-  "org.typelevel" %% "log4cats-slf4j" % versionOf.log4cats   % Test,
-  "org.typelevel" %% "cats-effect"    % versionOf.catsEffect % Test
-).map(_.withSources)
-
-lazy val testDependencies = Seq(
-  "org.scalacheck" %% "scalacheck"    % versionOf.scalaCheck % Test,
-  "org.scalatest"  %% "scalatest"     % versionOf.scalaTest  % Test,
-  "org.log4s"      %% "log4s-testing" % versionOf.log4s      % Test
-)
-
-lazy val compilerPluginsDependencies = Seq(
-  compilerPlugin(
-    "org.typelevel" %% "kind-projector" % versionOf.kindProjector cross CrossVersion.full
+val D = new {
+  lazy val `cats-core`   = Def.setting("org.typelevel" %%% "cats-core" % V.cats)
+  lazy val `cats-effect` = Def.setting("org.typelevel" %%% "cats-effect" % V.catsEffect)
+  lazy val `fs2-core`    = Def.setting("co.fs2" %%% "fs2-core" % V.fs2)
+  lazy val `kind-projector` = Def.setting(
+    compilerPlugin("org.typelevel" %%% "kind-projector" % V.kindProjector cross CrossVersion.full)
   )
-)
+  lazy val `log4cats-core`    = Def.setting("org.typelevel" %%% "log4cats-core" % V.log4cats)
+  lazy val `log4cats-testing` = Def.setting("org.typelevel" %%% "log4cats-testing" % V.log4cats)
+  lazy val log4s              = Def.setting("org.log4s" %%% "log4s" % V.log4s)
+  lazy val `log4s-testing`    = Def.setting("org.log4s" %%% "log4s-testing" % V.log4s)
+  lazy val scalacheck         = Def.setting("org.scalacheck" %%% "scalacheck" % V.scalaCheck)
+  lazy val scalatest          = Def.setting("org.scalatest" %%% "scalatest" % V.scalaTest)
+  lazy val scribe             = Def.setting("com.outr" %%% "scribe" % V.scribe)
+  lazy val zio                = Def.setting("dev.zio" %%% "zio" % V.zio)
+}
 
 ThisBuild / tlBaseVersion       := "0.17"
 ThisBuild / tlCiReleaseBranches := Seq("master")
@@ -68,46 +48,68 @@ ThisBuild / githubWorkflowJavaVersions := Seq(
 ThisBuild / githubWorkflowBuildMatrixExclusions := Seq()
 ThisBuild / Test / parallelExecution            := false
 
-ThisBuild / libraryDependencies ++= testDependencies
+ThisBuild / libraryDependencies ++= Seq(
+  D.scalacheck.value % Test,
+  D.scalatest.value  % Test
+)
 ThisBuild / libraryDependencies ++= {
-  if (tlIsScala3.value) Seq.empty else compilerPluginsDependencies
+  if (tlIsScala3.value) Seq.empty else Seq(D.`kind-projector`.value)
 }
 
 lazy val root = tlCrossRootProject
   .aggregate(core, fs2, zio, interop)
   .settings(
-    addCommandAlias("fmt", "scalafmt;Test/scalafmt;scalafmtSbt"),
-    addCommandAlias("checkFormat", "scalafmtCheck;Test/scalafmtCheck;scalafmtSbtCheck"),
-    addCommandAlias("check", "checkFormat;clean;test")
+    addCommandAlias("fmt", "scalafmt; Test/scalafmt; scalafmtSbt"),
+    addCommandAlias("checkFormat", "scalafmtCheck; Test/scalafmtCheck; scalafmtSbtCheck"),
+    addCommandAlias("check", "checkFormat; clean; test")
   )
 
-lazy val core = project
+lazy val core = crossProject(JVMPlatform, JSPlatform)
+  .crossType(CrossType.Pure)
   .in(file("core"))
   .settings(
     name := "log-effect-core",
-    libraryDependencies ++= coreDependencies
+    libraryDependencies ++= Seq(D.log4s.value, D.scribe.value)
   )
 
-lazy val fs2 = project
+lazy val fs2 = crossProject(JVMPlatform, JSPlatform)
+  .crossType(CrossType.Pure)
   .in(file("fs2"))
   .dependsOn(core)
   .settings(
     name := "log-effect-fs2",
-    libraryDependencies ++= fs2Dependencies
+    libraryDependencies ++= Seq(
+      D.`cats-core`.value,
+      D.`cats-effect`.value,
+      D.`fs2-core`.value,
+      D.log4s.value,
+      D.scribe.value
+    )
   )
 
-lazy val zio = project
+lazy val zio = crossProject(JVMPlatform, JSPlatform)
+  .crossType(CrossType.Pure)
   .in(file("zio"))
   .dependsOn(core)
   .settings(
     name := "log-effect-zio",
-    libraryDependencies ++= zioDependencies
+    libraryDependencies ++= Seq(
+      D.log4s.value,
+      D.`log4s-testing`.value % Test,
+      D.scribe.value,
+      D.zio.value
+    )
   )
 
-lazy val interop = project
+lazy val interop = crossProject(JVMPlatform, JSPlatform)
+  .crossType(CrossType.Pure)
   .in(file("interop"))
   .dependsOn(core, fs2)
   .settings(
     name := "log-effect-interop",
-    libraryDependencies ++= interopDependencies
+    libraryDependencies ++= Seq(
+      D.`cats-effect`.value % Test,
+      D.`log4cats-core`.value,
+      D.`log4cats-testing`.value % Test
+    )
   )
