@@ -30,7 +30,7 @@ jobs:
         os: [ubuntu-latest]
         scala: [2.12.18, 2.13.11, 3.3.0]
         java: [temurin@11, temurin@17]
-        project: [rootJVM]
+        project: [rootJS, rootJVM]
     runs-on: ${{ matrix.os }}
     steps:
       - name: Checkout current branch (full)
@@ -89,6 +89,10 @@ jobs:
         if: matrix.java == 'temurin@11' && matrix.os == 'ubuntu-latest'
         run: sbt 'project ${{ matrix.project }}' '++ ${{ matrix.scala }}' headerCheckAll scalafmtCheckAll 'project /' scalafmtSbtCheck
 
+      - name: scalaJSLink
+        if: matrix.project == 'rootJS'
+        run: sbt 'project ${{ matrix.project }}' '++ ${{ matrix.scala }}' Test/scalaJSLinkerResult
+
       - name: Test
         run: sbt 'project ${{ matrix.project }}' '++ ${{ matrix.scala }}' test
 
@@ -102,11 +106,11 @@ jobs:
 
       - name: Make target directories
         if: github.event_name != 'pull_request' && (startsWith(github.ref, 'refs/tags/v') || github.ref == 'refs/heads/master')
-        run: mkdir -p fs2/target target .js/target .jvm/target zio/target .native/target core/target interop/target project/target
+        run: mkdir -p zio/.js/target interop/.jvm/target target .js/target interop/.js/target core/.js/target zio/.jvm/target core/.jvm/target .jvm/target .native/target fs2/.js/target fs2/.jvm/target project/target
 
       - name: Compress target directories
         if: github.event_name != 'pull_request' && (startsWith(github.ref, 'refs/tags/v') || github.ref == 'refs/heads/master')
-        run: tar cf targets.tar fs2/target target .js/target .jvm/target zio/target .native/target core/target interop/target project/target
+        run: tar cf targets.tar zio/.js/target interop/.jvm/target target .js/target interop/.js/target core/.js/target zio/.jvm/target core/.jvm/target .jvm/target .native/target fs2/.js/target fs2/.jvm/target project/target
 
       - name: Upload target directories
         if: github.event_name != 'pull_request' && (startsWith(github.ref, 'refs/tags/v') || github.ref == 'refs/heads/master')
@@ -174,6 +178,16 @@ jobs:
             ~/Library/Caches/Coursier/v1
           key: ${{ runner.os }}-sbt-cache-v2-${{ hashFiles('**/*.sbt') }}-${{ hashFiles('project/build.properties') }}
 
+      - name: Download target directories (2.12.18, rootJS)
+        uses: actions/download-artifact@v3
+        with:
+          name: target-${{ matrix.os }}-${{ matrix.java }}-2.12.18-rootJS
+
+      - name: Inflate target directories (2.12.18, rootJS)
+        run: |
+          tar xf targets.tar
+          rm targets.tar
+
       - name: Download target directories (2.12.18, rootJVM)
         uses: actions/download-artifact@v3
         with:
@@ -184,12 +198,32 @@ jobs:
           tar xf targets.tar
           rm targets.tar
 
+      - name: Download target directories (2.13.11, rootJS)
+        uses: actions/download-artifact@v3
+        with:
+          name: target-${{ matrix.os }}-${{ matrix.java }}-2.13.11-rootJS
+
+      - name: Inflate target directories (2.13.11, rootJS)
+        run: |
+          tar xf targets.tar
+          rm targets.tar
+
       - name: Download target directories (2.13.11, rootJVM)
         uses: actions/download-artifact@v3
         with:
           name: target-${{ matrix.os }}-${{ matrix.java }}-2.13.11-rootJVM
 
       - name: Inflate target directories (2.13.11, rootJVM)
+        run: |
+          tar xf targets.tar
+          rm targets.tar
+
+      - name: Download target directories (3.3.0, rootJS)
+        uses: actions/download-artifact@v3
+        with:
+          name: target-${{ matrix.os }}-${{ matrix.java }}-3.3.0-rootJS
+
+      - name: Inflate target directories (3.3.0, rootJS)
         run: |
           tar xf targets.tar
           rm targets.tar
