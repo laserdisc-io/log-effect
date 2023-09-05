@@ -56,7 +56,7 @@ final class InteropTest extends AnyWordSpecLike with Matchers {
         (_: A) => "an A"
     }
 
-    implicit val testLogger = StructuredTestingLogger.impl[IO]()
+    implicit val testLogger: StructuredTestingLogger[IO] = StructuredTestingLogger.impl[IO]()
 
     import log.effect.interop.log4cats._
 
