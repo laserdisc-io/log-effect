@@ -28,63 +28,63 @@ final class Log4sLogWriterTest extends AnyWordSpecLike with Matchers with TestLo
 
   "the log4s LogWriter's syntax for messages" should {
     "print the expected trace log" in {
-      val Some(logged) = capturedLog4sOutOf(
+      val logged = capturedLog4sOutOf(
         log4sFromLogger.flatMap(_.trace("test trace message"))
       )
 
-      logged.level.levelStr should be("TRACE")
-      logged.throwable should be(empty)
-      logged.message should be("test trace message")
+      logged.get.level.levelStr should be("TRACE")
+      logged.get.throwable should be(empty)
+      logged.get.message should be("test trace message")
     }
 
     "print the expected debug log" in {
-      val Some(logged) = capturedLog4sOutOf(
+      val logged = capturedLog4sOutOf(
         log4sFromLogger.flatMap(_.debug("test debug message"))
       )
 
-      logged.level.levelStr should be("DEBUG")
-      logged.throwable should be(empty)
-      logged.message should be("test debug message")
+      logged.get.level.levelStr should be("DEBUG")
+      logged.get.throwable should be(empty)
+      logged.get.message should be("test debug message")
     }
 
     "print the expected info log" in {
-      val Some(logged) = capturedLog4sOutOf(
+      val logged = capturedLog4sOutOf(
         log4sFromLogger.flatMap(_.info("test info message"))
       )
 
-      logged.level.levelStr should be("INFO")
-      logged.throwable should be(empty)
-      logged.message should be("test info message")
+      logged.get.level.levelStr should be("INFO")
+      logged.get.throwable should be(empty)
+      logged.get.message should be("test info message")
     }
 
     "print the expected warn log" in {
-      val Some(logged) = capturedLog4sOutOf(
+      val logged = capturedLog4sOutOf(
         log4sFromLogger.flatMap(_.warn("test warn message"))
       )
 
-      logged.level.levelStr should be("WARN")
-      logged.throwable should be(empty)
-      logged.message should be("test warn message")
+      logged.get.level.levelStr should be("WARN")
+      logged.get.throwable should be(empty)
+      logged.get.message should be("test warn message")
     }
 
     "print the expected error log" in {
-      val Some(logged) = capturedLog4sOutOf(
+      val logged = capturedLog4sOutOf(
         log4sFromLogger.flatMap(_.error("test error message"))
       )
 
-      logged.level.levelStr should be("ERROR")
-      logged.throwable should be(empty)
-      logged.message should be("test error message")
+      logged.get.level.levelStr should be("ERROR")
+      logged.get.throwable should be(empty)
+      logged.get.message should be("test error message")
     }
 
     "print the expected exception log" in {
-      val Some(logged) = capturedLog4sOutOf(
+      val logged = capturedLog4sOutOf(
         log4sFromLogger.flatMap(_.error(new Exception("Test Exception")))
       )
 
-      logged.level.levelStr should be("ERROR")
-      logged.throwable should be(empty)
-      logged.message should startWith(
+      logged.get.level.levelStr should be("ERROR")
+      logged.get.throwable should be(empty)
+      logged.get.message should startWith(
         "Failed with exception java.lang.Exception: Test Exception\n  Stack trace:\n"
       )
     }
