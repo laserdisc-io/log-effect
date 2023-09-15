@@ -44,7 +44,6 @@ object RedisClient {
     )(_ => F.unit)
 }
 
-@nowarn("msg=local method [a-zA-Z0-9]+ in value <local InteropTest> is never used")
 final class InteropTest extends AnyWordSpecLike with Matchers with TestLogCapture {
 
   "A LogWriter instance can be derived from a log4cats Logger" in {
