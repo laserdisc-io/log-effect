@@ -100,7 +100,7 @@ final class InteropTest extends AnyWordSpecLike with Matchers with TestLogCaptur
 
     def buildLog4catsLogger[F[_]]: F[Logger[F]] = ???
 
-    def storeOwnAddress[F[_]: Sync](address: String): F[Unit] =
+    @nowarn def storeOwnAddress[F[_]: Sync](address: String): F[Unit] =
       buildLog4catsLogger[F] >>= { implicit l =>
         RedisClient[F](address).use { cl =>
           cl.write
