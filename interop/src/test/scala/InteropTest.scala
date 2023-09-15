@@ -42,7 +42,6 @@ object RedisClient {
     )(_ => F.unit)
 }
 
-@nowarn("msg=local method [a-zA-Z0-9]+ in value <local InteropTest> is never used")
 final class InteropTest extends AnyWordSpecLike with Matchers {
 
   "A LogWriter instance can be derived from a log4cats Logger" in {
@@ -96,7 +95,7 @@ final class InteropTest extends AnyWordSpecLike with Matchers {
 
     def buildLog4catsLogger[F[_]]: F[Logger[F]] = ???
 
-    def storeOwnAddress[F[_]: Sync](address: String): F[Unit] =
+    @nowarn def storeOwnAddress[F[_]: Sync](address: String): F[Unit] =
       buildLog4catsLogger[F] >>= { implicit l =>
         RedisClient[F](address).use { cl =>
           cl.write

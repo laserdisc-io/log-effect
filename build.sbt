@@ -3,25 +3,21 @@ val scala_213 = "2.13.12"
 val scala_3   = "3.3.1"
 
 val V = new {
-  val cats          = "2.10.0"
-  val catsEffect    = "3.5.1"
-  val fs2           = "3.9.2"
-  val kindProjector = "0.13.2"
-  val log4cats      = "2.6.0"
-  val log4s         = "1.10.0"
-  val scalaCheck    = "1.17.0"
-  val scalaTest     = "3.2.17"
-  val scribe        = "3.12.2"
-  val zio           = "2.0.16"
+  val cats       = "2.10.0"
+  val catsEffect = "3.5.1"
+  val fs2        = "3.9.2"
+  val log4cats   = "2.6.0"
+  val log4s      = "1.10.0"
+  val scalaCheck = "1.17.0"
+  val scalaTest  = "3.2.17"
+  val scribe     = "3.12.2"
+  val zio        = "2.0.16"
 }
 
 val D = new {
-  lazy val `cats-core`   = Def.setting("org.typelevel" %%% "cats-core" % V.cats)
-  lazy val `cats-effect` = Def.setting("org.typelevel" %%% "cats-effect" % V.catsEffect)
-  lazy val `fs2-core`    = Def.setting("co.fs2" %%% "fs2-core" % V.fs2)
-  lazy val `kind-projector` = Def.setting(
-    compilerPlugin("org.typelevel" %%% "kind-projector" % V.kindProjector cross CrossVersion.full)
-  )
+  lazy val `cats-core`        = Def.setting("org.typelevel" %%% "cats-core" % V.cats)
+  lazy val `cats-effect`      = Def.setting("org.typelevel" %%% "cats-effect" % V.catsEffect)
+  lazy val `fs2-core`         = Def.setting("co.fs2" %%% "fs2-core" % V.fs2)
   lazy val `log4cats-core`    = Def.setting("org.typelevel" %%% "log4cats-core" % V.log4cats)
   lazy val `log4cats-testing` = Def.setting("org.typelevel" %%% "log4cats-testing" % V.log4cats)
   lazy val log4s              = Def.setting("org.log4s" %%% "log4s" % V.log4s)
@@ -52,9 +48,6 @@ ThisBuild / libraryDependencies ++= Seq(
   D.scalacheck.value % Test,
   D.scalatest.value  % Test
 )
-ThisBuild / libraryDependencies ++= {
-  if (tlIsScala3.value) Seq.empty else Seq(D.`kind-projector`.value)
-}
 
 lazy val root = tlCrossRootProject
   .aggregate(core, fs2, zio, interop)
