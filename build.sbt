@@ -3,16 +3,15 @@ val scala_213 = "2.13.12"
 val scala_3   = "3.3.1"
 
 val versionOf = new {
-  val cats          = "2.10.0"
-  val catsEffect    = "3.5.1"
-  val fs2           = "3.9.2"
-  val kindProjector = "0.13.2"
-  val log4cats      = "2.6.0"
-  val log4s         = "1.10.0"
-  val scalaCheck    = "1.17.0"
-  val scalaTest     = "3.2.17"
-  val zio           = "2.0.16"
-  val scribe        = "3.12.2"
+  val cats       = "2.10.0"
+  val catsEffect = "3.5.1"
+  val fs2        = "3.9.2"
+  val log4cats   = "2.6.0"
+  val log4s      = "1.10.0"
+  val scalaCheck = "1.17.0"
+  val scalaTest  = "3.2.17"
+  val zio        = "2.0.16"
+  val scribe     = "3.12.2"
 }
 
 lazy val coreDependencies = Seq(
@@ -44,13 +43,7 @@ lazy val testDependencies = Seq(
   "org.scalacheck" %% "scalacheck"    % versionOf.scalaCheck % Test,
   "org.scalatest"  %% "scalatest"     % versionOf.scalaTest  % Test,
   "org.log4s"      %% "log4s-testing" % versionOf.log4s      % Test
-)
-
-lazy val compilerPluginsDependencies = Seq(
-  compilerPlugin(
-    "org.typelevel" %% "kind-projector" % versionOf.kindProjector cross CrossVersion.full
-  )
-)
+).map(_.withSources)
 
 ThisBuild / tlBaseVersion       := "0.17"
 ThisBuild / tlCiReleaseBranches := Seq("master")
@@ -69,9 +62,6 @@ ThisBuild / githubWorkflowBuildMatrixExclusions := Seq()
 ThisBuild / Test / parallelExecution            := false
 
 ThisBuild / libraryDependencies ++= testDependencies
-ThisBuild / libraryDependencies ++= {
-  if (tlIsScala3.value) Seq.empty else compilerPluginsDependencies
-}
 
 lazy val root = tlCrossRootProject
   .aggregate(core, fs2, zio, interop)
