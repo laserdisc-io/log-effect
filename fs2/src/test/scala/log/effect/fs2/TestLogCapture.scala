@@ -25,7 +25,6 @@ package fs2
 import java.io.{ByteArrayOutputStream, PrintStream}
 
 import cats.effect.IO
-import cats.effect.unsafe.implicits.global
 
 trait TestLogCapture {
 
@@ -33,7 +32,7 @@ trait TestLogCapture {
     val lowerStream = new ByteArrayOutputStream()
     val outStream   = new PrintStream(lowerStream)
 
-    Console.withOut(outStream)(aWrite.unsafeRunSync())
+    Console.withOut(outStream)(aWrite.syncStep(Int.MaxValue).unsafeRunSync())
 
     lowerStream.toString
   }

@@ -21,10 +21,8 @@
 
 import cats.effect.{Resource, Sync}
 import log.effect.LogWriter
-import log.effect.interop.TestLogCapture
 import org.scalatest.matchers.should.Matchers
 import org.scalatest.wordspec.AnyWordSpecLike
-import org.typelevel.log4cats.SelfAwareStructuredLogger
 
 import scala.annotation.nowarn
 
@@ -44,12 +42,11 @@ object RedisClient {
     )(_ => F.unit)
 }
 
-final class InteropTest extends AnyWordSpecLike with Matchers with TestLogCapture {
+final class InteropTest extends AnyWordSpecLike with Matchers {
 
   "A LogWriter instance can be derived from a log4cats Logger" in {
     import cats.effect.IO
-    import cats.effect.unsafe.implicits.global
-    import org.typelevel.log4cats.slf4j.Slf4jLogger
+    import org.typelevel.log4cats.testing.StructuredTestingLogger
     import log.effect.internal.Show
 
     final class A()
@@ -58,37 +55,36 @@ final class InteropTest extends AnyWordSpecLike with Matchers with TestLogCaptur
         (_: A) => "an A"
     }
 
-    val logged = capturedLog4sOutOf { logger =>
-      import log.effect.interop.log4cats._
+    implicit val testLogger: StructuredTestingLogger[IO] = StructuredTestingLogger.impl[IO]()
 
-      implicit val buildMessageLogger: SelfAwareStructuredLogger[IO] =
-        Slf4jLogger.fromSlf4j[IO](logger).unsafeRunSync()
+    import log.effect.interop.log4cats._
 
-      val lw = implicitly[LogWriter[IO]]
+    val lw = implicitly[LogWriter[IO]]
 
-      lw.trace("a message") >>
-        lw.trace(new Exception("an exception")) >>
-        lw.trace("a message", new Exception("an exception")) >>
-        lw.trace(new A()) >>
-        lw.debug("a message") >>
-        lw.debug(new Exception("an exception")) >>
-        lw.debug("a message", new Exception("an exception")) >>
-        lw.debug(new A()) >>
-        lw.info("a message") >>
-        lw.info(new Exception("an exception")) >>
-        lw.info("a message", new Exception("an exception")) >>
-        lw.info(new A()) >>
-        lw.warn("a message") >>
-        lw.warn(new Exception("an exception")) >>
-        lw.warn("a message", new Exception("an exception")) >>
-        lw.warn(new A()) >>
-        lw.error("a message") >>
-        lw.error(new Exception("an exception")) >>
-        lw.error("a message", new Exception("an exception")) >>
-        lw.error(new A())
-    }
+    val logs = lw.trace("a message") >>
+      lw.trace(new Exception("an exception")) >>
+      lw.trace("a message", new Exception("an exception")) >>
+      lw.trace(new A()) >>
+      lw.debug("a message") >>
+      lw.debug(new Exception("an exception")) >>
+      lw.debug("a message", new Exception("an exception")) >>
+      lw.debug(new A()) >>
+      lw.info("a message") >>
+      lw.info(new Exception("an exception")) >>
+      lw.info("a message", new Exception("an exception")) >>
+      lw.info(new A()) >>
+      lw.warn("a message") >>
+      lw.warn(new Exception("an exception")) >>
+      lw.warn("a message", new Exception("an exception")) >>
+      lw.warn(new A()) >>
+      lw.error("a message") >>
+      lw.error(new Exception("an exception")) >>
+      lw.error("a message", new Exception("an exception")) >>
+      lw.error(new A())
 
-    logged.size shouldBe 20
+    val loggedQty = (logs >> testLogger.logged.map(_.size)).syncStep(Int.MaxValue).unsafeRunSync()
+
+    loggedQty shouldBe Right(20)
   }
 
   "The readme interop example compiles" in {
