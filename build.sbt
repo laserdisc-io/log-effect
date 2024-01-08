@@ -28,7 +28,7 @@ val D = new {
   lazy val zio                = Def.setting("dev.zio" %%% "zio" % V.zio)
 }
 
-ThisBuild / tlBaseVersion           := "0.18"
+ThisBuild / tlBaseVersion           := "0.19"
 ThisBuild / tlCiReleaseBranches     := Seq("master")
 ThisBuild / tlVersionIntroduced     := Map("3" -> "0.16.3")
 ThisBuild / tlSonatypeUseLegacyHost := true
