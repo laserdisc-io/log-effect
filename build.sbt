@@ -35,6 +35,7 @@ ThisBuild / tlSonatypeUseLegacyHost := true
 ThisBuild / organization            := "io.laserdisc"
 ThisBuild / organizationName        := "LaserDisc"
 ThisBuild / licenses                := Seq(License.MIT)
+ThisBuild / startYear               := Some(2018)
 ThisBuild / developers              := List(tlGitHubDev("barambani", "Filippo Mariotti"))
 ThisBuild / crossScalaVersions      := Seq(scala_212, scala_213, scala_3)
 ThisBuild / scalaVersion            := scala_213
