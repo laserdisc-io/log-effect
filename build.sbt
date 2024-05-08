@@ -35,6 +35,7 @@ ThisBuild / tlSonatypeUseLegacyHost := true
 ThisBuild / organization            := "io.laserdisc"
 ThisBuild / organizationName        := "LaserDisc"
 ThisBuild / licenses                := Seq(License.MIT)
+ThisBuild / startYear               := Some(2018)
 ThisBuild / developers              := List(tlGitHubDev("barambani", "Filippo Mariotti"))
 ThisBuild / crossScalaVersions      := Seq(scala_212, scala_213, scala_3)
 ThisBuild / scalaVersion            := scala_213
@@ -50,8 +51,13 @@ ThisBuild / libraryDependencies ++= Seq(
   D.scalatest.value  % Test
 )
 
+lazy val commonSettings = Seq(
+  headerEndYear := Some(2024)
+)
+
 lazy val root = tlCrossRootProject
   .aggregate(core, fs2, zio, interop)
+  .settings(commonSettings)
   .settings(
     addCommandAlias("fmt", "scalafmt; Test/scalafmt; scalafmtSbt"),
     addCommandAlias("checkFormat", "scalafmtCheck; Test/scalafmtCheck; scalafmtSbtCheck"),
@@ -61,6 +67,7 @@ lazy val root = tlCrossRootProject
 lazy val core = crossProject(JVMPlatform, JSPlatform)
   .crossType(CrossType.Pure)
   .in(file("core"))
+  .settings(commonSettings)
   .settings(
     name := "log-effect-core",
     libraryDependencies ++= Seq(D.log4s.value, D.scribe.value)
@@ -70,6 +77,7 @@ lazy val fs2 = crossProject(JVMPlatform, JSPlatform)
   .crossType(CrossType.Pure)
   .in(file("fs2"))
   .dependsOn(core)
+  .settings(commonSettings)
   .settings(
     name := "log-effect-fs2",
     libraryDependencies ++= Seq(
@@ -85,6 +93,7 @@ lazy val zio = crossProject(JVMPlatform, JSPlatform)
   .crossType(CrossType.Pure)
   .in(file("zio"))
   .dependsOn(core)
+  .settings(commonSettings)
   .settings(
     name := "log-effect-zio",
     libraryDependencies ++= Seq(
@@ -99,6 +108,7 @@ lazy val interop = crossProject(JVMPlatform, JSPlatform)
   .crossType(CrossType.Pure)
   .in(file("interop"))
   .dependsOn(core, fs2)
+  .settings(commonSettings)
   .settings(
     name := "log-effect-interop",
     libraryDependencies ++= Seq(
