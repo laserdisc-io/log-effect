@@ -11,7 +11,7 @@ val V = new {
   val scalaCheck = "1.18.0"
   val scalaTest  = "3.2.18"
   val scribe     = "3.14.0"
-  val zio        = "2.1.1"
+  val zio        = "2.1.2"
 }
 
 val D = new {
