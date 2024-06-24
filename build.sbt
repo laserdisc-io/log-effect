@@ -9,7 +9,7 @@ val V = new {
   val log4cats   = "2.7.0"
   val log4s      = "1.10.0"
   val scalaCheck = "1.18.0"
-  val scalaTest  = "3.2.18"
+  val scalaTest  = "3.2.19"
   val scribe     = "3.15.0"
   val zio        = "2.1.3"
 }
