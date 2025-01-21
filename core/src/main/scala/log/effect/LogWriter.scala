@@ -23,8 +23,6 @@ package log.effect
 
 import log.effect.internal.{Id, Show}
 
-import scala.annotation.nowarn
-
 trait LogWriter[F[_]] {
   def write[A: Show](level: LogLevel, a: =>A): F[Unit]
 }
@@ -51,11 +49,11 @@ private[effect] sealed trait LogWriterSyntax extends LogWriterAliasingSyntax {
 }
 
 private[effect] sealed trait LogWriterAliasingSyntax {
-  @nowarn implicit def logWriterSingleton[F[_]](co: LogWriter.type)(
+  implicit def logWriterSingleton[F[_]](co: LogWriter.type)(
     implicit LW: LogWriter[F]
   ): LogWriter[F] = LW
 
-  @nowarn implicit def logWriterOpsSingleton[F[_]](co: LogWriter.type)(
+  implicit def logWriterOpsSingleton[F[_]](co: LogWriter.type)(
     implicit LW: LogWriter[F]
   ): LogWriterOps[F] = new LogWriterOps(LW)
 }
