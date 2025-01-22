@@ -52,7 +52,13 @@ ThisBuild / libraryDependencies ++= Seq(
 )
 
 lazy val commonSettings = Seq(
-  headerEndYear := Some(2024)
+  headerEndYear := Some(2024),
+  scalacOptions ++= {
+    CrossVersion.partialVersion(scalaVersion.value) match {
+      case Some((2, major)) if major >= 13 => Seq("-Wconf:cat=unused-nowarn:s")
+      case _                               => Seq.empty
+    }
+  }
 )
 
 lazy val root = tlCrossRootProject
