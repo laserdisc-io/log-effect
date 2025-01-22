@@ -1,5 +1,5 @@
 val scala_212 = "2.12.20"
-val scala_213 = "2.13.14"
+val scala_213 = "2.13.16"
 val scala_3   = "3.3.4"
 
 val V = new {
@@ -28,17 +28,17 @@ val D = new {
   lazy val zio                = Def.setting("dev.zio" %%% "zio" % V.zio)
 }
 
-ThisBuild / tlBaseVersion           := "0.19"
-ThisBuild / tlCiReleaseBranches     := Seq("master")
-ThisBuild / tlVersionIntroduced     := Map("3" -> "0.16.3")
-ThisBuild / tlSonatypeUseLegacyHost := true
-ThisBuild / organization            := "io.laserdisc"
-ThisBuild / organizationName        := "LaserDisc"
-ThisBuild / licenses                := Seq(License.MIT)
-ThisBuild / startYear               := Some(2018)
-ThisBuild / developers              := List(tlGitHubDev("barambani", "Filippo Mariotti"))
-ThisBuild / crossScalaVersions      := Seq(scala_212, scala_213, scala_3)
-ThisBuild / scalaVersion            := scala_213
+ThisBuild / tlBaseVersion          := "0.19"
+ThisBuild / tlCiReleaseBranches    := Seq("master")
+ThisBuild / tlVersionIntroduced    := Map("3" -> "0.16.3")
+ThisBuild / sonatypeCredentialHost := Sonatype.sonatypeLegacy
+ThisBuild / organization           := "io.laserdisc"
+ThisBuild / organizationName       := "LaserDisc"
+ThisBuild / licenses               := Seq(License.MIT)
+ThisBuild / startYear              := Some(2018)
+ThisBuild / developers             := List(tlGitHubDev("barambani", "Filippo Mariotti"))
+ThisBuild / crossScalaVersions     := Seq(scala_212, scala_213, scala_3)
+ThisBuild / scalaVersion           := scala_213
 ThisBuild / githubWorkflowJavaVersions := Seq(
   JavaSpec.temurin("11"),
   JavaSpec.temurin("17")
@@ -52,7 +52,13 @@ ThisBuild / libraryDependencies ++= Seq(
 )
 
 lazy val commonSettings = Seq(
-  headerEndYear := Some(2024)
+  headerEndYear := Some(2025),
+  scalacOptions ++= {
+    CrossVersion.partialVersion(scalaVersion.value) match {
+      case Some((2, major)) if major >= 13 => Seq("-Wconf:cat=unused-nowarn:s")
+      case _                               => Seq.empty
+    }
+  }
 )
 
 lazy val root = tlCrossRootProject
