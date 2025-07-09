@@ -4,7 +4,7 @@ val scala_3   = "3.3.6"
 
 val V = new {
   val cats       = "2.13.0"
-  val catsEffect = "3.6.1"
+  val catsEffect = "3.6.2"
   val fs2        = "3.12.0"
   val log4cats   = "2.7.1"
   val log4s      = "1.10.0"
