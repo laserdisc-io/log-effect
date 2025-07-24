@@ -195,7 +195,7 @@ import scala.annotation.nowarn
 
     trait A
     object A {
-      def empty: A = ???
+      def empty: A                = ???
       implicit val aShow: Show[A] = new Show[A] {
         override def show(t: A): String = ???
       }
