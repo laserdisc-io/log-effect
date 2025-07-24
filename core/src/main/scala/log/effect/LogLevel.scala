@@ -26,7 +26,7 @@ import log.effect.internal.Show
 import scala.annotation.nowarn
 
 sealed trait LogLevel extends Product with Serializable
-object LogLevel extends LogLevelSyntax {
+object LogLevel       extends LogLevelSyntax {
   import LogLevels._
 
   implicit val logLevelShow: Show[LogLevel] = {
