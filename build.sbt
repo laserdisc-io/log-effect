@@ -28,16 +28,16 @@ val D = new {
   lazy val zio                = Def.setting("dev.zio" %%% "zio" % V.zio)
 }
 
-ThisBuild / tlBaseVersion       := "0.19"
-ThisBuild / tlCiReleaseBranches := Seq("master")
-ThisBuild / tlVersionIntroduced := Map("3" -> "0.16.3")
-ThisBuild / organization        := "io.laserdisc"
-ThisBuild / organizationName    := "LaserDisc"
-ThisBuild / licenses            := Seq(License.MIT)
-ThisBuild / startYear           := Some(2018)
-ThisBuild / developers          := List(tlGitHubDev("barambani", "Filippo Mariotti"))
-ThisBuild / crossScalaVersions  := Seq(scala_212, scala_213, scala_3)
-ThisBuild / scalaVersion        := scala_213
+ThisBuild / tlBaseVersion              := "0.19"
+ThisBuild / tlCiReleaseBranches        := Seq("master")
+ThisBuild / tlVersionIntroduced        := Map("3" -> "0.16.3")
+ThisBuild / organization               := "io.laserdisc"
+ThisBuild / organizationName           := "LaserDisc"
+ThisBuild / licenses                   := Seq(License.MIT)
+ThisBuild / startYear                  := Some(2018)
+ThisBuild / developers                 := List(tlGitHubDev("barambani", "Filippo Mariotti"))
+ThisBuild / crossScalaVersions         := Seq(scala_212, scala_213, scala_3)
+ThisBuild / scalaVersion               := scala_213
 ThisBuild / githubWorkflowJavaVersions := Seq(
   JavaSpec.temurin("11"),
   JavaSpec.temurin("17")
