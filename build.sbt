@@ -57,7 +57,7 @@ ThisBuild / githubWorkflowBuildMatrixExclusions := Seq()
 ThisBuild / Test / parallelExecution            := false
 
 lazy val commonSettings = Seq(
-  headerEndYear := Some(2025),
+  headerEndYear := Some(2026),
   libraryDependencies ++= Seq(
     D.scalacheck.value % Test,
     D.scalatest.value  % Test
