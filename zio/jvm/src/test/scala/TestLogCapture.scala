@@ -21,38 +21,20 @@
 
 import _root_.zio.{Runtime, Task, Unsafe, ZEnvironment, ZIO}
 import org.log4s.{LoggedEvent, Logger, TestAppender, getLogger}
-import ch.qos.logback.classic.spi.ILoggingEvent
-
-final class MyTestAppender extends TestAppender {
-  override def start(): Unit = {
-    println(">>>>>>>>>>>>>>> starting test appended")
-    super.start()
-  }
-
-  override def stop(): Unit = {
-    println(">>>>>>>>>>>>>>> stopping test appender")
-    super.stop()
-  }
-
-  override def append(event: ILoggingEvent): Unit = {
-    println(">>>>>>>>>>>>>>> appending to test appender")
-    super.append(event)
-  }
-}
 
 trait TestLogCapture {
-
   protected final def capturedLog4sOutOf(
     logWrite: ZIO[Logger, Throwable, Unit]
   ): Option[LoggedEvent] = {
-    val logger = getLogger("Test Logger")
-    TestAppender.withAppender() {
-      val loggingAction: Task[Unit] =
-        logWrite.provideEnvironment(ZEnvironment(logger))
-      Unsafe.unsafe { implicit unsafe =>
-        Runtime.default.unsafe.run(loggingAction).getOrThrowFiberFailure()
+    val loggingAction: Task[Unit] =
+      ZIO.attempt(getLogger("Test Logger")).flatMap { logger =>
+        TestAppender.withAppender() {
+          logWrite.provideEnvironment(ZEnvironment(logger))
+        }
       }
-      TestAppender.dequeue
+    Unsafe.unsafe { implicit unsafe =>
+      Runtime.default.unsafe.run(loggingAction).getOrThrowFiberFailure()
     }
+    TestAppender.dequeue
   }
 }
