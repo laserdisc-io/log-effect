@@ -1,17 +1,17 @@
 val scala_212 = "2.12.21"
 val scala_213 = "2.13.18"
-val scala_3   = "3.3.7"
+val scala_3   = "3.3.8"
 
 val V = new {
   val cats       = "2.13.0"
-  val catsEffect = "3.6.3"
+  val catsEffect = "3.7.1"
   val fs2        = "3.12.2"
-  val log4cats   = "2.7.1"
+  val log4cats   = "2.8.0"
   val log4s      = "1.10.0"
   val scalaCheck = "1.20.0"
-  val scalaTest  = "3.2.19"
+  val scalaTest  = "3.2.20"
   val scribe     = "3.15.2"
-  val zio        = "2.1.24"
+  val zio        = "2.1.26"
 }
 
 val D = new {
