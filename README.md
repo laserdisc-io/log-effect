@@ -15,7 +15,7 @@
 [![log-effect-interop Scala version support](https://index.scala-lang.org/laserdisc-io/log-effect/log-effect-interop/latest-by-scala-version.svg?platform=jvm&color=009933)](https://index.scala-lang.org/laserdisc-io/log-effect/log-effect-interop)
 
 ## Start
-Log Effect is available for Scala **_2.12_**, **_2.13_** and **_3_**. Helper constructors are provided for **Cats Effect**'s `Sync` `F[_]`, for **Fs2**'s `Stream` and for **ZIO**'s `Task`. 
+Log Effect is available for Scala **_2.12_**, **_2.13_** and **_3_** on JVM, JavaScript and Native. Helper constructors are provided for **Cats Effect**'s `Sync` `F[_]`, for **Fs2**'s `Stream` and for **ZIO**'s `Task`. 
 Add
 ```scala
 libraryDependencies += "io.laserdisc" %% "log-effect-fs2" % <latest-fs2-version>
@@ -32,7 +32,7 @@ will be enough. For the latest versions available please refer to the badges bel
 
 ## Backends
 Currently Log Effect supports the following backends
-- Log4s
+- Log4s (on JVM and JS)
 - Java Logging (Jul)
 - Scribe
 - Console
