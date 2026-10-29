@@ -29,8 +29,12 @@ jobs:
       matrix:
         os: [ubuntu-22.04]
         scala: [2.12, 2.13, 3]
-        java: [temurin@11, temurin@17]
-        project: [rootJS, rootJVM]
+        java:
+          - temurin@11
+          - temurin@17
+          - temurin@21
+          - temurin@25
+        project: [log-effectJS, log-effectNative, log-effectJVM]
     runs-on: ${{ matrix.os }}
     timeout-minutes: 60
     steps:
@@ -68,6 +72,32 @@ jobs:
         if: matrix.java == 'temurin@17' && steps.setup-java-temurin-17.outputs.cache-hit == 'false'
         run: sbt +update
 
+      - name: Setup Java (temurin@21)
+        id: setup-java-temurin-21
+        if: matrix.java == 'temurin@21'
+        uses: actions/setup-java@v5
+        with:
+          distribution: temurin
+          java-version: 21
+          cache: sbt
+
+      - name: sbt update
+        if: matrix.java == 'temurin@21' && steps.setup-java-temurin-21.outputs.cache-hit == 'false'
+        run: sbt +update
+
+      - name: Setup Java (temurin@25)
+        id: setup-java-temurin-25
+        if: matrix.java == 'temurin@25'
+        uses: actions/setup-java@v5
+        with:
+          distribution: temurin
+          java-version: 25
+          cache: sbt
+
+      - name: sbt update
+        if: matrix.java == 'temurin@25' && steps.setup-java-temurin-25.outputs.cache-hit == 'false'
+        run: sbt +update
+
       - name: Check that workflows are up to date
         run: sbt githubWorkflowCheck
 
@@ -76,8 +106,12 @@ jobs:
         run: sbt 'project ${{ matrix.project }}' '++ ${{ matrix.scala }}' headerCheckAll scalafmtCheckAll 'project /' scalafmtSbtCheck
 
       - name: scalaJSLink
-        if: matrix.project == 'rootJS'
+        if: matrix.project == 'log-effectJS'
         run: sbt 'project ${{ matrix.project }}' '++ ${{ matrix.scala }}' Test/scalaJSLinkerResult
+
+      - name: nativeLink
+        if: matrix.project == 'log-effectNative'
+        run: sbt 'project ${{ matrix.project }}' '++ ${{ matrix.scala }}' Test/nativeLink
 
       - name: Test
         run: sbt 'project ${{ matrix.project }}' '++ ${{ matrix.scala }}' test
@@ -92,11 +126,11 @@ jobs:
 
       - name: Make target directories
         if: github.event_name != 'pull_request' && (startsWith(github.ref, 'refs/tags/v') || github.ref == 'refs/heads/master')
-        run: mkdir -p zio/.js/target interop/.jvm/target interop/.js/target core/.js/target zio/.jvm/target core/.jvm/target fs2/.js/target fs2/.jvm/target project/target
+        run: mkdir -p zio/js/target fs2/native/target fs2/jvm/target core/native/target interop/.js/target core/js/target zio/jvm/target fs2/js/target core/jvm/target zio/native/target interop/.jvm/target project/target
 
       - name: Compress target directories
         if: github.event_name != 'pull_request' && (startsWith(github.ref, 'refs/tags/v') || github.ref == 'refs/heads/master')
-        run: tar cf targets.tar zio/.js/target interop/.jvm/target interop/.js/target core/.js/target zio/.jvm/target core/.jvm/target fs2/.js/target fs2/.jvm/target project/target
+        run: tar cf targets.tar zio/js/target fs2/native/target fs2/jvm/target core/native/target interop/.js/target core/js/target zio/jvm/target fs2/js/target core/jvm/target zio/native/target interop/.jvm/target project/target
 
       - name: Upload target directories
         if: github.event_name != 'pull_request' && (startsWith(github.ref, 'refs/tags/v') || github.ref == 'refs/heads/master')
@@ -149,62 +183,118 @@ jobs:
         if: matrix.java == 'temurin@17' && steps.setup-java-temurin-17.outputs.cache-hit == 'false'
         run: sbt +update
 
-      - name: Download target directories (2.12, rootJS)
+      - name: Setup Java (temurin@21)
+        id: setup-java-temurin-21
+        if: matrix.java == 'temurin@21'
+        uses: actions/setup-java@v5
+        with:
+          distribution: temurin
+          java-version: 21
+          cache: sbt
+
+      - name: sbt update
+        if: matrix.java == 'temurin@21' && steps.setup-java-temurin-21.outputs.cache-hit == 'false'
+        run: sbt +update
+
+      - name: Setup Java (temurin@25)
+        id: setup-java-temurin-25
+        if: matrix.java == 'temurin@25'
+        uses: actions/setup-java@v5
+        with:
+          distribution: temurin
+          java-version: 25
+          cache: sbt
+
+      - name: sbt update
+        if: matrix.java == 'temurin@25' && steps.setup-java-temurin-25.outputs.cache-hit == 'false'
+        run: sbt +update
+
+      - name: Download target directories (2.12, log-effectJS)
         uses: actions/download-artifact@v6
         with:
-          name: target-${{ matrix.os }}-${{ matrix.java }}-2.12-rootJS
+          name: target-${{ matrix.os }}-${{ matrix.java }}-2.12-log-effectJS
 
-      - name: Inflate target directories (2.12, rootJS)
+      - name: Inflate target directories (2.12, log-effectJS)
         run: |
           tar xf targets.tar
           rm targets.tar
 
-      - name: Download target directories (2.12, rootJVM)
+      - name: Download target directories (2.12, log-effectNative)
         uses: actions/download-artifact@v6
         with:
-          name: target-${{ matrix.os }}-${{ matrix.java }}-2.12-rootJVM
+          name: target-${{ matrix.os }}-${{ matrix.java }}-2.12-log-effectNative
 
-      - name: Inflate target directories (2.12, rootJVM)
+      - name: Inflate target directories (2.12, log-effectNative)
         run: |
           tar xf targets.tar
           rm targets.tar
 
-      - name: Download target directories (2.13, rootJS)
+      - name: Download target directories (2.12, log-effectJVM)
         uses: actions/download-artifact@v6
         with:
-          name: target-${{ matrix.os }}-${{ matrix.java }}-2.13-rootJS
+          name: target-${{ matrix.os }}-${{ matrix.java }}-2.12-log-effectJVM
 
-      - name: Inflate target directories (2.13, rootJS)
+      - name: Inflate target directories (2.12, log-effectJVM)
         run: |
           tar xf targets.tar
           rm targets.tar
 
-      - name: Download target directories (2.13, rootJVM)
+      - name: Download target directories (2.13, log-effectJS)
         uses: actions/download-artifact@v6
         with:
-          name: target-${{ matrix.os }}-${{ matrix.java }}-2.13-rootJVM
+          name: target-${{ matrix.os }}-${{ matrix.java }}-2.13-log-effectJS
 
-      - name: Inflate target directories (2.13, rootJVM)
+      - name: Inflate target directories (2.13, log-effectJS)
         run: |
           tar xf targets.tar
           rm targets.tar
 
-      - name: Download target directories (3, rootJS)
+      - name: Download target directories (2.13, log-effectNative)
         uses: actions/download-artifact@v6
         with:
-          name: target-${{ matrix.os }}-${{ matrix.java }}-3-rootJS
+          name: target-${{ matrix.os }}-${{ matrix.java }}-2.13-log-effectNative
 
-      - name: Inflate target directories (3, rootJS)
+      - name: Inflate target directories (2.13, log-effectNative)
         run: |
           tar xf targets.tar
           rm targets.tar
 
-      - name: Download target directories (3, rootJVM)
+      - name: Download target directories (2.13, log-effectJVM)
         uses: actions/download-artifact@v6
         with:
-          name: target-${{ matrix.os }}-${{ matrix.java }}-3-rootJVM
+          name: target-${{ matrix.os }}-${{ matrix.java }}-2.13-log-effectJVM
 
-      - name: Inflate target directories (3, rootJVM)
+      - name: Inflate target directories (2.13, log-effectJVM)
+        run: |
+          tar xf targets.tar
+          rm targets.tar
+
+      - name: Download target directories (3, log-effectJS)
+        uses: actions/download-artifact@v6
+        with:
+          name: target-${{ matrix.os }}-${{ matrix.java }}-3-log-effectJS
+
+      - name: Inflate target directories (3, log-effectJS)
+        run: |
+          tar xf targets.tar
+          rm targets.tar
+
+      - name: Download target directories (3, log-effectNative)
+        uses: actions/download-artifact@v6
+        with:
+          name: target-${{ matrix.os }}-${{ matrix.java }}-3-log-effectNative
+
+      - name: Inflate target directories (3, log-effectNative)
+        run: |
+          tar xf targets.tar
+          rm targets.tar
+
+      - name: Download target directories (3, log-effectJVM)
+        uses: actions/download-artifact@v6
+        with:
+          name: target-${{ matrix.os }}-${{ matrix.java }}-3-log-effectJVM
+
+      - name: Inflate target directories (3, log-effectJVM)
         run: |
           tar xf targets.tar
           rm targets.tar
@@ -276,8 +366,34 @@ jobs:
         if: matrix.java == 'temurin@17' && steps.setup-java-temurin-17.outputs.cache-hit == 'false'
         run: sbt +update
 
+      - name: Setup Java (temurin@21)
+        id: setup-java-temurin-21
+        if: matrix.java == 'temurin@21'
+        uses: actions/setup-java@v5
+        with:
+          distribution: temurin
+          java-version: 21
+          cache: sbt
+
+      - name: sbt update
+        if: matrix.java == 'temurin@21' && steps.setup-java-temurin-21.outputs.cache-hit == 'false'
+        run: sbt +update
+
+      - name: Setup Java (temurin@25)
+        id: setup-java-temurin-25
+        if: matrix.java == 'temurin@25'
+        uses: actions/setup-java@v5
+        with:
+          distribution: temurin
+          java-version: 25
+          cache: sbt
+
+      - name: sbt update
+        if: matrix.java == 'temurin@25' && steps.setup-java-temurin-25.outputs.cache-hit == 'false'
+        run: sbt +update
+
       - name: Submit Dependencies
         uses: scalacenter/sbt-dependency-submission@v2
         with:
-          modules-ignore: rootjs_2.12 rootjs_2.13 rootjs_3 rootjvm_2.12 rootjvm_2.13 rootjvm_3 rootnative_2.12 rootnative_2.13 rootnative_3
+          modules-ignore: log-effectjs_2.12 log-effectjs_2.13 log-effectjs_3 log-effectnative_2.12 log-effectnative_2.13 log-effectnative_3 log-effectjvm_2.12 log-effectjvm_2.13 log-effectjvm_3
           configs-ignore: test scala-tool scala-doc-tool test-internal
