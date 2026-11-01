@@ -28,7 +28,7 @@ import scala.annotation.nowarn
   "Zio RIO construction snippets should compile" in {
     import java.util.{logging => jul}
 
-    import log.effect.zio.instances._, log.effect.zio.ZioLogWriter._
+    import log.effect.zio.ZioLogWriter._
     import log.effect.{LogLevels, LogWriter}
     import org.{log4s => l4s}
     import zio._

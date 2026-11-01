@@ -22,4 +22,5 @@
 package log.effect
 package zio
 
-trait ZioLogWriterPlatformSpecific {}
+// log4s is not published for Scala Native, so no log4s-based constructors are available here
+trait ZioLogWriterPlatformSpecific

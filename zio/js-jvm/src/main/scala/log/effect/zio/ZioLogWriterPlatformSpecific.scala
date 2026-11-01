@@ -28,6 +28,7 @@ import org.{log4s => l4s}
 
 trait ZioLogWriterPlatformSpecific {
   import instances._
+  import ZioLogWriter.{ZLogName, ZLogWriter}
 
   final type ZLog4sLogger = l4s.Logger
 

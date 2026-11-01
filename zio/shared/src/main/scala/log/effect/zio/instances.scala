@@ -25,17 +25,7 @@ package zio
 import _root_.zio.{LogLevel => _, _}
 import log.effect.internal.{EffectSuspension, Id, Show}
 
-import java.util.{logging => jul}
-
-object instances {
-  final case class LogName(x: String) extends AnyVal
-
-  final type ZLogName      = LogName
-  final type ZLogClass[A]  = Class[A]
-  final type ZJulLogger    = jul.Logger
-  final type ZScribeLogger = scribe.Logger
-  final type ZLogWriter    = LogWriter[Task]
-
+private[zio] object instances {
   private[zio] implicit final val taskEffectSuspension: EffectSuspension[Task] =
     new EffectSuspension[Task] {
       def suspend[A](a: =>A): Task[A] = ZIO.attempt(a)
@@ -55,7 +45,7 @@ object instances {
     }
 
   implicit final class NoOpLogT(private val _underlying: LogWriter[Id]) extends AnyVal {
-    def liftT: ZLogWriter =
+    def liftT: LogWriter[Task] =
       new LogWriter[Task] {
         override def write[A: Show](level: LogLevel, a: =>A): Task[Unit] = ZIO.unit
       }

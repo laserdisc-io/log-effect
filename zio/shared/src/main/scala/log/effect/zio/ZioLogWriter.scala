@@ -30,6 +30,14 @@ import java.util.{logging => jul}
 object ZioLogWriter extends ZioLogWriterPlatformSpecific {
   import instances._
 
+  final case class LogName(x: String) extends AnyVal
+
+  final type ZLogName      = LogName
+  final type ZLogClass[A]  = Class[A]
+  final type ZJulLogger    = jul.Logger
+  final type ZScribeLogger = scribe.Logger
+  final type ZLogWriter    = LogWriter[Task]
+
   val julFromLogger: URIO[ZJulLogger, ZLogWriter] =
     ZIO.serviceWith(julLogger => LogWriter.pureOf[Task](julLogger))
 

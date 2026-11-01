@@ -53,8 +53,15 @@ ThisBuild / githubWorkflowJavaVersions := Seq(
   JavaSpec.temurin("21"),
   JavaSpec.temurin("25")
 )
-ThisBuild / githubWorkflowBuildMatrixExclusions := Seq()
-ThisBuild / Test / parallelExecution            := false
+// JS and Native artifacts don't depend on the JDK, so build them on the first JDK only
+ThisBuild / githubWorkflowBuildMatrixExclusions := {
+  val javas = (ThisBuild / githubWorkflowJavaVersions).value.tail
+  for {
+    java    <- javas
+    project <- Seq("log-effectJS", "log-effectNative")
+  } yield MatrixExclude(Map("java" -> java.render, "project" -> project))
+}
+ThisBuild / Test / parallelExecution := false
 
 lazy val commonSettings = Seq(
   headerEndYear := Some(2026),
@@ -68,6 +75,14 @@ lazy val commonSettings = Seq(
       case _                               => Seq.empty
     }
   }
+)
+
+// first versions published for each non-JVM platform, there are no previous artifacts for MiMa
+lazy val jsCommonSettings = Seq(
+  tlVersionIntroduced := List("2.12", "2.13", "3").map(_ -> "0.19.0").toMap
+)
+lazy val nativeCommonSettings = Seq(
+  tlVersionIntroduced := List("2.12", "2.13", "3").map(_ -> "0.20.0").toMap
 )
 
 lazy val `log-effect` = tlCrossRootProject
@@ -86,6 +101,8 @@ lazy val core = crossProject(JVMPlatform, JSPlatform, NativePlatform)
     name := "log-effect-core",
     libraryDependencies += D.scribe.value
   )
+  .jsSettings(jsCommonSettings)
+  .nativeSettings(nativeCommonSettings)
   .jsSettings(
     libraryDependencies += D.log4s.value
   )
@@ -107,6 +124,8 @@ lazy val fs2 = crossProject(JVMPlatform, JSPlatform, NativePlatform)
       D.scribe.value
     )
   )
+  .jsSettings(jsCommonSettings)
+  .nativeSettings(nativeCommonSettings)
   .jsSettings(
     libraryDependencies += D.log4s.value
   )
@@ -140,6 +159,8 @@ lazy val zio = crossProject(JVMPlatform, JSPlatform, NativePlatform)
       D.`log4s-testing`.value % Test
     )
   )
+  .jsSettings(jsCommonSettings)
+  .nativeSettings(nativeCommonSettings)
   .nativeSettings(
     libraryDependencies ++= Seq(
       D.`scala-java-time`.value           % Test,
@@ -147,18 +168,19 @@ lazy val zio = crossProject(JVMPlatform, JSPlatform, NativePlatform)
     )
   )
 
-lazy val interop =
-  crossProject(JVMPlatform, JSPlatform /*, NativePlatform // log4cats is on 0.4 atm */ )
-    .crossType(CrossType.Pure)
-    .withoutSuffixFor(JVMPlatform)
-    .in(file("interop"))
-    .dependsOn(core, fs2)
-    .settings(commonSettings)
-    .settings(
-      name := "log-effect-interop",
-      libraryDependencies ++= Seq(
-        D.`cats-effect`.value % Test,
-        D.`log4cats-core`.value,
-        D.`log4cats-testing`.value % Test
-      )
+lazy val interop = crossProject(JVMPlatform, JSPlatform, NativePlatform)
+  .crossType(CrossType.Pure)
+  .withoutSuffixFor(JVMPlatform)
+  .in(file("interop"))
+  .dependsOn(core, fs2)
+  .settings(commonSettings)
+  .settings(
+    name := "log-effect-interop",
+    libraryDependencies ++= Seq(
+      D.`cats-effect`.value % Test,
+      D.`log4cats-core`.value,
+      D.`log4cats-testing`.value % Test
     )
+  )
+  .jsSettings(jsCommonSettings)
+  .nativeSettings(nativeCommonSettings)

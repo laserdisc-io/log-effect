@@ -1,3 +1,4 @@
+# Scala Native linking needs a larger heap than the sbt default
 -J-Xms2g
 -J-Xmx4g
 -J-XX:MaxMetaspaceSize=512m

@@ -43,13 +43,9 @@ import scala.annotation.nowarn
   }
 
   "`in a streaming environment using `LogWriter`'s syntax` snippet should compile" in {
-    import java.nio.channels.AsynchronousChannelGroup
-
     import cats.effect.Async
     import cats.syntax.flatMap._
     import log.effect.LogWriter
-
-    import scala.concurrent.ExecutionContext
 
     sealed trait RedisClient[F[_]] {
       def address: String
@@ -58,9 +54,6 @@ import scala.annotation.nowarn
       def apply[F[_]](addr: String): fs2.Stream[F, RedisClient[F]] =
         fs2.Stream.emit(new RedisClient[F] { val address = addr })
     }
-
-    implicit def EC: ExecutionContext         = ???
-    implicit def CG: AsynchronousChannelGroup = ???
 
     def redisClient[F[_]: Async](
       address: String
@@ -71,13 +64,9 @@ import scala.annotation.nowarn
   }
 
   "`in a streaming environment using `fs2` streams' syntax` snippet should compile" in {
-    import java.nio.channels.AsynchronousChannelGroup
-
     import cats.effect.Async
     import log.effect.LogWriter
     import log.effect.fs2.syntax._
-
-    import scala.concurrent.ExecutionContext
 
     sealed trait RedisClient[F[_]] {
       def address: String
@@ -86,9 +75,6 @@ import scala.annotation.nowarn
       def apply[F[_]](addr: String): fs2.Stream[F, RedisClient[F]] =
         fs2.Stream.emit(new RedisClient[F] { val address = addr })
     }
-
-    implicit def EC: ExecutionContext         = ???
-    implicit def CG: AsynchronousChannelGroup = ???
 
     def redisCache[F[_]: Async](
       address: String
@@ -138,8 +124,6 @@ import scala.annotation.nowarn
   }
 
   "`through the companion's accessor for the `write` method` 1 snippet should compile" in {
-    import java.nio.channels.AsynchronousChannelGroup
-
     import cats.Show
     import cats.effect.Async
     import cats.instances.string._
@@ -148,8 +132,6 @@ import scala.annotation.nowarn
     import log.effect.LogLevels.{Debug, Error}
     import log.effect.fs2.interop.show._
     import log.effect.{Failure, LogWriter}
-
-    import scala.concurrent.ExecutionContext
 
     sealed trait RedisClient[F[_]] {
       def address: String
@@ -160,9 +142,6 @@ import scala.annotation.nowarn
     }
 
     type |[A, B] = Either[A, B]
-
-    implicit def EC: ExecutionContext         = ???
-    implicit def CG: AsynchronousChannelGroup = ???
 
     def redisClient[F[_]: Async: LogWriter](
       address: String

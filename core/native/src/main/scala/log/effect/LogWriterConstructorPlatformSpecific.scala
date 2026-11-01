@@ -21,4 +21,5 @@
 
 package log.effect
 
-trait LogWriterConstructorPlatformSpecific {}
+// log4s is not published for Scala Native, so no log4s-based constructors are available here
+trait LogWriterConstructorPlatformSpecific
