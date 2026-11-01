@@ -161,6 +161,8 @@ lazy val zio = crossProject(JVMPlatform, JSPlatform, NativePlatform)
   )
   .jsSettings(jsCommonSettings)
   .nativeSettings(nativeCommonSettings)
+  // on Scala 2.12/2.13 linking warns with "Found 7 errors on zio.Cause$CompositeCause..." which
+  // are harmless, see https://github.com/scala-native/scala-native/issues/4372
   .nativeSettings(
     libraryDependencies ++= Seq(
       D.`scala-java-time`.value           % Test,
