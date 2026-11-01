@@ -22,7 +22,7 @@
 package log.effect
 package zio
 
-import _root_.zio.{LogLevel => _, _}
+import _root_.zio._
 import log.effect.LogWriter
 import org.{log4s => l4s}
 
