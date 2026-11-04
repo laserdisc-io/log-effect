@@ -104,7 +104,13 @@ lazy val core = crossProject(JVMPlatform, JSPlatform, NativePlatform)
   .jsSettings(jsCommonSettings)
   .nativeSettings(nativeCommonSettings)
   .jsSettings(
-    libraryDependencies += D.log4s.value
+    libraryDependencies ++= Seq(
+      D.log4s.value,
+      D.`scalajs-java-logging`.value.cross(CrossVersion.for3Use2_13)
+    )
+  )
+  .nativeSettings(
+    libraryDependencies += D.`scala-native-java-logging`.value
   )
   .jvmSettings(
     libraryDependencies += D.log4s.value
@@ -148,9 +154,8 @@ lazy val zio = crossProject(JVMPlatform, JSPlatform, NativePlatform)
   .jsSettings(
     libraryDependencies ++= Seq(
       D.log4s.value,
-      D.`log4s-testing`.value         % Test,
-      D.`scala-java-time`.value       % Test,
-      (D.`scalajs-java-logging`.value % Test).cross(CrossVersion.for3Use2_13)
+      D.`scala-java-time`.value,
+      D.`log4s-testing`.value % Test
     )
   )
   .jvmSettings(
@@ -164,10 +169,7 @@ lazy val zio = crossProject(JVMPlatform, JSPlatform, NativePlatform)
   // on Scala 2.12/2.13 linking warns with "Found 7 errors on zio.Cause$CompositeCause..." which
   // are harmless, see https://github.com/scala-native/scala-native/issues/4372
   .nativeSettings(
-    libraryDependencies ++= Seq(
-      D.`scala-java-time`.value           % Test,
-      D.`scala-native-java-logging`.value % Test
-    )
+    libraryDependencies += D.`scala-java-time`.value
   )
 
 lazy val interop = crossProject(JVMPlatform, JSPlatform, NativePlatform)

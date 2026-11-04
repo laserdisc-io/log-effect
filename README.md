@@ -52,6 +52,32 @@ Currently Log Effect supports the following backends
 - Console
 - No log sink 
 
+## Scala.js and Scala Native
+These are the differences to be aware of when coming from the JVM.
+
+#### Java Logging needs a handler
+On the JVM, Java Logging prints to the console out of the box. On Scala.js and Scala Native no handler is set up by default, so messages are silently discarded until you add one to your logger. A minimal handler that prints to the console looks like this
+```scala
+val julWithHandler: F[LogWriter[F]] =
+  F.delay {
+    val logger = jul.Logger.getLogger("a logger")
+    logger.addHandler(new jul.Handler {
+      def publish(r: jul.LogRecord): Unit = println(s"[${r.getLevel}] ${r.getMessage}")
+      def flush(): Unit                   = ()
+      def close(): Unit                   = ()
+    })
+    logger
+  } map julLog[F]
+```
+As on the JVM, only `info` and above are logged by default. To also get `debug` and `trace`, call `logger.setLevel(jul.Level.FINEST)`.
+
+#### Time zones need an extra dependency
+`log-effect-zio` includes [scala-java-time](https://github.com/cquiroz/scala-java-time), which provides `java.time` on these platforms but doesn't contain the time zone database. Logging doesn't need it, but your application does if it uses named time zones: without it, a call like `ZoneId.of("Europe/Paris")` throws a `ZoneRulesException` at runtime. On Scala.js the same happens to anything that needs the system time zone when that isn't UTC, including **ZIO**'s `Clock.currentDateTime`. To include the database add
+```scala
+libraryDependencies += "io.github.cquiroz" %%% "scala-java-time-tzdb" % <scala-java-time-version>
+```
+using the same version as the `scala-java-time` in your build. Note that this adds roughly 1 MB to a fully optimized Scala.js bundle.
+
 ## Examples
 
 ### Get Logs
