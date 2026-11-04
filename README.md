@@ -6,72 +6,86 @@
 [![Scala Steward badge](https://img.shields.io/badge/Scala_Steward-helping-blue.svg?style=flat&logo=data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAA4AAAAQCAMAAAARSr4IAAAAVFBMVEUAAACHjojlOy5NWlrKzcYRKjGFjIbp293YycuLa3pYY2LSqql4f3pCUFTgSjNodYRmcXUsPD/NTTbjRS+2jomhgnzNc223cGvZS0HaSD0XLjbaSjElhIr+AAAAAXRSTlMAQObYZgAAAHlJREFUCNdNyosOwyAIhWHAQS1Vt7a77/3fcxxdmv0xwmckutAR1nkm4ggbyEcg/wWmlGLDAA3oL50xi6fk5ffZ3E2E3QfZDCcCN2YtbEWZt+Drc6u6rlqv7Uk0LdKqqr5rk2UCRXOk0vmQKGfc94nOJyQjouF9H/wCc9gECEYfONoAAAAASUVORK5CYII=)](https://scala-steward.org)
 
 [![log-effect-fs2 Scala version support](https://index.scala-lang.org/laserdisc-io/log-effect/log-effect-fs2/latest-by-scala-version.svg?platform=jvm&color=2282c3)](https://index.scala-lang.org/laserdisc-io/log-effect/log-effect-fs2)
+[![log-effect-fs2 Scala.js version support](https://index.scala-lang.org/laserdisc-io/log-effect/log-effect-fs2/latest-by-scala-version.svg?platform=sjs1&color=2282c3)](https://index.scala-lang.org/laserdisc-io/log-effect/log-effect-fs2)
+[![log-effect-fs2 Scala Native version support](https://index.scala-lang.org/laserdisc-io/log-effect/log-effect-fs2/latest-by-scala-version.svg?platform=native0.5&color=2282c3)](https://index.scala-lang.org/laserdisc-io/log-effect/log-effect-fs2)
 
 
 [![log-effect-zio Scala version support](https://index.scala-lang.org/laserdisc-io/log-effect/log-effect-zio/latest-by-scala-version.svg?platform=jvm&color=fb0005)](https://index.scala-lang.org/laserdisc-io/log-effect/log-effect-zio)
+[![log-effect-zio Scala.js version support](https://index.scala-lang.org/laserdisc-io/log-effect/log-effect-zio/latest-by-scala-version.svg?platform=sjs1&color=fb0005)](https://index.scala-lang.org/laserdisc-io/log-effect/log-effect-zio)
+[![log-effect-zio Scala Native version support](https://index.scala-lang.org/laserdisc-io/log-effect/log-effect-zio/latest-by-scala-version.svg?platform=native0.5&color=fb0005)](https://index.scala-lang.org/laserdisc-io/log-effect/log-effect-zio)
 
 [![log-effect-core Scala version support](https://index.scala-lang.org/laserdisc-io/log-effect/log-effect-core/latest-by-scala-version.svg?platform=jvm&color=9311fc)](https://index.scala-lang.org/laserdisc-io/log-effect/log-effect-core)
+[![log-effect-core Scala.js version support](https://index.scala-lang.org/laserdisc-io/log-effect/log-effect-core/latest-by-scala-version.svg?platform=sjs1&color=9311fc)](https://index.scala-lang.org/laserdisc-io/log-effect/log-effect-core)
+[![log-effect-core Scala Native version support](https://index.scala-lang.org/laserdisc-io/log-effect/log-effect-core/latest-by-scala-version.svg?platform=native0.5&color=9311fc)](https://index.scala-lang.org/laserdisc-io/log-effect/log-effect-core)
 
 [![log-effect-interop Scala version support](https://index.scala-lang.org/laserdisc-io/log-effect/log-effect-interop/latest-by-scala-version.svg?platform=jvm&color=009933)](https://index.scala-lang.org/laserdisc-io/log-effect/log-effect-interop)
+[![log-effect-interop Scala.js version support](https://index.scala-lang.org/laserdisc-io/log-effect/log-effect-interop/latest-by-scala-version.svg?platform=sjs1&color=009933)](https://index.scala-lang.org/laserdisc-io/log-effect/log-effect-interop)
+[![log-effect-interop Scala Native version support](https://index.scala-lang.org/laserdisc-io/log-effect/log-effect-interop/latest-by-scala-version.svg?platform=native0.5&color=009933)](https://index.scala-lang.org/laserdisc-io/log-effect/log-effect-interop)
 
 ## Start
-Log Effect is available for Scala **_2.12_**, **_2.13_** and **_3_**. Helper constructors are provided for **Cats Effect**'s `Sync` `F[_]`, for **Fs2**'s `Stream` and for **ZIO**'s `Task`. 
+Log Effect is available for Scala **_2.12_**, **_2.13_** and **_3_** on JVM, Scala.js and Scala Native. Helper constructors are provided for **Cats Effect**'s `Sync` `F[_]`, for **Fs2**'s `Stream` and for **ZIO**'s `Task`. 
 Add
 ```scala
-libraryDependencies += "io.laserdisc" %% "log-effect-fs2" % <latest-fs2-version>
+libraryDependencies += "io.laserdisc" %%% "log-effect-fs2" % <latest-fs2-version>
 ```
 for **Fs2** or **Cats Effect**. Add instead
 ```scala
-libraryDependencies += "io.laserdisc" %% "log-effect-zio" % <latest-zio-version>
+libraryDependencies += "io.laserdisc" %%% "log-effect-zio" % <latest-zio-version>
 ```
 for **ZIO**. If the intention is, instead, to create your own implementation of the typeclass, adding this
 ```scala
-libraryDependencies += "io.laserdisc" %% "log-effect-core" % <latest-core-version>
+libraryDependencies += "io.laserdisc" %%% "log-effect-core" % <latest-core-version>
 ```
-will be enough. For the latest versions available please refer to the badges below the title.
+will be enough. For the latest versions available please refer to the badges below the title. On the JVM only, `%%` can be used in place of `%%%`.
+
+| Platform     | Supported since | Notes                    |
+|--------------|-----------------|--------------------------|
+| JVM          | always          |                          |
+| Scala.js     | `0.19.0`        |                          |
+| Scala Native | `0.20.0`        | Log4s is not available   |
 
 ## Backends
 Currently Log Effect supports the following backends
-- Log4s
+- Log4s (on JVM and JS)
 - Java Logging (Jul)
 - Scribe
 - Console
 - No log sink 
 
-## Dependencies
+## Scala.js and Scala Native
+These are the differences to be aware of when coming from the JVM.
 
-|                          | Cats | Fs2 | Cats Effect | Log Effect Core   |
-| ------------------------:| ----:| ---:| -----------:| -----------------:|
-| [![Maven Central](https://img.shields.io/maven-central/v/io.laserdisc/log-effect-fs2_2.13.svg?label=log-effect-fs2&colorB=2282c3)](https://maven-badges.herokuapp.com/maven-central/io.laserdisc/log-effect-fs2_2.13) | 2.9.0 | 3.4.0 | 3.4.1 | [![Maven Central](https://img.shields.io/maven-central/v/io.laserdisc/log-effect-core_2.13.svg?label=%20&colorB=9311fc)](https://maven-badges.herokuapp.com/maven-central/io.laserdisc/log-effect-core_2.13) |
+#### Java Logging needs a handler
+On the JVM, Java Logging prints to the console out of the box. On Scala.js and Scala Native no handler is set up by default, so messages are silently discarded until you add one to your logger. A minimal handler that prints to the console looks like this
+```scala
+val julWithHandler: F[LogWriter[F]] =
+  F.delay {
+    val logger = jul.Logger.getLogger("a logger")
+    logger.addHandler(new jul.Handler {
+      def publish(r: jul.LogRecord): Unit = println(s"[${r.getLevel}] ${r.getMessage}")
+      def flush(): Unit                   = ()
+      def close(): Unit                   = ()
+    })
+    logger
+  } map julLog[F]
+```
+As on the JVM, only `info` and above are logged by default. To also get `debug` and `trace`, call `logger.setLevel(jul.Level.FINEST)`.
 
-<br/>
-
-|                          | Zio | Log Effect Core |
-| ------------------------:| ---:| ---------------:|
-| [![Maven Central](https://img.shields.io/maven-central/v/io.laserdisc/log-effect-zio_2.13.svg?label=log-effect-zio&colorB=fb0005)](https://maven-badges.herokuapp.com/maven-central/io.laserdisc/log-effect-zio_2.13) | 2.0.4 | [![Maven Central](https://img.shields.io/maven-central/v/io.laserdisc/log-effect-core_2.12.svg?label=%20&colorB=9311fc)](https://maven-badges.herokuapp.com/maven-central/io.laserdisc/log-effect-core_2.13) | 
-
-<br/>
-
-|                          | Log4cats | Log Effect Core   |
-| ------------------------:| --------:| -----------------:|
-| [![Maven Central](https://img.shields.io/maven-central/v/io.laserdisc/log-effect-interop_2.13.svg?label=log-effect-interop&colorB=009933)](https://maven-badges.herokuapp.com/maven-central/io.laserdisc/log-effect-interop_2.13) | 2.5.0 | [![Maven Central](https://img.shields.io/maven-central/v/io.laserdisc/log-effect-core_2.13.svg?label=%20&colorB=9311fc)](https://maven-badges.herokuapp.com/maven-central/io.laserdisc/log-effect-core_2.13) |
-
-<br/>
-
-|                          | Log4s  | Scribe |
-| ------------------------:| ------:| ------:|
-| [![Maven Central](https://img.shields.io/maven-central/v/io.laserdisc/log-effect-core_2.13.svg?label=log-effect-core&colorB=9311fc)](https://maven-badges.herokuapp.com/maven-central/io.laserdisc/log-effect-core_2.13) | 1.10.0 | 3.10.5 |
-
-<br/>
+#### Time zones need an extra dependency
+`log-effect-zio` includes [scala-java-time](https://github.com/cquiroz/scala-java-time), which provides `java.time` on these platforms but doesn't contain the time zone database. Logging doesn't need it, but your application does if it uses named time zones: without it, a call like `ZoneId.of("Europe/Paris")` throws a `ZoneRulesException` at runtime. On Scala.js the same happens to anything that needs the system time zone when that isn't UTC, including **ZIO**'s `Clock.currentDateTime`. To include the database add
+```scala
+libraryDependencies += "io.github.cquiroz" %%% "scala-java-time-tzdb" % <scala-java-time-version>
+```
+using the same version as the `scala-java-time` in your build. Note that this adds roughly 1 MB to a fully optimized Scala.js bundle.
 
 ## Examples
 
 ### Get Logs
 
 #### Cats Effect Sync
-To get an instance of `LogWriter` for **Cats Effect**'s `Sync` the options below are available (see [here](./fs2/src/main/scala/log/effect/fs2/SyncLogWriter.scala))
+To get an instance of `LogWriter` for **Cats Effect**'s `Sync` the options below are available (see [here](./fs2/shared/src/main/scala/log/effect/fs2/SyncLogWriter.scala))
 
-*full compiling example [here](./fs2/src/test/scala/ReadmeConstructionCodeSnippetsTest.scala)*
+*full compiling example [here](./fs2/js-jvm/src/test/scala/ReadmeConstructionCodeSnippetsTest.scala)*
 ```scala
 val log4s1: F[LogWriter[F]] =
   F.delay(l4s.getLogger("test")) map log4sLog[F]
@@ -106,9 +120,9 @@ val noOp: LogWriter[F] = noOpLog[F]
 ```
 
 #### Fs2 Stream
-Similarly, to get instances of `LogWriter` for **Fs2**'s `Stream` the constructors below are available [here](./fs2/src/main/scala/log/effect/fs2/SyncLogWriter.scala)
+Similarly, to get instances of `LogWriter` for **Fs2**'s `Stream` the constructors below are available [here](./fs2/shared/src/main/scala/log/effect/fs2/Fs2LogWriter.scala)
 
-*full compiling example [here](./fs2/src/test/scala/ReadmeConstructionCodeSnippetsTest.scala)*
+*full compiling example [here](./fs2/js-jvm/src/test/scala/ReadmeConstructionCodeSnippetsTest.scala)*
 ```scala
 val log4s1: fs2.Stream[F, LogWriter[F]] =
   Stream.eval(F.delay(l4s.getLogger("test"))) >>= log4sLogStream[F]
@@ -144,10 +158,10 @@ val noOp: fs2.Stream[F, LogWriter[F]] = noOpLogStream
 *See [here](https://github.com/laserdisc-io/laserdisc#example-usage) for an example with [Laserdisc](https://github.com/laserdisc-io/laserdisc)*
 
 #### Zio Task
-To create instances for `ZIO` some useful constructors can be found [here](./zio/src/main/scala/log/effect/zio/ZioLogWriter.scala). Note as they exploit the power and expressiveness of `RLayer` an the `RIO` pattern as shown below.
+To create instances for `ZIO` some useful constructors can be found [here](./zio/shared/src/main/scala/log/effect/zio/ZioLogWriter.scala). Note as they exploit the power and expressiveness of `RLayer` and the `RIO` pattern as shown below.
 
 ##### Create LogWriter as a Layer
-*full compiling example [here](./zio/src/test/scala/ReadmeLayerConstructionCodeSnippetsTest.scala)*
+*full compiling example [here](./zio/js-jvm/src/test/scala/ReadmeLayerConstructionCodeSnippetsTest.scala)*
 ```scala
 // Case 1: from a possible config
 val logNameLiveFromConfig: ULayer[ZLogName] =
@@ -178,7 +192,7 @@ val scribeCase3: TaskLayer[ZLogWriter] =
 ```
 
 ##### Create LogWriter as RIO
-*full compiling example [here](./zio/src/test/scala/ReadmeRioConstructionCodeSnippetsTest.scala)*
+*full compiling example [here](./zio/js-jvm/src/test/scala/ReadmeRioConstructionCodeSnippetsTest.scala)*
 ```scala
 // Case 1: from a possible config in a Layer (gives a Layer)
 val log4sCase1: RLayer[AConfig, ZLogWriter] =
@@ -279,13 +293,9 @@ def process[F[_]](implicit F: Sync[F], log: LogWriter[F]): F[(Int, Int)] =
 
  - _in a streaming environment using `LogWriter`'s syntax_
 ```scala
-import java.nio.channels.AsynchronousChannelGroup
-
-import cats.effect.{ ConcurrentEffect, ContextShift, Timer }
+import cats.effect.Async
 import cats.syntax.flatMap._
 import log.effect.LogWriter
-
-import scala.concurrent.ExecutionContext
 
 sealed trait RedisClient[F[_]] {
   def address: String
@@ -295,26 +305,19 @@ object RedisClient {
     fs2.Stream.emit(new RedisClient[F] { val address = addr })
 }
 
-implicit def EC: ExecutionContext         = ???
-implicit def CG: AsynchronousChannelGroup = ???
-
-def redisClient[F[_]: ConcurrentEffect: ContextShift: Timer](
+def redisClient[F[_]: Async](
   address: String
 )(implicit log: LogWriter[F]): fs2.Stream[F, RedisClient[F]] =
   RedisClient[F](address) evalMap { client =>
-    log.info(s"Laserdisc Redis client for $address") >> ConcurrentEffect[F].pure(client)
+    log.info(s"Laserdisc Redis client for $address") >> Async[F].pure(client)
   }
 ```
 
 - _in a streaming environment using `fs2` streams' syntax_
 ```scala
-import java.nio.channels.AsynchronousChannelGroup
-
-import cats.effect.{ ConcurrentEffect, ContextShift, Timer }
+import cats.effect.Async
 import log.effect.LogWriter
 import log.effect.fs2.syntax._
-
-import scala.concurrent.ExecutionContext
 
 sealed trait RedisClient[F[_]] {
   def address: String
@@ -324,10 +327,7 @@ object RedisClient {
     fs2.Stream.emit(new RedisClient[F] { val address = addr })
 }
 
-implicit def EC: ExecutionContext         = ???
-implicit def CG: AsynchronousChannelGroup = ???
-
-def redisCache[F[_]: ConcurrentEffect: ContextShift: Timer](
+def redisCache[F[_]: Async](
   address: String
 )(implicit log: LogWriter[F]): fs2.Stream[F, RedisClient[F]] =
   for {
@@ -378,18 +378,14 @@ def double[F[_]: Sync: LogWriter](source: fs2.Stream[F, Int]): fs2.Stream[F, Int
 
 - _through the companion's accessor for the `write` method_
 ```scala
-import java.nio.channels.AsynchronousChannelGroup
-
 import cats.Show
-import cats.effect.{ ConcurrentEffect, ContextShift, Timer }
+import cats.effect.Async
 import cats.instances.string._
 import cats.syntax.either._
 import cats.syntax.flatMap._
 import log.effect.LogLevels.{ Debug, Error }
 import log.effect.fs2.interop.show._
 import log.effect.{ Failure, LogWriter }
-
-import scala.concurrent.ExecutionContext
 
 sealed trait RedisClient[F[_]] {
   def address: String
@@ -401,10 +397,7 @@ object RedisClient {
 
 type |[A, B] = Either[A, B]
 
-implicit def EC: ExecutionContext         = ???
-implicit def CG: AsynchronousChannelGroup = ???
-
-def redisClient[F[_]: ConcurrentEffect: ContextShift: Timer: LogWriter](
+def redisClient[F[_]: Async: LogWriter](
   address: String
 ): fs2.Stream[F, Throwable | RedisClient[F]] = {
   // Cats Show instances are needed for every logged type
@@ -414,17 +407,19 @@ def redisClient[F[_]: ConcurrentEffect: ContextShift: Timer: LogWriter](
     LogWriter.write(Debug, "Connected client details:") >> // Or
       LogWriter.debug(address) >>                          // And
       LogWriter.debug(client) >>
-      ConcurrentEffect[F].pure(client.asRight)
+      Async[F].pure(client.asRight)
   } handleErrorWith { th =>
     fs2.Stream eval (
       LogWriter.write(
         Error,
         Failure("Ops, something didn't work", th)
-      ) >> ConcurrentEffect[F].pure(th.asLeft)
+      ) >> Async[F].pure(th.asLeft)
     )
   }
 }
 ```
+**NB:** note above the `LogWriter`'s implicit evidence given as context bound and the `import log.effect.fs2.interop.show._`. The latter is needed to summon an `internal.Show` given a `cats.Show`.
+
 or using the fs2 Stream specific syntax like `writeS` or the level alternatives for types that provide a `cats.Show` instance 
 ```scala
 import cats.Show
@@ -462,7 +457,6 @@ def double[F[_]: Sync: LogWriter](source: fs2.Stream[F, Int]): fs2.Stream[F, A] 
   }
 }
 ```
-**NB:** note above the `LogWriter`'s implicit evidence given as context bound and the `import log.effect.fs2.interop.show._`. The latter is needed to summon an `internal.Show` given a `cats.Show`.
 
 ## Interop
 
@@ -471,12 +465,12 @@ In some cases log-effect can be used in projects that have a different logging s
 
 See an example below. 
 ```scala
-libraryDependencies += "io.laserdisc" %% "log-effect-interop" % <latest-interop-version>
+libraryDependencies += "io.laserdisc" %%% "log-effect-interop" % <latest-interop-version>
 ```
 ```scala
 import cats.effect.{Resource, Sync}
 import cats.syntax.flatMap._
-import io.chrisdavenport.log4cats.Logger
+import org.typelevel.log4cats.Logger
 import log.effect.LogWriter
 
 import log.effect.interop.log4cats._
