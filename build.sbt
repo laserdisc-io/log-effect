@@ -1,3 +1,5 @@
+import org.typelevel.sbt.NoPublishPlugin
+
 val scala_212 = "2.12.21"
 val scala_213 = "2.13.18"
 val scala_3   = "3.3.9"
@@ -63,6 +65,16 @@ ThisBuild / githubWorkflowBuildMatrixExclusions := {
 }
 ThisBuild / Test / parallelExecution := false
 
+ThisBuild / githubWorkflowBuildPostamble += WorkflowStep.Sbt(
+  List(
+    "nativeConsumer/headerCheckAll",
+    "nativeConsumer/scalafmtCheckAll",
+    "testNativeConsumer"
+  ),
+  name = Some("Test Native consumer"),
+  cond = Some("matrix.project == 'log-effectNative'")
+)
+
 lazy val commonSettings = Seq(
   headerEndYear := Some(2026),
   libraryDependencies ++= Seq(
@@ -90,7 +102,11 @@ lazy val `log-effect` = tlCrossRootProject
   .settings(
     addCommandAlias("fmt", "scalafmt; Test/scalafmt; scalafmtSbt"),
     addCommandAlias("checkFormat", "scalafmtCheck; Test/scalafmtCheck; scalafmtSbtCheck"),
-    addCommandAlias("check", "checkFormat; clean; test")
+    addCommandAlias("check", "checkFormat; clean; test; testNativeConsumer"),
+    addCommandAlias(
+      "testNativeConsumer",
+      "nativeConsumer/Compile/nativeLink; nativeConsumer/test"
+    )
   )
 
 lazy val core = crossProject(JVMPlatform, JSPlatform, NativePlatform)
@@ -188,3 +204,9 @@ lazy val interop = crossProject(JVMPlatform, JSPlatform, NativePlatform)
   )
   .jsSettings(jsCommonSettings)
   .nativeSettings(nativeCommonSettings)
+
+lazy val nativeConsumer = project
+  .in(file("native-consumer"))
+  .enablePlugins(ScalaNativePlugin, NoPublishPlugin)
+  .dependsOn(fs2.native)
+  .settings(commonSettings)

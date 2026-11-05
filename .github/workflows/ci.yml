@@ -137,6 +137,10 @@ jobs:
         if: matrix.java == 'temurin@11' && matrix.os == 'ubuntu-22.04'
         run: sbt 'project ${{ matrix.project }}' '++ ${{ matrix.scala }}' doc
 
+      - name: Test Native consumer
+        if: matrix.project == 'log-effectNative'
+        run: sbt 'project ${{ matrix.project }}' '++ ${{ matrix.scala }}' nativeConsumer/headerCheckAll nativeConsumer/scalafmtCheckAll testNativeConsumer
+
       - name: Make target directories
         if: github.event_name != 'pull_request' && (startsWith(github.ref, 'refs/tags/v') || github.ref == 'refs/heads/master')
         run: mkdir -p zio/js/target fs2/native/target fs2/jvm/target core/native/target interop/.js/target core/js/target interop/.native/target zio/jvm/target fs2/js/target core/jvm/target zio/native/target interop/.jvm/target project/target
@@ -408,5 +412,5 @@ jobs:
       - name: Submit Dependencies
         uses: scalacenter/sbt-dependency-submission@v2
         with:
-          modules-ignore: log-effectjs_2.12 log-effectjs_2.13 log-effectjs_3 log-effectnative_2.12 log-effectnative_2.13 log-effectnative_3 log-effectjvm_2.12 log-effectjvm_2.13 log-effectjvm_3
+          modules-ignore: log-effectjs_2.12 log-effectjs_2.13 log-effectjs_3 nativeconsumer_native0.5_2.12 nativeconsumer_native0.5_2.13 nativeconsumer_native0.5_3 log-effectnative_2.12 log-effectnative_2.13 log-effectnative_3 log-effectjvm_2.12 log-effectjvm_2.13 log-effectjvm_3
           configs-ignore: test scala-tool scala-doc-tool test-internal
