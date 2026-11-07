@@ -8,6 +8,7 @@ val V = new {
   val cats           = "2.13.0"
   val catsEffect     = "3.7.1"
   val fs2            = "3.14.0"
+  val jline          = "3.30.15"
   val log4cats       = "2.8.0"
   val log4s          = "1.10.0"
   val scalaCheck     = "1.20.0"
@@ -64,6 +65,14 @@ ThisBuild / githubWorkflowBuildMatrixExclusions := {
   } yield MatrixExclude(Map("java" -> java.render, "project" -> project))
 }
 ThisBuild / Test / parallelExecution := false
+
+// CVE-2026-77420: override the JLine modules used by Scala 2.13 and Scala 3 compiler tooling.
+ThisBuild / dependencyOverrides ++= Seq(
+  "jline",
+  "jline-reader",
+  "jline-terminal",
+  "jline-terminal-jni"
+).map("org.jline" % _ % V.jline)
 
 ThisBuild / githubWorkflowBuildPostamble += WorkflowStep.Sbt(
   List(
