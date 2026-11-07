@@ -17,7 +17,7 @@ val V = new {
   val scalaJSJUL     = "1.0.0"
   val scalaNativeJUL = "1.0.0"
   val scribe         = "3.15.2"
-  val zio            = "2.1.26"
+  val zio            = "2.1.27"
 }
 
 val D = new {
